@@ -1,0 +1,45 @@
+# --- secrets: never committed (CLAUDE.md hard rule 7) ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Node / frontend ---
+node_modules/
+frontend/dist/
+*.local
+
+# --- Neo4j / Docker runtime state (bind mounts if used; volumes live in Docker) ---
+volumes/
+neo4j_data/
+neo4j_logs/
+*.dump
+
+# --- scratch & OS noise ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
+scratch/
+tmp/
+
+# --- IDE ---
+.idea/
+.vscode/
+*.iml
+
+# NOTE deliberately committed (do not add here):
+#   data/csv/, data/manifest.json, data/ground_truth/  (ADR-005/006)
+#   api/narration_cache/                               (ADR-010, offline demo)
+#   data/scenarios/heldout/ once revealed              (ADR-012)
