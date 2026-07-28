@@ -14,7 +14,9 @@ services:
       NEO4J_server_memory_heap_initial__size: ${NEO4J_HEAP_SIZE:-2G}
       NEO4J_server_memory_heap_max__size: ${NEO4J_HEAP_SIZE:-2G}
       NEO4J_server_memory_pagecache_size: ${NEO4J_PAGECACHE_SIZE:-1G}
-      # UNVERIFIED (OQ #2, ADR-020): the NEO4J_PLUGINS install syntax could
+      # UNVERIFIED (OQ #2, ADR-020): the exact image tag (5.26-community —
+      # standard Docker Hub scheme, confirmed on first pull) and the
+      # NEO4J_PLUGINS install syntax could
       # not be confirmed against reachable official docs at authoring time
       # (neo4j.com blocks automated fetch; docs mirrors only had memory/auth
       # examples). Best-known form below. M1 EXIT TEST MUST CONFIRM:
