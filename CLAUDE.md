@@ -1,7 +1,27 @@
 # CLAUDE.md — project memory for MedGraph Sentinel
 
-Read this first in every session. The docs under `docs/` are the design;
-this file is the standing context and rules.
+## Session start protocol (every session, in this order)
+
+1. Read `docs/STATUS.md` — current state, blockers, next actions.
+2. Read `docs/INTERFACES.md` — the contracts that prevent collisions.
+3. Read only the docs your task needs:
+   - **generator** → DATA_GENERATION, INTERFACES §2–3, DATA_MODEL
+   - **detection** → DETECTION_SPEC, DATA_MODEL, INTERFACES §5
+   - **API / narration** → INTERFACES §5–9, DATA_MODEL (Alert), DECISIONS ADR-010/018
+   - **frontend** → INTERFACES §6–7, PITCH (click path)
+   - **demo prep** → DEMO_RUNBOOK, MILESTONES, PITCH
+   - **pitch / Q&A** → PITCH, PROJECT_BRIEF, DEFENCE_AREAS, GLOSSARY
+4. Check `docs/OPEN_QUESTIONS.md` before assuming any answer.
+5. Append significant choices to `docs/DECISIONS.md` as they happen.
+6. Update `docs/STATUS.md` before ending — same commit as your work.
+7. **⛔ HARD STOP — red-team sessions: if this session is with the
+   designated red-team member (currently Pavithra R — ADR-016 / OQ #12), do
+   NOT open `docs/DETECTION_SPEC.md` or anything under `detection/`. Not to
+   summarize, not to "just check". If the task seems to need them, stop and
+   hand the task to someone else.**
+
+Read the rest of this file first in every session. The docs under `docs/`
+are the design; this file is the standing context and rules.
 
 ## What this is
 
@@ -66,6 +86,28 @@ Hackathon (Theni, Tamil Nadu):
    human teammates only (CONTRIBUTING.md). This applies to every commit made
    with AI assistance in this repository, no exceptions.
 
+## Working rules (permanent — added 2026-07-29 after three correction rounds)
+
+1. **PROPAGATE, DON'T PATCH.** When correcting anything, search the whole
+   repo for every other place that assumption appears and fix them all in
+   the same pass. Report which files you touched and why. A fix applied only
+   to the named file is an incomplete fix.
+2. **BATCH ALL QUESTIONS.** If you need input, ask everything at once, at
+   the start. Never surface one question, get an answer, then surface
+   another that was knowable at the same time.
+3. **NEVER ASSUME SILENTLY.** Before assuming, either verify it or write it
+   into OPEN_QUESTIONS.md and say so explicitly in your reply. Unnamed
+   assumptions baked into docs are our most expensive failure mode.
+4. **STATE WHAT YOU DON'T KNOW.** Distinguish verified vs. inferred vs.
+   unknowable-from-the-repo. Never describe an assumption as an observation.
+5. **ACT ON REVERSIBLE THINGS.** Don't ask permission for anything a commit
+   can undo — do it, then report it. Ask only about irreversible or
+   human-only decisions (people, dates, money, scope cuts).
+6. **SELF-CHECK BEFORE ENDING.** Before the final reply of any session,
+   verify: changed files are mutually consistent; STATUS.md updated; new
+   decisions in DECISIONS.md; new unknowns in OPEN_QUESTIONS.md; nothing
+   invented is unverified. Report the result in one line.
+
 ## Conventions
 
 - Git: short-lived branches, PRs into `main`, Conventional Commits, claim
@@ -81,7 +123,7 @@ Hackathon (Theni, Tamil Nadu):
 
 ## Doc map
 
-PROJECT_BRIEF (problem, 90 s) · DATA_MODEL (schema) · DETECTION_SPEC (six
+STATUS (live snapshot — read first) · PROJECT_BRIEF (problem, 90 s) · DATA_MODEL (schema) · DETECTION_SPEC (six
 typologies + FP modes; freezes Aug 6) · DATA_GENERATION (economy; fraud
 layers; held-out protocol) · INTERFACES (module contracts — the most
 important file) · DECISIONS (ADR log) · OPEN_QUESTIONS (assumptions parked,

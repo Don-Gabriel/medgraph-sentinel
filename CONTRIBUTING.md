@@ -90,6 +90,13 @@ held-out evaluation has been run and its results committed. Practical rules:
   DECISIONS.md — it downgrades the evaluation claim (DATA_GENERATION §5), it
   is not a reason to hide anything.
 
+## STATUS.md discipline
+
+`docs/STATUS.md` is updated at the end of **every working session, by
+whoever worked, in the same commit as their work** (multi-commit sessions:
+the final commit). It is a snapshot, not a log — overwrite, don't append.
+A stale STATUS.md is worse than none: the next person plans against it.
+
 ## The explain-aloud rule (from CLAUDE.md, binding here)
 
 You merge it, you can explain it — and so should the reviewer. If either of

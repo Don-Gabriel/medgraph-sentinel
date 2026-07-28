@@ -27,32 +27,39 @@ Origin countries: ~10 (US, GB, DE, AU, NG, BD, PK, RU, SA, KE) with outbound
 patient volumes weighted by plausible corridor gravity (origin region ×
 category × price advantage). All *entities* are fictional (Q5).
 
-**Actors and distributions** (all parameters live in `generator/config.yaml`,
-build phase; values below are starting points, tuned to look right):
+**Actors and distributions** (all parameters live in `generator/config.yaml`;
+counts below are the seed-42 v1 output — corrected 2026-07-29 after the
+first full run exposed arithmetic inconsistencies in the original draft
+table, which could not simultaneously satisfy its own per-actor rules):
 
-| population | count (approx) | shape |
+| population | count (seed 42) | shape |
 |---|---|---|
-| Patients | 12,000 | one treatment journey each; ~8% return patients |
-| Doctors | 1,800 | 1–3 clinic affiliations; specialty fixed |
-| Credentials | ~2,000 | 1–2 per doctor; ~3% revoked in the honest world (retirements, discipline) |
+| Patients | ~10,000 (+ a handful of recycled-identity clones from the fraud layer) | one journey each; ~8% return patients |
+| Doctors | 1,500 | 1–3 clinic affiliations; specialty fixed |
+| Credentials | ~2,230 | 1–2 per doctor; ~3% revoked in the honest world (retirements, discipline) |
 | Clinics | 600 | size ~ Zipf: few large hospitals, long tail of day clinics |
 | Brokers | 250 | referral share ~ Zipf; commission 5–15% |
-| Claims | 25,000 | the hub population; volume per clinic ∝ size × quality |
-| PaymentAccounts | 1,500 | clinics 1–3 each, brokers 1–2, plus shells (fraud layers only) |
-| Devices | 6,000 | patients 1–2 each; honest sharing exists (family devices) |
-| Addresses | 1,200 | clinics + brokers; some honest co-location |
-| Procedures | ~120 | catalog across 6 categories; base costs lognormal within category |
+| Claims | ~21,700 | the hub population; **each journey yields 1–3 claims** (main procedure + ancillary diagnostics/follow-up) |
+| PaymentAccounts | ~2,270 | clinics 1–3, brokers 1–2, plus shells created by the fraud layer |
+| Devices | ~12,400 | 1 device each, ~30% a second; honest family sharing |
+| Addresses | ~800 | clinics + brokers; some honest co-location |
+| Procedures | 116 | catalog across 6 categories; base costs lognormal within category |
 | Insurers | 20 | market share ~ Zipf |
-| Countries | ~15 | 5 treatment + ~10 origin |
+| Countries | 15 | 5 treatment + 10 origin |
+
+Total ≈ **51.9k nodes / 191.7k relationships / 7.4 MB** — on the ~50k-node
+target and far under the 50 MB budget, measured 2026-07-29.
 
 **Journey model.** A patient picks a category (age/origin-weighted), then a
 corridor (gravity), then a clinic (size/quality-weighted within corridor),
 gets a doctor of that specialty at that clinic, a procedure from the
 category, a price = `base_cost × country_multiplier × lognormal noise`, dates
 (procedure, then submission +2–30 days), a payout account of the clinic, and
-~65% of journeys an arranging broker. Claim narratives are assembled from
-templated fragments; the fingerprint is computed from the assembled text, so
-honest narratives are similar-but-not-identical.
+~65% of journeys an arranging broker. **A journey emits 1–3 claims**: the
+main procedure claim plus smaller ancillary claims (5–20% of the main
+amount) — this is how ~10k patients produce ~22k claims. Claim narratives
+are assembled from templated fragments; the fingerprint is computed from the
+assembled text, so honest narratives are similar-but-not-identical.
 
 **Honest noise is mandatory.** Duplicate name spellings, shared family
 devices, clinics sharing registered offices, brokers with genuine exclusive

@@ -236,6 +236,51 @@ narrations — which **only counts when passed on the actual demo laptop at
 the Aug 10 dress rehearsal from a cold start**. Compose must pin exact image
 names/tags so the runbook commands stay copy-pasteable.
 
+## ADR-020 — Compose authored; Neo4j env syntax part-verified, plugin line flagged (2026-07-29)
+
+**Context:** OQ #2 required verifying Docker-image syntax before writing
+`docker-compose.yml`; neo4j.com blocks automated fetching.
+
+**Verified** (against Neo4j's official `llms-full.txt` docs mirror,
+2026-07-29): `NEO4J_AUTH: neo4j/<password>`; config-to-env conversion with
+the double-underscore rule, by literal example
+(`NEO4J_server_memory_heap_initial__size`, `NEO4J_server_memory_heap_max__size`);
+`NEO4J_server_memory_pagecache_size` follows the same verified rule.
+`dbms.security.procedures.unrestricted=gds.*` setting name verified against
+Neo4j GDS/Bloom docs.
+
+**Unverified, flagged in-file:** the `NEO4J_PLUGINS: '["graph-data-science"]'`
+install line — no reachable authoritative snippet confirmed it, so it is
+marked UNVERIFIED in docker-compose.yml with a mandatory M1 gate:
+`RETURN gds.version()` must report 2.13.x on first boot. Also unconfirmed
+until first boot: `wget` availability in the image for the healthcheck
+(curl fallback noted in-file). OQ #2 updated to track only this remainder.
+
+**Also decided:** compose image names pinned (`medgraph-api:demo`,
+`medgraph-frontend:demo`) so DEMO_RUNBOOK's `docker save` commands are
+copy-pasteable; api and seed share one image (same code, different command).
+
+## ADR-021 — Generator v1 landed; population table corrected to arithmetic reality (2026-07-29)
+
+**Context:** the first full generator run produced 63.5k nodes against the
+~50k target and exposed that DATA_GENERATION's original population table was
+internally impossible (12k patients × 1–2 devices each cannot yield 6k
+devices; 12k one-claim journeys cannot yield 25k claims). The inconsistency
+was an unnamed planning assumption — exactly the failure mode the working
+rules now exist for.
+
+**Decision:** journeys explicitly yield 1–3 claims (main + ancillary);
+populations tuned to 10k patients / 1.5k doctors / ~30% second-device rate.
+Measured seed-42 output: **51,871 nodes, 191,739 relationships, 7.4 MB,
+10.6 s** — on target and far under the 50 MB budget. DATA_GENERATION §2
+updated with the corrected table and measured totals. Determinism verified
+by test (same seed ⇒ byte-identical tree; different seed ⇒ different).
+
+**Also:** SimHash (64-bit, word 3-gram shingles) implemented as the
+fingerprint per OQ #3's SimHash-first plan — OQ #3 stays open until the
+clone-vs-honest separation test at M3. Scenario overlays and planted cells
+deliberately not implemented yet (OQ #12 / M3 respectively).
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*
