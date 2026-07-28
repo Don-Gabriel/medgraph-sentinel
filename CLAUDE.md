@@ -55,10 +55,16 @@ Hackathon (Theni, Tamil Nadu):
    everything else fictional (ADR-015). Nothing secret is committed: no
    passwords, no API keys — `.env` only, `.env.example` documents.
 8. **Flag bad ideas, including the team's.** Push back before building.
-9. After the **detection freeze (Aug 6)**: no detection-query changes, and
-   Pavithra R touches only frontend/demo until the held-out evaluation
-   (ADR-012). After the **integration freeze (Aug 8)**: bug fixes and docs
-   only.
+9. **Red-team isolation (ADR-016):** from 2026-07-29 the designated red-team
+   member (Pavithra R, pending the OQ #12 attestation) does not read
+   docs/DETECTION_SPEC.md or `detection/` rule code until the held-out
+   evaluation results are committed. After the **detection freeze (Aug 6)**:
+   no detection-query changes, and the red-team member does no detection
+   work at all until the evaluation (ADR-012). After the **integration
+   freeze (Aug 8)**: bug fixes and docs only.
+10. **No `Co-authored-by:` trailer may name a tool, bot, or third party** —
+   human teammates only (CONTRIBUTING.md). This applies to every commit made
+   with AI assistance in this repository, no exceptions.
 
 ## Conventions
 

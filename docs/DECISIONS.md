@@ -156,6 +156,86 @@ code, and identifier is invented. **Why:** corridor realism makes the pitch
 land; fictional entities make "is this real patient data?" a one-word answer.
 The README carries an explicit synthetic-data notice.
 
+## ADR-016 — Held-out isolation tightened: red-team member does not read the detection spec (2026-07-29)
+
+**Context:** ADR-012's protocol let the red-team member (Pavithra R) read
+DETECTION_SPEC.md — the original DATA_GENERATION §5 even *assumed* she would
+— which capped the evaluation's claim at "robustness to unseen
+parameterizations of known typologies." That forfeits the materially
+stronger claim (detection of independently-conceived fraud) for no benefit:
+she never needed the spec, only the schema and overlay format.
+
+**Decision (owner-directed):** from 2026-07-29 the red-team member does not
+read DETECTION_SPEC.md or `detection/` rule implementations until the
+held-out evaluation results are committed; scenarios are authored from
+PROJECT_BRIEF, DATA_MODEL, and INTERFACES only; her other participation
+(frontend, console, demo, pitch) is unrestricted. Enforcement in
+CONTRIBUTING.md; accidental exposure downgrades the claim and is recorded
+here, not hidden.
+
+**The honest complication:** whether Pavithra has *already* read the spec
+(in-repo since Jul 28) is unverifiable from git — it is a fact only she can
+attest. Resolution mechanism: recorded attestation at the Jul 29 sync
+(OQ #12). Branches: she attests non-reading → strong claim available; she
+has read it → role passes to Vijayalakshmi G contingent on the same
+attestation (best substitute: deepest generator/overlay knowledge, and her
+defence area doesn't need the spec; cost: she exits all detection work until
+Aug 9); nobody can attest → we keep the weaker claim and say so in the
+pitch. **Record the attestation outcome as a dated note under this ADR.**
+
+> *Attestation outcome (append at the Jul 29 sync):* ______
+
+## ADR-017 — Schedule re-planned to 14 days; scope is the shock absorber (2026-07-29)
+
+**Context:** planning consumed Jul 28 and spilled into Jul 29; the build
+window is now 14 days (~445–475 person-hours). All anchored dates are
+immovable: freezes Aug 6/8, rehearsal Aug 10, event Aug 12–13.
+
+**Decision:** absorb the loss inside existing windows — M1 compresses to
+~1.5 days (its scaffold work parallelizes worst anyway, gated on Docker
+installs); M2's weekend is the shock absorber. **Assessment: the schedule
+still fits, with zero slack.** Any further loss triggers the pre-agreed cut
+order — scope, never dates: (1) typology 4 (template cloning — carries the
+only real algorithmic risk, fingerprint tuning per OQ #3), (2) typology 6
+(circular payment — contained but less demo-critical than the algorithmic
+differentiators 1–3 and the cheap, vivid 5), (3) console conveniences.
+Never cut: freezes, dress rehearsal, cold-start test, held-out evaluation,
+narration fallback, typologies 1–3 and 5. This agrees with the owner's
+stated preference (drop 4 and 6 first) and adds the ordering *between* them:
+4 before 6, because 4's risk is algorithmic while 6 is bounded Cypher.
+
+## ADR-018 — One-way demo build chain; stale narration cache fails loudly (2026-07-29)
+
+**Context:** the narration cache is keyed by alert ID, and alert IDs are
+assigned per detection run. Regenerating data or re-running detection after
+the cache is built orphans every entry — and the API's per-entry fallback
+would mask it as quietly-degraded template text mid-demo.
+
+**Decision:** strict one-way build sequence for demo artifacts — freeze
+dataset → load → detect → build narration cache → commit as one unit → no
+regeneration. Any unavoidable regeneration re-runs the entire chain from the
+top; never partially. Guard rail: on startup the API compares cached
+narration count to alert count; mismatch logs a CRITICAL error and surfaces
+`narration_cache.match: false` at `/health` (status `degraded`) — loud at
+boot, never silent at demo time. Contracts: INTERFACES §6/§8; procedure:
+DEMO_RUNBOOK. Behaviour specified now, implemented in the build phase.
+
+## ADR-019 — Offline image distribution + cold-start acceptance test (2026-07-29)
+
+**Context:** image pull/build at the venue is the single largest offline
+risk — larger than the Claude API, which the committed cache already covers.
+A machine that has been online holds warm Docker caches, so "it worked on my
+laptop" proves nothing about a cold venue start.
+
+**Decision:** all three images (pinned Neo4j, API, frontend) are built in
+advance and carried as one `docker save` tarball plus a full git bundle on
+two identical USB sticks (manifest in DEMO_RUNBOOK). Acceptance is a
+ten-step cold-start test — network adapter disabled, no pre-existing project
+images, `docker load` → compose up → alert queue with `claude-cached`
+narrations — which **only counts when passed on the actual demo laptop at
+the Aug 10 dress rehearsal from a cold start**. Compose must pin exact image
+names/tags so the runbook commands stay copy-pasteable.
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*

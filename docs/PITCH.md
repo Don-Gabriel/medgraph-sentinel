@@ -12,7 +12,7 @@ runs at every rehearsal. Speaker names follow DEFENCE_AREAS (provisional).
 | 1:00–2:00 | The insight | Mary Vivitha | Per-claim detection catches bad claims, never bad *networks*; organised fraud is always a network. Fraud-is-relational ⇒ graph database. Name the six typologies in one breath. |
 | 2:00–2:45 | What we built | Poonkundran | 30-second architecture: synthetic economy → Neo4j graph (50k nodes) → detection layer → investigator console. "docker compose up, three minutes, everything you're about to see runs offline on this laptop." |
 | 2:45–6:30 | **Live demo** | Pavithra (drives) + Mary (narrates findings) | The click path below. |
-| 6:30–7:45 | How we know it works | Vijayalakshmi | The circularity defense as a *feature*: emergent vs planted fraud, frozen detection spec, hash-committed held-out scenarios authored under abstention, evaluated once. Show the precision/recall slide **including misses**. State the limits unprompted (synthetic ≠ real world). |
+| 6:30–7:45 | How we know it works | Vijayalakshmi | The circularity defense as a *feature*: emergent vs planted fraud, frozen detection spec, hash-committed held-out scenarios, evaluated once. Show the precision/recall slide **including misses**. Use the claim branch that OQ #12 resolved to (below) — never the stronger one on spec. State the limits unprompted (synthetic ≠ real world). |
 | 7:45–8:45 | Architecture & honest limits | Don Gabriel | Stack choices in three sentences (why Neo4j, why batch alerts, why one LLM call). What production needs that this doesn't: consortium data sharing, entity resolution, RBAC. "We know where the prototype ends." |
 | 8:45–10:00 | Who buys it + close | Pavithra | Insurers/TPAs/accreditors/health authorities; the wedge is the TPA. Close on the team: five people, every module explainable by the person you point at. Invite questions. |
 
@@ -45,9 +45,21 @@ Fallback path: if anything hangs, Pavithra switches to the screenshot deck
    planted?"** (Vijayalakshmi) — Layered answer: honest economy tuned first;
    emergent fraud from incentive parameters, not labels; thresholds
    calibrated on honest actors only; held-out scenarios hash-committed after
-   the spec freeze, evaluated once, misses reported. Then the limits,
-   unprompted: it proves robustness to unseen parameterizations, not
-   real-world generalization.
+   the spec freeze, evaluated once, misses reported. Then the claim, per the
+   recorded OQ #12 attestation — **delete the inapplicable branch once
+   DECISIONS records the outcome**:
+   - *Branch A (attestation succeeded):* the held-out scenarios were
+     authored by a team member who had **not read the detection spec** —
+     enforced from 29 July, verifiable through HELDOUT_COMMITMENT hashes and
+     commit dates — so they test detection of independently-conceived fraud,
+     not pattern-matching on our own plants.
+   - *Branch B (attestation failed):* the held-out test measures robustness
+     to unseen parameterizations and structures of known typologies — the
+     scenario author had access to the spec, and we say so rather than
+     claim an independence we can't prove.
+   Then the limits, unprompted, in either branch: synthetic ≠ real-world
+   generalization; one team, shared schema; good-faith firewall, not an
+   independent red team.
 2. **"Why not machine learning?"** (Mary Vivitha) — No labeled real-world
    training data exists for this domain, and supervised models on synthetic
    labels would launder our assumptions into "AI." Structural rules are

@@ -11,6 +11,9 @@ engineers who work like a team.
   someone else's behalf.
 - Pairing? The driver commits with a `Co-authored-by:` trailer for the
   navigator (GitHub renders both avatars).
+- `Co-authored-by:` trailers name **human teammates only** — never a tool,
+  bot, or third-party email address. This history is individually evaluated;
+  AI assistance is disclosed once, in the README, not attributed per-commit.
 
 ## Branches
 
@@ -70,6 +73,22 @@ contract: add min_severity filter to GET /alerts (INTERFACES §6)
 5. **Same-evening collision insurance:** rebase early, push your branch
    daily (even unfinished — branches are cheap, lost evenings aren't), and
    keep the claim list current.
+
+## Red-team isolation (enforced in review — ADR-016)
+
+`docs/DETECTION_SPEC.md` and the rule implementations under `detection/` are
+**off-limits to the designated red-team member** — currently **Pavithra R**,
+pending the OQ #12 attestation; DECISIONS.md records any reassignment — until
+`docs/HELDOUT_COMMITMENT.md` contains the scenario hashes **and** the
+held-out evaluation has been run and its results committed. Practical rules:
+
+- Never request review from the red-team member on a PR touching
+  `detection/` or DETECTION_SPEC.md.
+- Don't paste spec or rule content into channels she reads; link to file
+  paths instead of quoting.
+- An accidental exposure is reported at the next sync and recorded in
+  DECISIONS.md — it downgrades the evaluation claim (DATA_GENERATION §5), it
+  is not a reason to hide anything.
 
 ## The explain-aloud rule (from CLAUDE.md, binding here)
 

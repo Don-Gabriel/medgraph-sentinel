@@ -213,8 +213,21 @@ Base path `/api/v1`. JSON only. No auth (ADR-011). Errors:
 `limit` (default 50, max 200) and `offset`.
 
 ### `GET /api/v1/health`
-`200 {"status": "ok", "neo4j": true, "alert_count": 41}` — `neo4j: false`
-with status `degraded` if Bolt is down (still 200; the demo must not 500).
+```json
+{"status": "ok", "neo4j": true, "alert_count": 41,
+ "narration_cache": {"alerts": 41, "cached": 41, "match": true}}
+```
+- `neo4j: false` ⇒ status `degraded` (still HTTP 200; the demo must not 500).
+- **Narration-cache validation (ADR-018):** on startup the API counts
+  `Alert` nodes in the graph and narration files in the committed cache. On
+  mismatch it logs an unmissable error (`CRITICAL NARRATION CACHE MISMATCH:
+  <cached>/<alerts> — re-run the ADR-018 build chain from the top`) and
+  serves `"match": false` with status `degraded`. The check exists so a
+  stale cache **fails loudly at boot**, never silently degrades to template
+  text mid-demo. (Cache entries additionally self-invalidate per-alert via
+  `prompt_sha256`, §8 — the startup check catches wholesale staleness, the
+  hash catches per-entry drift.) Behaviour specified here; implemented in
+  the build phase.
 
 ### `GET /api/v1/stats`
 Console header numbers:
@@ -311,9 +324,26 @@ Generic node inspector for drill-down side panel: `{"id", "type", "label",
 - Also generates the deterministic fallback template text per typology
   (pure function of summary_params, no API) — used at request time for any
   cache miss.
-- Rebuilt manually after detection runs change alerts; a stale cache entry
-  (prompt_sha256 mismatch) falls back to template rather than serving a
-  wrong narration.
+- A stale cache entry (prompt_sha256 mismatch) falls back to template rather
+  than serving a wrong narration; wholesale staleness is caught loudly by
+  the `/health` startup check above.
+
+**One-way demo build chain (ADR-018).** The cache is keyed by alert ID, and
+alert IDs are assigned per detection run — any regeneration or detection
+re-run after the cache is built silently orphans every entry. Therefore the
+demo artifacts are built strictly in this order, and only in this order:
+
+```
+freeze dataset → run loader → run detection → build narration cache
+             → commit (dataset + alerts + cache together) → NO regeneration
+```
+
+If regeneration ever becomes unavoidable after the chain has run, the
+**entire chain re-runs from the top and is re-committed as one unit** —
+never partially, never "just rebuild the cache". Scheduled execution:
+Aug 7 (MILESTONES); the held-out evaluation on Aug 9 uses a separate data
+directory and never touches the committed demo artifacts (DAY2_PLAYBOOK
+Shape C has the same rule for scale tests).
 
 ## 9. Docker compose contract
 

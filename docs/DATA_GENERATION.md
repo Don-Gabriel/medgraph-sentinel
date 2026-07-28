@@ -104,35 +104,84 @@ vs. emergent. Precision/recall is reported per layer.
 
 ## 5. HELD-OUT scenarios (the circularity defense)
 
-Time-boxed abstention protocol (owner decision, Q4):
+Red-team member: **Pavithra R** (subject to the attestation below).
+Amended 2026-07-29 (ADR-016) to tighten isolation.
 
-1. On DETECTION_SPEC freeze day (planned 2026-08-06), the freeze is its own
-   commit, recorded in DECISIONS.md.
-2. From freeze until evaluation, **Pavithra R** abstains from all detection
-   query work (she works frontend/demo only) and authors held-out fraud
-   scenarios **outside this repo** as scenario overlay files (schema in
-   INTERFACES.md §3).
-3. She commits only `SHA-256(scenario file)` to `docs/HELDOUT_COMMITMENT.md`,
-   with the date.
-4. Evaluation (planned 2026-08-09): regenerate the dataset with her overlays
-   applied (same base seed), run the frozen detection rules once, record
-   results. Then the full scenario files are committed, once.
-5. Results — including misses — are reported in PITCH.md and DECISIONS.md.
+### Isolation rule (in force from 2026-07-29)
 
-**What this protocol proves:** the scenarios existed before evaluation (hash
-+ git dates), the detection queries were frozen before the scenarios were
-written, and neither was tuned against the other afterward. Git history is
-the evidence; we can walk a judge through the commits.
+- The red-team member must **not read `docs/DETECTION_SPEC.md`** — nor the
+  rule implementations under `detection/` once they exist — at any point
+  before the held-out evaluation has been run and its precision/recall
+  results committed. At that moment the restriction lifts entirely.
+- Scenarios are authored from **PROJECT_BRIEF.md, DATA_MODEL.md, and
+  INTERFACES.md only** — the domain, the schema, and the scenario-overlay
+  format. She gets no detection logic, thresholds, or typology signatures.
+- The restriction covers one document (and its implementations), **not her
+  participation**: frontend, console, demo, and pitch work continue
+  throughout. Enforcement mechanics live in CONTRIBUTING.md.
 
-**What it does NOT prove — do not overclaim:**
-- It does not prove detection generalizes to *real-world* fraud. Everything
-  here is synthetic, and the author of the scenarios read DETECTION_SPEC.
-  The held-out test measures robustness to *unseen parameterizations and
-  structures of known typologies*, not discovery of novel typologies.
-- It does not prove the generator is realistic. That defense is separate:
-  honest-noise design (§2) and distribution sanity checks.
-- Pavithra is one person on the same team, not an independent red team. It is
-  a good-faith firewall under hackathon constraints, and we say exactly that.
+### Timeline
+
+1. From 2026-07-29: reading restriction in force.
+2. Detection freeze (planned 2026-08-06): DETECTION_SPEC + rules frozen in a
+   dedicated commit. From here the red-team member also does no detection
+   work of any kind, and the scenario authoring window opens — **outside
+   this repo**, as overlay files (schema INTERFACES.md §3).
+3. Before evaluation: only `SHA-256(scenario file)` is committed to
+   `docs/HELDOUT_COMMITMENT.md`, with the date.
+4. Evaluation (planned 2026-08-09): regenerate with the overlays (same base
+   seed), run the frozen rules **once**, commit results — including misses —
+   to DECISIONS.md and PITCH.md. Then the scenario files are committed.
+
+### Has Pavithra already read DETECTION_SPEC.md?
+
+**Unknown as of 2026-07-29 — and unverifiable from the repository.**
+DETECTION_SPEC.md has been in the shared repo since 2026-07-28. Git proves
+what was committed when; it cannot prove who has read what. An earlier draft
+of this section *assumed* the scenario author would have read the spec and
+pre-emptively downgraded the claim — that assumption is withdrawn (ADR-016).
+In its place, the protocol starts with a recorded **attestation (OQ #12)**:
+at the first team sync after this commit, Pavithra states whether she has
+read DETECTION_SPEC.md, and the answer is recorded in DECISIONS.md.
+
+- **She attests she has not read it** → the **strong claim** is available:
+  held-out scenarios independently conceived, authored without access to the
+  detection logic. Pitch uses the strong language (PITCH.md branch A).
+- **She has read it** → the strong claim is gone *for her*. Strongest honest
+  alternative: reassign the red-team role to **Vijayalakshmi G**, contingent
+  on the same attestation. She is the best-placed substitute — she knows the
+  generator and overlay schema more deeply than anyone (more realistic
+  scenarios) and her defence area (data generation) does not require the
+  detection spec. What she gives up: all detection-rule building, review,
+  and threshold-calibration work until 2026-08-09. (Mary Vivitha M is
+  excluded as a candidate: detection is her defence area and her build
+  assignment — she must read the spec.)
+- **No member can attest non-reading** → we own the weaker claim honestly:
+  robustness to *unseen parameterizations and structures of known
+  typologies*, stated exactly that way in the pitch (PITCH.md branch B). We
+  do not manufacture independence that does not exist.
+
+An accidental exposure after attestation (spec content pasted into a channel
+the red-team member reads, a review request on a detection PR) does not end
+the protocol — it downgrades the claim to branch B and is recorded in
+DECISIONS.md. Honesty about a leak beats silence about one.
+
+### What the protocol proves (strong branch)
+
+The scenarios were conceived without access to the detection logic, existed
+before evaluation (hash + git dates), the rules were frozen before the
+scenarios were hashed, and neither side was tuned against the other. Git
+history is the evidence; we can walk a judge through the commits.
+
+### What it does NOT prove — do not overclaim, in either branch
+
+- Not real-world generalization: everything here is synthetic.
+- Not generator realism: that defense is separate — honest-noise design (§2)
+  and distribution sanity checks.
+- Not full independence: the red-team member is one person on the same team,
+  and both sides share DATA_MODEL and INTERFACES (the schema itself hints at
+  what *could* be detected, even with the spec unread). It is a good-faith
+  firewall under hackathon constraints, and we say exactly that.
 
 ## 6. Threshold discipline
 

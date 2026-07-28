@@ -107,7 +107,9 @@ Primary docs: INTERFACES.md §6–7, frontend/, PITCH.md, DEMO_RUNBOOK.md.
 4. *"How does the console handle a brand-new typology?"* — it doesn't need
    to know: alerts are self-describing (typology key, title, implicated
    roles), styling is data-driven.
-5. *"You wrote the held-out scenarios — how, and why you?"* — the abstention
-   window (frontend-only work post-freeze), authored outside the repo,
-   hash-committed; state the protocol's limits unprompted (she is also the
-   person most fluent in its honest boundaries).
+5. *"You wrote the held-out scenarios — how, and why you?"* — authored
+   outside the repo from schema docs only, without reading the detection
+   spec (isolation rule, ADR-016 — role confirmed via the OQ #12
+   attestation); hash-committed before evaluation; state the protocol's
+   limits unprompted (she is the person most fluent in its honest
+   boundaries).
