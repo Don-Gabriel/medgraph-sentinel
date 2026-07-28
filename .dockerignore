@@ -1,0 +1,17 @@
+# Build context hygiene for api/Dockerfile (context = repo root)
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+frontend/node_modules
+frontend/dist
+docs
+*.md
+!README.md
+.env
+.env.*
+scratch
+tmp

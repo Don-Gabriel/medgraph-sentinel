@@ -1,0 +1,98 @@
+# MedGraph Sentinel — full stack. Contract: docs/INTERFACES.md §9.
+# Fresh clone + filled .env -> browsable console in <=3 min post-pull (ADR-005).
+# Image names are pinned (medgraph-api:demo / medgraph-frontend:demo) because
+# DEMO_RUNBOOK's docker-save commands reference them (ADR-019).
+
+services:
+  neo4j:
+    # Pinned: 5.26 LTS pairs with GDS 2.13 (ADR-004).
+    image: neo4j:5.26-community
+    environment:
+      # VERIFIED (neo4j.com llms-full.txt, fetched 2026-07-29): NEO4J_AUTH
+      # form and the double-underscore env naming for config settings.
+      NEO4J_AUTH: "neo4j/${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}"
+      NEO4J_server_memory_heap_initial__size: ${NEO4J_HEAP_SIZE:-2G}
+      NEO4J_server_memory_heap_max__size: ${NEO4J_HEAP_SIZE:-2G}
+      NEO4J_server_memory_pagecache_size: ${NEO4J_PAGECACHE_SIZE:-1G}
+      # UNVERIFIED (OQ #2, ADR-020): the NEO4J_PLUGINS install syntax could
+      # not be confirmed against reachable official docs at authoring time
+      # (neo4j.com blocks automated fetch; docs mirrors only had memory/auth
+      # examples). Best-known form below. M1 EXIT TEST MUST CONFIRM:
+      #   cypher-shell> RETURN gds.version();   -- expect 2.13.x
+      # If it fails, consult the operations manual "Docker > Plugins" page
+      # and fix this line + this comment + OQ #2 in the same commit.
+      NEO4J_PLUGINS: '["graph-data-science"]'
+      # VERIFIED setting name (Neo4j GDS/Bloom docs): unrestricted procedures
+      # for GDS. The plugin installer may set this itself; explicit is safe.
+      NEO4J_dbms_security_procedures_unrestricted: "gds.*"
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      # HTTP probe on the browser port; avoids passing credentials into the
+      # healthcheck. If wget is absent in the image (M1 test will show),
+      # switch to: curl -sf http://localhost:7474 || exit 1
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 30s
+
+  seed:
+    # One-shot: load committed CSVs, then run detection (INTERFACES §4-5).
+    # Never generates data (ADR-005).
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    image: medgraph-api:demo
+    command: sh -c "python -m loader && python -m detection.run"
+    environment:
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: ${NEO4J_USER:-neo4j}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    image: medgraph-api:demo
+    environment:
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: ${NEO4J_USER:-neo4j}
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request;urllib.request.urlopen('http://localhost:8000/api/v1/health', timeout=3)",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    image: medgraph-frontend:demo
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    depends_on:
+      - api
+
+volumes:
+  neo4j_data:

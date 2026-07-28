@@ -236,6 +236,30 @@ narrations — which **only counts when passed on the actual demo laptop at
 the Aug 10 dress rehearsal from a cold start**. Compose must pin exact image
 names/tags so the runbook commands stay copy-pasteable.
 
+## ADR-020 — Compose authored; Neo4j env syntax part-verified, plugin line flagged (2026-07-29)
+
+**Context:** OQ #2 required verifying Docker-image syntax before writing
+`docker-compose.yml`; neo4j.com blocks automated fetching.
+
+**Verified** (against Neo4j's official `llms-full.txt` docs mirror,
+2026-07-29): `NEO4J_AUTH: neo4j/<password>`; config-to-env conversion with
+the double-underscore rule, by literal example
+(`NEO4J_server_memory_heap_initial__size`, `NEO4J_server_memory_heap_max__size`);
+`NEO4J_server_memory_pagecache_size` follows the same verified rule.
+`dbms.security.procedures.unrestricted=gds.*` setting name verified against
+Neo4j GDS/Bloom docs.
+
+**Unverified, flagged in-file:** the `NEO4J_PLUGINS: '["graph-data-science"]'`
+install line — no reachable authoritative snippet confirmed it, so it is
+marked UNVERIFIED in docker-compose.yml with a mandatory M1 gate:
+`RETURN gds.version()` must report 2.13.x on first boot. Also unconfirmed
+until first boot: `wget` availability in the image for the healthcheck
+(curl fallback noted in-file). OQ #2 updated to track only this remainder.
+
+**Also decided:** compose image names pinned (`medgraph-api:demo`,
+`medgraph-frontend:demo`) so DEMO_RUNBOOK's `docker save` commands are
+copy-pasteable; api and seed share one image (same code, different command).
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*
