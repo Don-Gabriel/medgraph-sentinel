@@ -29,5 +29,10 @@ include = ["generator*", "loader*", "detection*", "api*"]
 line-length = 100
 target-version = "py311"
 
+[tool.ruff.lint.per-file-ignores]
+# api/main.py catches broad exceptions on purpose: the demo API degrades,
+# it never 500s (INTERFACES section 6, DEMO_RUNBOOK).
+"api/main.py" = ["BLE001"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

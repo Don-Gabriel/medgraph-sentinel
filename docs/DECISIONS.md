@@ -260,6 +260,27 @@ until first boot: `wget` availability in the image for the healthcheck
 `medgraph-frontend:demo`) so DEMO_RUNBOOK's `docker save` commands are
 copy-pasteable; api and seed share one image (same code, different command).
 
+## ADR-021 — Generator v1 landed; population table corrected to arithmetic reality (2026-07-29)
+
+**Context:** the first full generator run produced 63.5k nodes against the
+~50k target and exposed that DATA_GENERATION's original population table was
+internally impossible (12k patients × 1–2 devices each cannot yield 6k
+devices; 12k one-claim journeys cannot yield 25k claims). The inconsistency
+was an unnamed planning assumption — exactly the failure mode the working
+rules now exist for.
+
+**Decision:** journeys explicitly yield 1–3 claims (main + ancillary);
+populations tuned to 10k patients / 1.5k doctors / ~30% second-device rate.
+Measured seed-42 output: **51,871 nodes, 191,739 relationships, 7.4 MB,
+10.6 s** — on target and far under the 50 MB budget. DATA_GENERATION §2
+updated with the corrected table and measured totals. Determinism verified
+by test (same seed ⇒ byte-identical tree; different seed ⇒ different).
+
+**Also:** SimHash (64-bit, word 3-gram shingles) implemented as the
+fingerprint per OQ #3's SimHash-first plan — OQ #3 stays open until the
+clone-vs-honest separation test at M3. Scenario overlays and planted cells
+deliberately not implemented yet (OQ #12 / M3 respectively).
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*

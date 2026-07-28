@@ -1,0 +1,144 @@
+# Generator configuration — the tuning surface for the synthetic economy.
+# Schema + validation: generator/config.py. Design: docs/DATA_GENERATION.md.
+# Every distribution parameter someone might tune at M2 (or scale on Day 2,
+# DAY2_PLAYBOOK Shape C) lives here, not in code.
+
+meta:
+  version: "1.0.0"
+
+window: # all claim activity falls inside this range
+  start: 2025-07-01
+  end: 2026-06-30
+
+countries:
+  treatment:
+    - { code: IN, name: India, cost_multiplier: 0.35 }
+    - { code: TH, name: Thailand, cost_multiplier: 0.50 }
+    - { code: TR, name: Turkey, cost_multiplier: 0.55 }
+    - { code: AE, name: United Arab Emirates, cost_multiplier: 0.90 }
+    - { code: SG, name: Singapore, cost_multiplier: 1.10 }
+  origin:
+    - { code: US, name: United States, outbound_weight: 3.0 }
+    - { code: GB, name: United Kingdom, outbound_weight: 2.5 }
+    - { code: DE, name: Germany, outbound_weight: 1.5 }
+    - { code: AU, name: Australia, outbound_weight: 1.5 }
+    - { code: NG, name: Nigeria, outbound_weight: 1.2 }
+    - { code: BD, name: Bangladesh, outbound_weight: 1.4 }
+    - { code: PK, name: Pakistan, outbound_weight: 1.2 }
+    - { code: RU, name: Russia, outbound_weight: 1.0 }
+    - { code: SA, name: Saudi Arabia, outbound_weight: 1.3 }
+    - { code: KE, name: Kenya, outbound_weight: 0.8 }
+
+# Corridor gravity: relative pull of each treatment country per origin.
+gravity:
+  US: { IN: 2.5, TH: 2.5, TR: 1.5, AE: 1.0, SG: 1.5 }
+  GB: { IN: 2.5, TH: 2.0, TR: 3.0, AE: 1.5, SG: 1.0 }
+  DE: { IN: 1.5, TH: 2.0, TR: 3.5, AE: 1.0, SG: 0.8 }
+  AU: { IN: 2.0, TH: 3.5, TR: 0.8, AE: 0.8, SG: 2.5 }
+  NG: { IN: 3.5, TH: 1.0, TR: 1.5, AE: 2.0, SG: 0.8 }
+  BD: { IN: 4.5, TH: 2.0, TR: 0.8, AE: 1.0, SG: 1.5 }
+  PK: { IN: 2.0, TH: 1.5, TR: 2.0, AE: 2.5, SG: 1.0 }
+  RU: { IN: 2.0, TH: 2.5, TR: 3.0, AE: 1.5, SG: 1.0 }
+  SA: { IN: 2.5, TH: 1.5, TR: 2.0, AE: 2.0, SG: 1.2 }
+  KE: { IN: 3.5, TH: 1.0, TR: 1.0, AE: 1.5, SG: 0.8 }
+
+# Procedure catalog: per category, how many procedures and the lognormal
+# parameters (log-space mu/sigma) of base cost in USD.
+procedure_categories:
+  cardiac: { count: 22, cost_mu: 9.6, cost_sigma: 0.45 }
+  orthopaedic: { count: 22, cost_mu: 9.2, cost_sigma: 0.40 }
+  cosmetic: { count: 20, cost_mu: 8.4, cost_sigma: 0.50 }
+  dental: { count: 20, cost_mu: 7.6, cost_sigma: 0.40 }
+  fertility: { count: 16, cost_mu: 8.9, cost_sigma: 0.35 }
+  oncology: { count: 16, cost_mu: 9.8, cost_sigma: 0.50 }
+
+# How patients pick a category (age-independent for v1; tune at M2).
+category_weights:
+  cardiac: 0.14
+  orthopaedic: 0.20
+  cosmetic: 0.22
+  dental: 0.24
+  fertility: 0.12
+  oncology: 0.08
+
+populations:
+  patients: 10000
+  doctors: 1500
+  clinics: 600
+  brokers: 250
+  insurers: 20
+
+patients:
+  return_rate: 0.08 # second journey for this share of patients
+  passport_null_rate: 0.05
+  family_device_share: 0.06 # honest device sharing (family bookings)
+  second_device_rate: 0.30 # share of patients with a second device
+
+clinics:
+  zipf_a: 1.4 # size skew: few big hospitals, long tail
+  bed_zero_rate: 0.25 # honest day clinics
+  accreditation: { accredited: 0.55, provisional: 0.25, none: 0.20 }
+  shared_address_rate: 0.08 # honest registered-office sharing
+  accounts_min: 1
+  accounts_max: 3
+
+doctors:
+  affiliations_min: 1
+  affiliations_max: 3
+  credentials_min: 1
+  credentials_max: 2
+  revoked_rate: 0.03 # honest revocations (retirement, discipline)
+
+brokers:
+  zipf_a: 1.3
+  arranged_share: 0.65 # share of journeys with a broker
+  commission_min_pct: 5
+  commission_max_pct: 15
+  accounts_min: 1
+  accounts_max: 2
+  colocate_with_clinic_rate: 0.05 # honest broker/clinic address sharing
+
+claims:
+  claims_per_journey_min: 1 # main procedure claim
+  claims_per_journey_max: 3 # + ancillary claims (diagnostics, follow-up)
+  ancillary_amount_min: 0.05 # fraction of the main claim amount
+  ancillary_amount_max: 0.20
+  price_noise_sigma: 0.18 # lognormal noise on top of base*multiplier
+  submission_lag_min_days: 2
+  submission_lag_max_days: 30
+  status_weights: { approved: 0.80, submitted: 0.13, rejected: 0.07 }
+
+transfers:
+  commission_lag_days: 7 # clinic pays broker commission after submission
+
+# EMERGENT fraud: incentive parameters on a small fraction of actors.
+# No entity is labeled fraudulent; patterns emerge from these local rules
+# interacting (docs/DATA_GENERATION.md section 3). Parameter draws are
+# recorded to data/ground_truth/actor_params.csv for evaluation ONLY.
+fraud:
+  overbilling: # clinics inflating amounts
+    clinic_rate: 0.05
+    factor_min: 1.2
+    factor_max: 1.8
+    claim_share_min: 0.3
+    claim_share_max: 0.7
+  steering: # brokers routing to paying partner clinics
+    broker_rate: 0.06
+    greed_min: 0.5 # probability a journey is steered to a partner
+    greed_max: 0.95
+    partners_min: 1
+    partners_max: 3
+    partner_overbilling_bias: 3.0 # overbilling clinics this much likelier as partners
+    side_commission_min_pct: 5
+    side_commission_max_pct: 10
+  identity_recycling: # brokers reusing patient identities across insurers
+    broker_rate: 0.02
+    reuse_min: 0.2 # per-journey probability of recycling an identity
+    reuse_max: 0.5
+  shell_layering: # side payments routed through unowned accounts
+    pair_rate: 0.5 # share of steering partnerships that layer
+    shells_min: 1
+    shells_max: 3
+    attrition_min_pct: 5
+    attrition_max_pct: 20
+    recycle_prob: 0.35 # share of layered payments partially returning to the clinic
