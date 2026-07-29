@@ -17,10 +17,13 @@ returns 2.13.x — because the `NEO4J_PLUGINS` line is UNVERIFIED.
   pyproject, schema.cypher
 - docker-compose.yml + api/frontend Dockerfiles (NEO4J_PLUGINS marked
   UNVERIFIED — OQ #2)
-- Generator v1: seeded honest economy + emergent fraud params; measured
-  51.9k nodes / 191.7k rels / 7.4 MB / 10.6 s at seed 42; determinism
+- Generator v1: seeded honest economy + emergent fraud params; determinism
   tests green (ADR-021). No scenario overlays yet (waits on OQ #12); no
   planted cells yet (M3)
+- Data-shape fixes (ADR-022/023): every owned device now edged (12,975
+  USED_DEVICE edges, 0 orphans; 560 shared devices = 555 family / 5
+  recycled); OWNS_STAKE_IN generated (25 honest / 10 hidden). Seed-42
+  totals now 51.1k nodes / 193.7k rels / 7.4 MB
 
 ## IN PROGRESS
 
@@ -40,7 +43,10 @@ returns 2.13.x — because the `NEO4J_PLUGINS` line is UNVERIFIED.
 2. Implement `loader/` per INTERFACES §4 (wipe-and-load + manifest
    validation) → run the M1 exit test end-to-end
 3. Confirm the UNVERIFIED `NEO4J_PLUGINS` line on first compose up
-   (OQ #2) → then M2: generator distribution tuning + full-size dataset
+   (OQ #2) → then M2: generator distribution tuning + full-size dataset.
+   M3 watch item (ADR-022): only ~5 recycled-identity device shares at
+   seed 42 — thin for typology 5; calibrate recycling volume with the M3
+   fraud work, don't tune it blind
 
 ## Decisions awaiting a human
 

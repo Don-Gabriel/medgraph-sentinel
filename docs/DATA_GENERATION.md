@@ -41,14 +41,15 @@ table, which could not simultaneously satisfy its own per-actor rules):
 | Brokers | 250 | referral share ~ Zipf; commission 5–15% |
 | Claims | ~21,700 | the hub population; **each journey yields 1–3 claims** (main procedure + ancillary diagnostics/follow-up) |
 | PaymentAccounts | ~2,270 | clinics 1–3, brokers 1–2, plus shells created by the fraud layer |
-| Devices | ~12,400 | 1 device each, ~30% a second; honest family sharing |
+| Devices | ~12,400 | 1 device each, ~30% a second; **every owned device carries a USED_DEVICE window** (claim-usage dates, or a dormant pre-journey registration window — ADR-022); ~560 devices shared by >1 patient at seed 42, overwhelmingly honest family sharing |
 | Addresses | ~800 | clinics + brokers; some honest co-location |
 | Procedures | 116 | catalog across 6 categories; base costs lognormal within category |
 | Insurers | 20 | market share ~ Zipf |
 | Countries | 15 | 5 treatment + 10 origin |
 
-Total ≈ **51.9k nodes / 191.7k relationships / 7.4 MB** — on the ~50k-node
-target and far under the 50 MB budget, measured 2026-07-29.
+Total ≈ **51.1k nodes / 193.7k relationships / 7.4 MB** — on the ~50k-node
+target and far under the 50 MB budget, measured 2026-07-29 (post
+ADR-022/023 fixes).
 
 **Journey model.** A patient picks a category (age/origin-weighted), then a
 corridor (gravity), then a clinic (size/quality-weighted within corridor),
@@ -63,8 +64,11 @@ assembled text, so honest narratives are similar-but-not-identical.
 
 **Honest noise is mandatory.** Duplicate name spellings, shared family
 devices, clinics sharing registered offices, brokers with genuine exclusive
-partnerships — the honest world must contain *weak* versions of every fraud
-signal, or detection is trivially easy and the judges will see it.
+partnerships, and ~10% of brokers holding a *declared* stake in a local
+clinic (`OWNS_STAKE_IN` — the honest majority that keeps the edge from
+being a fraud label, ADR-023) — the honest world must contain *weak*
+versions of every fraud signal, or detection is trivially easy and the
+judges will see it.
 
 ## 3. EMERGENT fraud (behavioural)
 
@@ -76,8 +80,11 @@ their local decision rules interacting**:
   line-item counts by a drawn factor on a drawn fraction of claims.
 - `steering_greed` (brokers, ~6% get >0): routing probability skews toward
   clinics that pay a side commission; the side payments materialize as
-  `TRANSFERRED` clinic-account → broker-account flows. When a greedy broker
-  meets a paying clinic, a kickback ring *emerges* — we never place a ring.
+  `TRANSFERRED` clinic-account → broker-account flows, and about half of
+  steering partnerships also carry a *hidden* `OWNS_STAKE_IN` stake in the
+  partner clinic (deduped against declared holdings — ADR-023). When a
+  greedy broker meets a paying clinic, a kickback ring *emerges* — we never
+  place a ring.
 - `identity_recycling` (brokers, ~2%): reuses patient identities (passport,
   device) across insurers when recruiting — impossible-travel and
   identity-sharing patterns emerge from reuse frequency, not from a script.

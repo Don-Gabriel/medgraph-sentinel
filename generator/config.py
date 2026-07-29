@@ -88,6 +88,9 @@ class Brokers(BaseModel):
     accounts_min: int = Field(ge=1)
     accounts_max: int
     colocate_with_clinic_rate: float = Field(ge=0, le=1)
+    stake_rate: float = Field(ge=0, le=1)
+    stake_min_pct: float = Field(gt=0)
+    stake_max_pct: float
 
 
 class Claims(BaseModel):
@@ -122,6 +125,9 @@ class Steering(BaseModel):
     partner_overbilling_bias: float = Field(ge=1)
     side_commission_min_pct: float
     side_commission_max_pct: float
+    stake_prob: float = Field(ge=0, le=1)
+    stake_min_pct: float = Field(gt=0)
+    stake_max_pct: float
 
 
 class IdentityRecycling(BaseModel):

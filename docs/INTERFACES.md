@@ -107,7 +107,7 @@ All have `source_id,target_id` first, then edge properties in the order shown
   "seed": 42,
   "config_sha256": "<hash of generator/config.yaml>",
   "scenarios_applied": [],
-  "counts": {"patients": 10002, "claims": 21677, "rel_for_patient": 21677}
+  "counts": {"patients": 10008, "claims": 21622, "rel_for_patient": 21622}
 }
 ```
 `counts` has one entry per CSV file (basename without extension). No

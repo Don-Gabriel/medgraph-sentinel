@@ -245,7 +245,25 @@ def build_static(cfg, rng, fake, w: World) -> None:
                                                 cfg.brokers.accounts_max + 1)))
             ],
             "weight": float(broker_weights[i]),
+            "country_code": country,
         })
+
+    # Honest declared stakes: some brokers legitimately invest in a local
+    # clinic (hospital groups with in-house facilitation). This is the FP
+    # noise that keeps OWNS_STAKE_IN from being a fraud label (ADR-023).
+    for broker in w.brokers:
+        if rng.random() < cfg.brokers.stake_rate:
+            local = by_country_clinics.get(broker["country_code"], [])
+            if not local:
+                continue
+            lw = np.array([c["size_weight"] for c in local]); lw = lw / lw.sum()
+            clinic = pick(rng, local, lw)
+            w.owns_stake.append({
+                "broker_id": broker["id"],
+                "clinic_id": clinic["id"],
+                "pct": round(float(rng.uniform(cfg.brokers.stake_min_pct,
+                                               cfg.brokers.stake_max_pct)), 1),
+            })
 
     family_devices: dict[str, list[str]] = {}
     for _ in range(cfg.populations.patients):
@@ -443,3 +461,28 @@ def build_journeys(cfg, rng, fake, w: World, fraud_params) -> None:
                 })
         if broker:
             recycle_pool.setdefault(broker["id"], []).append((patient["id"], insurer["id"]))
+
+    _emit_dormant_device_edges(cfg, rng, w)
+
+
+def _emit_dormant_device_edges(cfg, rng, w: World) -> None:
+    """Every owned device gets a USED_DEVICE edge (fix — ADR-022).
+
+    Journeys only track the device actually used for a claim, which left
+    second devices as orphan nodes and erased the family-sharing signal from
+    the edge table. Devices not used on a journey get a plausible dormant
+    window: portal registration/browsing in the weeks before the patient's
+    first treatment.
+    """
+    first_claim: dict[str, date] = {}
+    for (pid, _dev), (lo, _hi) in w.used_device.items():
+        if pid not in first_claim or lo < first_claim[pid]:
+            first_claim[pid] = lo
+    for patient in w.patients:
+        ref = first_claim.get(patient["id"], cfg.window.start)
+        for dev in patient["device_ids"]:
+            if (patient["id"], dev) in w.used_device:
+                continue
+            start = ref - timedelta(days=int(rng.integers(14, 91)))
+            end = min(start + timedelta(days=int(rng.integers(1, 40))), ref)
+            w.used_device[(patient["id"], dev)] = [start, end]

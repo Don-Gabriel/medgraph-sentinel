@@ -281,6 +281,49 @@ fingerprint per OQ #3's SimHash-first plan — OQ #3 stays open until the
 clone-vs-honest separation test at M3. Scenario overlays and planted cells
 deliberately not implemented yet (OQ #12 / M3 respectively).
 
+## ADR-022 — USED_DEVICE emission fixed: ownership implies an edge (2026-07-29)
+
+**Context (bug, found in seed-42 verification):** journeys only tracked the
+one device used for a claim, so second devices became edge-less orphan nodes
+(~2.3k of 12.4k) and the 6% family-sharing rate effectively vanished from
+the edge table — device sharing is the primary graph substrate for
+typology 5, so the signal barely existed.
+
+**Decision:** every owned device now produces a `USED_DEVICE` edge — claim
+journeys keep their real usage windows; devices unused on any journey get a
+deterministic dormant window (portal registration/browsing 2–13 weeks
+before the patient's first treatment). Enforced by test
+(`test_every_device_edged_and_sharing_present`).
+
+**Measured, seed 42 post-fix:** 12,975 USED_DEVICE edges over 12,383
+devices, **0 unedged**; **560 devices shared by >1 patient — 555 honest
+family shares vs 5 recycled-identity shares** (classification: shared
+non-empty passport ⇒ recycled; clones of passportless patients (~5% of
+clones) count as family, so 5 is a floor). Honest noise is ample — the
+fraud signal is a genuine needle in a haystack. **Flag, not fixed here:**
+5 recycled cases is *thin* for demoing typology 5 on the emergent layer
+alone; recycling volume is revisited during M3 fraud-layer calibration
+alongside planted cells, not silently tuned today.
+
+## ADR-023 — OWNS_STAKE_IN generated, with honest majority (2026-07-29)
+
+**Context (gap, found in seed-42 verification):** DETECTION_SPEC's
+kickback-ring signature includes broker equity in clinics, but the
+generator emitted zero `OWNS_STAKE_IN` edges — a detection rule pointing at
+an edge type that never exists.
+
+**Decision: generate the edges, don't cut the signature clause.** The
+ownership leg is core to typology 3's story (and DATA_MODEL/Day-2 build on
+it). Two layers: **honest** — ~10% of brokers hold a *declared* stake
+(5–35%) in a size-weighted local clinic (hospital groups with in-house
+facilitation, exactly the FP mode DETECTION_SPEC already names); **hidden**
+— steering brokers acquire stakes (10–40%) in each partner clinic with
+probability 0.5, deduped against declared holdings, recorded in ground
+truth as `hidden_stake`. **Measured, seed 42: 35 stake edges — 25 honest,
+10 hidden.** Edge presence alone is therefore ~71% innocent: the edge is a
+feature, not a label, and the circularity defense holds. DETECTION_SPEC
+needs no change — its signature and FP modes now both exist in data.
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*
