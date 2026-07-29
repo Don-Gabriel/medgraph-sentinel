@@ -47,6 +47,23 @@ def test_different_seed_differs(tmp_path: Path, small_config: Path):
     assert _digest_tree(out_a) != _digest_tree(out_b)
 
 
+def test_every_device_edged_and_sharing_present(tmp_path: Path, small_config: Path):
+    """ADR-022: ownership implies a USED_DEVICE edge; sharing must survive
+    into the edge table (it is the primary signal for typology 5)."""
+    import csv
+
+    out = tmp_path / "a"
+    main(["--seed", "42", "--out", str(out), "--config", str(small_config)])
+    with open(out / "csv" / "devices.csv", encoding="utf-8") as fh:
+        device_ids = {row["id"] for row in csv.DictReader(fh)}
+    users: dict[str, set[str]] = {}
+    with open(out / "csv" / "rel_used_device.csv", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            users.setdefault(row["target_id"], set()).add(row["source_id"])
+    assert set(users) == device_ids  # no orphan devices, no phantom edges
+    assert any(len(u) > 1 for u in users.values())  # sharing visible
+
+
 def test_manifest_counts_match_files(tmp_path: Path, small_config: Path):
     out = tmp_path / "a"
     main(["--seed", "42", "--out", str(out), "--config", str(small_config)])

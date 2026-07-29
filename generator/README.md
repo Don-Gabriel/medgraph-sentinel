@@ -28,5 +28,7 @@ overlays / `--scenario` (waits on the OQ #12 attestation, ADR-016).
 
 **Known v1 simplifications** (M2 tuning items, tracked in STATUS): Faker
 names/streets are en-US regardless of country; category choice is
-age-independent; no duplicate-name-spelling noise yet. Distribution realism
+age-independent; no duplicate-name-spelling noise yet; "family" device
+sharing is approximated by same-country device pooling rather than real
+family units. Distribution realism
 is tuned to DATA_GENERATION §2 at M2, judged by the M2 exit test.

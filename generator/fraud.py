@@ -43,6 +43,7 @@ def assign(cfg, rng: np.random.Generator, w: World) -> FraudParams:
                 )
 
     clinic_ids = [c["id"] for c in w.clinics]
+    stake_pairs = {(s["broker_id"], s["clinic_id"]) for s in w.owns_stake}
     # Overbilling clinics are likelier kickback partners — parameter
     # interaction is what makes rings *emerge* rather than being placed.
     partner_w = np.array(
@@ -79,6 +80,21 @@ def assign(cfg, rng: np.random.Generator, w: World) -> FraudParams:
             if params["layered"]:
                 fp.ground_truth.append({"actor_id": broker["id"],
                                         "param_name": "shell_layering", "value": params["shells"]})
+            # Hidden equity in partner clinics closes the kickback loop
+            # (typology 3's ownership leg). Honest declared stakes generated
+            # in economy.build_static keep the edge from being a label.
+            for clinic_id in partners:
+                if rng.random() >= f.steering.stake_prob:
+                    continue
+                if (broker["id"], clinic_id) in stake_pairs:
+                    continue  # already a declared holder; no second edge
+                pct = round(float(rng.uniform(f.steering.stake_min_pct,
+                                              f.steering.stake_max_pct)), 1)
+                w.owns_stake.append({"broker_id": broker["id"], "clinic_id": clinic_id,
+                                     "pct": pct})
+                stake_pairs.add((broker["id"], clinic_id))
+                fp.ground_truth.append({"actor_id": broker["id"], "param_name": "hidden_stake",
+                                        "value": f"{clinic_id}:{pct}"})
         if rng.random() < f.identity_recycling.broker_rate:
             reuse = round(float(rng.uniform(f.identity_recycling.reuse_min,
                                             f.identity_recycling.reuse_max)), 3)
