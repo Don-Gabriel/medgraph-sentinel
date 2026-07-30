@@ -644,3 +644,65 @@ highs — calibration mandate wins); per-pair travel-day guesses above 1 day
 (nothing in the corridor set justifies them); forcing cross-reload Louvain
 stability via legacy Cypher projections (undocumented ordering guarantee,
 opaque — violates hard rule 1).
+
+## ADR-031 — Dataset FROZEN; planted + impossible cases landed; dev-set numbers recorded (2026-07-30)
+
+**Context:** last generator work before freeze (owner-directed order):
+scenario overlays (INTERFACES §3, full schema, fixture-tested), planted
+cells for typologies 1/2, and `identity_recycling.parallel_share` (0.5) —
+colluding-clinic same-day billing, the fix for the measured "seed 42 has
+zero temporally impossible recycled cases" finding.
+
+**The frozen dataset (seed 42):** **51,990 nodes / 197,251 relationships /
+7.6 MB** (+846 nodes, +3,557 rels vs the previous commit — provably
+additive: every prior row is byte-identical in the new files). Double
+regeneration byte-identical. Planted: 3 ghost cells (56 claims each,
+feeder share 0.94, payout concentration 0.95) + 3 credential cells (one
+licence across 3–4 identities; one biller with 57 post-revocation claims
+vs the 29-claim honest ceiling); labels in `data/ground_truth/planted.csv`
+(523 rows). Impossible travel: 3 same-day cross-country passport groups;
+2 feasible-reuse groups kept as designed negatives.
+
+**Dev-set evaluation (frozen rules, untouched since ADR-030 — nothing
+tuned to the new cases):**
+
+| typology | alerts (l/m/h) | TP | FP | precision | recall |
+|---|---|---|---|---|---|
+| ghost_clinic | 6 (3/0/3) | 3 | 3 | 0.50 | planted cells **3/3** |
+| credential_laundering | 61 (56/0/5) | 4 | 57 | 0.066 | planted cells **3/3** |
+| kickback_ring | 9 (5/4/0) | 6 | 3 | 0.667 | steering brokers 6/13 |
+| impossible_travel | 5 (2/0/3) | 3 | 2 | 0.60 | impossible groups **3/3**; feasible reuse 0/2 by design |
+
+Honest readings of those numbers, for the jury: every planted cell and
+every impossible group is caught **at high severity**; the low-severity
+tail is the documented honest-noise floor (56 of credential's 57 FPs are
+`low` — post-revocation/shared-number honest modes the rule deliberately
+surfaces at low). Two findings worth saying out loud: (1) credential's one
+high FP is an honest revoked-but-rostered doctor whose volume was inflated
+by an *emergent steering broker* — fraud-adjacent volume, mislabeled only
+by typology; (2) kickback's three medium "FPs" are the three planted ghost
+cells caught cross-typology (feeder concentration + shared address trip
+the kickback gate) — reported as FP for typology-3 precision, separately
+tagged `fp_cross_typology_planted` by the evaluator. The 7 missed
+sub-median-volume steering brokers are unchanged from ADR-030.
+
+**Honest-economy re-verification:** zero medium+ alerts on every rule
+still holds (the calibration property). Low-count baseline shifted
+slightly (ghost 5→7, credential 62→63); reproduced with pre-session
+generator code byte-identically, so the drift is a baseline-measurement
+discrepancy, not a behaviour change — annotated in the evaluator, not
+tuned.
+
+**FREEZE + unfreeze cost:** `data/` (including the exported
+`alerts.csv` — 81 alerts, 2,098 IMPLICATES, pinned
+`created_at 2026-07-30T00:00:00Z`) is frozen. The ADR-018 chain is
+committed in two stages: dataset + alerts now, narration cache when built
+(planned Aug 3), with **no regeneration permitted between or after** —
+unfreezing means the full chain from the top (regenerate → load → detect →
+export → rebuild narration cache → recommit as one unit) and costs a
+rehearsal day. After the Aug 8 integration freeze it is a demo-blocker
+emergency, nothing less.
+
+---
+
+*Append new ADRs below. Number sequentially. Date every entry.*
