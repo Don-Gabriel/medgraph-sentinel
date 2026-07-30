@@ -1,42 +1,30 @@
-"""MedGraph Sentinel API — M1 slice: /health and /stats only.
+"""MedGraph Sentinel API — health, stats, alerts, entities.
 
-Contracts: docs/INTERFACES.md section 6. Alert endpoints land with M3.
-Everything here must degrade, never 500 — the demo depends on it (ADR-010,
-DEMO_RUNBOOK). Narration-cache validation per ADR-018: loud at startup,
-surfaced at /health, never silent at request time.
+Contracts: docs/INTERFACES.md section 6. Everything here must degrade,
+never 500 — the demo depends on it (ADR-010, DEMO_RUNBOOK). Narration-cache
+validation per ADR-018: loud at startup, surfaced at /health, never silent
+at request time. Alert/entity endpoints live in api/alerts.py and
+api/entities.py behind the get_session dependency (api/graph.py) so tests
+can fake the database in-process.
 """
 import logging
-import os
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from neo4j import GraphDatabase
+from fastapi.responses import JSONResponse
+
+from api import alerts, entities, narration
+from api.graph import close_driver, get_driver
 
 log = logging.getLogger("medgraph.api")
-
-NEO4J_URI = os.environ.get("NEO4J_URI", "bolt://localhost:7687")
-NEO4J_USER = os.environ.get("NEO4J_USER", "neo4j")
-NEO4J_PASSWORD = os.environ.get("NEO4J_PASSWORD", "")
-NARRATION_CACHE_DIR = Path(__file__).parent / "narration_cache"
-
-_driver = None
-
-
-def _get_driver():
-    global _driver
-    if _driver is None:
-        _driver = GraphDatabase.driver(
-            NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD), connection_timeout=3
-        )
-    return _driver
 
 
 def _query_one(cypher: str) -> dict | None:
     """Run a single-row read query; None on any failure (degrade, don't raise)."""
     try:
-        with _get_driver().session() as session:
+        with get_driver().session() as session:
             record = session.run(cypher).single()
             return dict(record) if record else None
     except Exception as exc:  # any driver/connectivity error means "degraded"
@@ -50,9 +38,9 @@ def _alert_count() -> int | None:
 
 
 def _cached_narration_count() -> int:
-    if not NARRATION_CACHE_DIR.is_dir():
+    if not narration.CACHE_DIR.is_dir():
         return 0
-    return sum(1 for p in NARRATION_CACHE_DIR.glob("*.json"))
+    return sum(1 for p in narration.CACHE_DIR.glob("*.json"))
 
 
 def narration_cache_status() -> dict:
@@ -74,8 +62,7 @@ async def lifespan(app: FastAPI):
             status["alerts"],
         )
     yield
-    if _driver is not None:
-        _driver.close()
+    close_driver()
 
 
 app = FastAPI(title="MedGraph Sentinel API", lifespan=lifespan)
@@ -86,6 +73,24 @@ app = FastAPI(title="MedGraph Sentinel API", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )
+
+app.include_router(alerts.router)
+app.include_router(entities.router)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_as_detail_string(request, exc) -> JSONResponse:
+    """Contract (INTERFACES §6): every error is {"detail": "<message>"}.
+    FastAPI's default 422 carries a structured list instead — flatten it to
+    one readable string so the frontend has a single error shape."""
+    messages = "; ".join(
+        "{}: {}".format(
+            ".".join(str(part) for part in err["loc"] if part != "body"),
+            err["msg"],
+        )
+        for err in exc.errors()
+    )
+    return JSONResponse(status_code=422, content={"detail": messages})
 
 
 @app.get("/api/v1/health")
@@ -108,7 +113,7 @@ def stats() -> dict:
     rels = _query_one("MATCH ()-[r]->() RETURN count(r) AS n")
     by_status_rows = None
     try:
-        with _get_driver().session() as session:
+        with get_driver().session() as session:
             by_status_rows = [
                 (r["status"], r["n"])
                 for r in session.run(
@@ -120,7 +125,7 @@ def stats() -> dict:
     by_status = dict(by_status_rows) if by_status_rows else {}
     by_typology_rows = None
     try:
-        with _get_driver().session() as session:
+        with get_driver().session() as session:
             by_typology_rows = [
                 (r["typology"], r["n"])
                 for r in session.run(
