@@ -47,9 +47,10 @@ table, which could not simultaneously satisfy its own per-actor rules):
 | Insurers | 20 | market share ~ Zipf |
 | Countries | 15 | 5 treatment + 10 origin |
 
-Total ≈ **51.1k nodes / 193.7k relationships / 7.4 MB** — on the ~50k-node
-target and far under the 50 MB budget, measured 2026-07-29 (post
-ADR-022/023 fixes).
+Total = **51,990 nodes / 197,251 relationships / 7.6 MB** — on the
+~50k-node target and far under the 50 MB budget, measured 2026-07-30 at
+the dataset freeze (ADR-031: planted cells + parallel recycling included;
+the earlier 51.1k/193.7k dataset is a byte-identical subset).
 
 **Journey model.** A patient picks a category (age/origin-weighted), then a
 corridor (gravity), then a clinic (size/quality-weighted within corridor),

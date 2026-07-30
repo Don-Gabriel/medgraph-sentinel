@@ -31,7 +31,9 @@
     "rel_practises_at": 3117,
     "rel_resides_in": 10206,
     "rel_transferred": 16417,
-    "rel_used_device": 13173
+    "rel_used_device": 13173,
+    "alerts": 81,
+    "rel_implicates": 2098
   },
   "generator_version": "1.0.0",
   "scenarios_applied": [],

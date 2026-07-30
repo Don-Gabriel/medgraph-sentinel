@@ -1,76 +1,66 @@
 # STATUS — snapshot, not a log
 
-**Updated:** 2026-07-30 (solo-transition + detection session, J Don
-Gabriel) · **Days to Day 1 (Aug 12): 13**
+**Updated:** 2026-07-30 late (batch 2: freeze + API + console session,
+J Don Gabriel) · **Days to Day 1 (Aug 12): 13**
 
-## Standing context (changed 2026-07-30 — read ADR-027)
+## ⛔ THE DATASET IS FROZEN (ADR-031)
 
-- **SOLO.** No other member contributes. One person builds, documents,
-  pitches, and runs Day 2. MILESTONES rewritten (~93–100 scheduled hours);
-  anchored dates hold: detection freeze **Aug 6**, integration freeze
-  **Aug 8**, dress rehearsal **Aug 10**.
-- **Held-out protocol is temporal separation (ADR-027):** five scenarios
-  authored + SHA-256-committed 2026-07-30 (commit `290101e`) BEFORE any
-  detection query existed. Files live OUTSIDE the repo
-  (`C:\WorkSpace\Private\medgraph-heldout\`) — **do not open/edit/delete
-  until the one-shot Aug 9 evaluation.** Claim = ordering, not
-  independence; exact pitch wording in DATA_GENERATION §5.
-- Typologies 4 and 6 remain descoped (ADR-024). We ship 1, 2, 3, 5.
+`data/` — 51,990 nodes / 197,251 relationships / 7.6 MB, seed 42, planted
+cells + parallel recycling included — plus the exported **81 alerts /
+2,098 IMPLICATES** (`alerts.csv`, `rel_implicates.csv`, pinned
+`created_at 2026-07-30T00:00:00Z`) are the demo artifacts. Compose-up
+loads alerts as data (ADR-029); no clone ever runs detection.
 
-## DONE (this session, 2026-07-30 — branch claude/solo-implementer-transition-768b06)
+**Unfreeze cost, stated plainly:** any regeneration or detection re-run
+= the FULL ADR-018 chain from the top (regenerate → load → detect →
+export → rebuild narration cache → recommit as one unit) and eats a
+rehearsal day. After Aug 8: demo-blocker emergency only. The narration
+cache (Aug 3) is chain stage 2 — nothing regenerates between.
 
-- **PR #3 merged:** replan branch (M1 passed, loader, seed-42 dataset,
-  GDS-baked image) is on main.
-- **Team scaffolding stripped (ADR-027):** DEFENCE_AREAS → solo jury drill
-  sheet; CONTRIBUTING solo; MILESTONES one-person hours incl. the returned
-  ~24 h of pitch/demo/rehearsal work; DAY2_PLAYBOOK solo protocol
-  (hard timers, rehearse-not-improvise); README/LICENSE/OQ propagated.
-- **Held-out scenarios authored + hash-committed** before any detection
-  query (overlay schema extended first — `contract:` commit; INTERFACES §3
-  now expresses credential/identity scenarios).
-- **ADR-028 (measured):** typology 3 drops centrality — exact betweenness
-  131.6 s at 51k nodes AND worst steering discriminator (P@13 0.077 vs
-  0.385 for top-clinic concentration); 8/13 steering brokers sit below
-  median volume, invisible to topology scores. Sampled betweenness
-  (samplingSize 2048: 94% top-50 agreement, 5% cost) is the documented
-  fallback. Evidence: detection/benchmarks/typology3_centrality.md.
-- **ADR-029 (proven):** alerts are committed data — detection/export.py →
-  alerts.csv + rel_implicates.csv + manifest counts; loader loads them
-  (optional stems, prefix-routed IMPLICATES); compose `seed` runs loader
-  only. Round trip verified: detect → export → wipe-load (33/33 counts,
-  7.2 s seed with alerts) → re-export **byte-identical**.
-- **Detection layer real (ADR-030, M3 pulled forward):** registry runner
-  (--rules/--dry-run/--created-at, idempotent per rule+version,
-  deterministic ALT numbering, 200-entity cap) + four rules + shared
-  travel_time_days config (OQ #4/#5 closed). Calibrated on the honest
-  economy (fraud gates zeroed): **zero medium+ honest alerts per rule.**
-- **Dev-set evaluation** (evaluation/ is the only ground-truth reader), 68
-  alerts total: kickback precision 1.0, broker recall 6/13 (misses are the
-  sub-median-volume steerers); impossible_travel 0/5 emergent recycled
-  groups — **seed 42 contains zero temporally impossible recycled cases**
-  (tightest cross-country gap 6 days), so the rule cannot catch them by
-  construction; typologies 1/2 not evaluable until planted cells land.
-- Tests 22 passed; dataset regenerated to sync manifest config_sha256
-  (CSV bytes unchanged).
+## Standing context
 
-## BLOCKED
+- **SOLO (ADR-027).** Held-out scenarios sealed outside the repo
+  (hashes: HELDOUT_COMMITMENT.md, commit `290101e`) until the Aug 9
+  one-shot. Claim = ordering, not independence (DATA_GENERATION §5).
+- Rehearsal-weighted plan (MILESTONES): console → narration Aug 3 →
+  **early cold-start Aug 4–5** → freezes Aug 6/8 → held-out Aug 9 →
+  dress rehearsal Aug 10 (confirmation).
 
-- (nothing hard-blocked; OQ #13 backup laptop and OQ #14 revoked-biller
-  generator behavior are owner decisions, not blockers)
+## DONE (2026-07-30, batch 2 — PRs #6, #7 + freeze commit)
 
-## NEXT 3 (priority order — MILESTONES Jul 31)
+- **API complete (INTERFACES §6):** stats/list/detail/subgraph(300 cap)/
+  narration-fallback/PATCH/entities; 29 new tests (suite 64+); live
+  smoke: list 18 ms, hops=1 subgraph 267–712 ms, hops=2 3–5 s (watch
+  item — console defaults hops=1). Contract change: subgraph cap 300
+  (owner decision).
+- **Generator finished + dataset frozen (ADR-031):** scenario overlays
+  (full §3, fixtures, byte-determinism proven), planted cells (3 ghost +
+  3 credential), parallel recycling (3 impossible passport groups).
+- **Dev-set results (frozen rules, nothing tuned):** planted cells 3/3
+  caught at high for BOTH typologies 1 and 2; impossible groups 3/3 at
+  high; kickback 6/13 brokers (unchanged misses = sub-median-volume
+  steerers); low-severity FP tail is the documented honest-noise floor.
+  Full table + honest findings: ADR-031.
+- Honest economy still yields **zero medium+ alerts on every rule**.
+- Console (queue + Cytoscape hero view + evidence panel + PATCH
+  controls) in build at session end — design-first per the
+  frontend-design skill.
 
-1. **Generator: scenario-overlay support (INTERFACES §3 incl. extensions)
-   + planted cells for typologies 1/2 + recycling calibration** — planted
-   cells must include tight-window recycled identities or typology 5 stays
-   untestable (this session's measured finding); decide OQ #14 in the same
-   pass; regenerate dev dataset + re-run dev evaluation (~8 h)
-2. API alert endpoints against the real 68 alerts (Aug 1)
-3. Console queue + Cytoscape drill-down (Aug 2; M2 exit)
+## NEXT (priority order)
+
+1. Console lands → visual verification (1440/768) → merge → rebuild
+   frontend container → M2 exit test on the frozen dataset.
+2. Narration builder + cache (Aug 3) — **needs ANTHROPIC_API_KEY from
+   the owner**; fallback templates are the shipping mode until then.
+3. Early cold-start rehearsal (Aug 4–5) per DEMO_RUNBOOK two-run
+   structure.
 
 ## Decisions awaiting a human
 
+- **ANTHROPIC_API_KEY** into `.env` (enables real cached narrations;
+  ~81 calls, trivial cost).
 - OQ #13: does a backup laptop exist? (affects DEMO_RUNBOOK drills)
-- OQ #14: should the honest generator wind down revoked-doctor billing?
-  (regenerates dataset; decide with Jul 31 planted-cell work)
-- OQ #7: adopt minimal CI? (solo decision, ~1 h)
+- OQ #14 note: planted cred_1 includes a 57-claim post-revocation biller,
+  so the "starts at high" ramp is now exercised by planted truth; the
+  generator behaviour question (wind down revoked-doctor billing) is
+  MOOT for this build — the dataset is frozen with it in.
