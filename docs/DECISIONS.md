@@ -183,7 +183,10 @@ defence area doesn't need the spec; cost: she exits all detection work until
 Aug 9); nobody can attest → we keep the weaker claim and say so in the
 pitch. **Record the attestation outcome as a dated note under this ADR.**
 
-> *Attestation outcome (append at the Jul 29 sync):* ______
+> *Attestation outcome (append at the Jul 29 sync):* **mooted 2026-07-30
+> (ADR-027)** — the team collapsed to a single implementer before any
+> attestation was recorded; the red-team role no longer exists. The
+> held-out protocol is now temporal separation (DATA_GENERATION §5).
 
 ## ADR-017 — Schedule re-planned to 14 days; scope is the shock absorber (2026-07-29)
 
@@ -438,6 +441,53 @@ GDS by construction. INTERFACES §9 and DEMO_RUNBOOK updated to the three
 - Memory: projections 14–16 MiB each; container peak ~3.3 GiB total under
   the floor profile, no OOM ⇒ **OQ #11 resolved: default profiles
   suffice; no explicit projection sizing needed at this scale.**
+
+## ADR-027 — Team collapse to ONE person; held-out protocol becomes temporal separation (2026-07-30)
+
+**Context (owner-reported):** no other member is contributing at all — no
+Pavithra, no Vijayalakshmi, no Mary, no Poonkundran. ADR-024's "one laptop,
+one implementer, four supporting contributors" model is dead: J Don Gabriel
+writes all code and docs, gives the pitch alone, and does Day 2 alone.
+Capacity is one person's 13 days (~95–110 h realistically — see MILESTONES),
+and ~25–30 h of non-code deliverables previously assigned to others (pitch,
+glossary, runbook execution, screenshots, fresh-clone verification, Day-2
+rehearsal) return to the implementer as scheduled hours.
+
+**Decisions:**
+
+1. **Held-out protocol: person-separation → temporal separation.** A
+   red-team author who never read the detection spec is impossible with one
+   person. Replacement, executed same day: five held-out scenarios authored
+   2026-07-30 **before any detection query existed in the repo** (the
+   `detection/` tree contains only scaffolding at the hash commit),
+   consulting only PROJECT_BRIEF / DATA_MODEL / INTERFACES / GLOSSARY in
+   the authoring session; stored outside the repository; SHA-256 hashes
+   committed alone (HELDOUT_COMMITMENT.md); files stay closed until the
+   one-shot evaluation. **The claim this supports is ordering, not
+   independence** — the same person conceived both sides. Pitch wording
+   fixed in DATA_GENERATION §5; PITCH.md carries it verbatim. ADR-012's
+   evaluation mechanics (frozen rules, run once, report misses) are
+   unchanged; ADR-016's attestation branches are mooted (OQ #12 closed).
+2. **Overlay schema extended first** (`contract:` commit, same day, before
+   the hashes): doctor/credential/patients-pool actor kinds, country pins,
+   journey doctor pin, `pool:<ref>`, `transfers.count` — the schema could
+   not previously express typology-2 or typology-5 scenarios, and it had
+   to be expressive *before* the freeze for the protocol to work.
+3. **Team scaffolding stripped:** DEFENCE_AREAS becomes a solo jury-prep
+   question bank (every area is mine now); CONTRIBUTING drops
+   identity-switching and multi-contributor process (Conventional Commits
+   and the INTERFACES change protocol stay); MILESTONES rewritten for one
+   person with the returned non-code hours scheduled explicitly;
+   DAY2_PLAYBOOK rewritten for a solo sprint (rehearse, don't parallelize).
+4. **Anchored dates hold:** detection freeze Aug 6, integration freeze
+   Aug 8, dress rehearsal Aug 10, Day 1 Aug 12. Scope remains the shock
+   absorber (cut ladder in MILESTONES).
+
+**Alternatives considered:** keeping the ADR-024 docs and quietly working
+alone (rejected — the docs would then lie about who does what, and the
+jury reads the repo); dropping the held-out evaluation entirely (rejected —
+temporal separation is weaker than person-separation but still kills the
+"tuned after the fact" accusation, and it is cheap).
 
 ---
 
