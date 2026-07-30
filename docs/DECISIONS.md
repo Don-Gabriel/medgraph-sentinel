@@ -783,6 +783,45 @@ the scorer); precision remains the dev-set property (ADR-031). Pitch
 wording + prepared miss answers: PITCH.md. The Aug 9 calendar slot is
 retired; freezes Aug 6/8 stand as formalities protecting the demo.
 
+## ADR-035 — Projector review of the console; four fixes and a click-path reorder (2026-07-30)
+
+**Context:** the console worked but had never been assessed as a *demo
+surface* — a hostile viewer, three metres from a washed-out projector.
+
+**Findings, honestly:**
+
+1. **Severity was legible but not scannable.** Score colour alone carried
+   it; the queue read as a uniform list rather than a hot-to-cold zone.
+2. **The subgraph was functional, not striking, above ~100 nodes.** The
+   ghost-clinic view renders 117 nodes; every non-implicated Patient and
+   Doctor was labelled, so thirty irrelevant names competed with the four
+   that carry the story. The 19-node impossible-travel view, by contrast,
+   is genuinely striking — two ember-haloed identities, two conflicting
+   claims, two countries, readable at a glance.
+3. **The evidence panel dumped fields.** It opened with raw keys and
+   snake_case enum values (`shared_license`, `post_revocation_billing`).
+4. Node/edge weights were tuned for a laptop, not a projector.
+
+**Fixes applied (surgical, not a redesign):** severity edge-bars plus a
+tinted row background for high/medium and tighter right-hand columns;
+heavier edges, larger minimum nodes, thicker ember halos and larger
+always-on implicated labels; a value dictionary rendering enums as
+English plus a composed opening sentence stating what fired ("5 of 6
+ghost-clinic indicators fired strongly: too few doctors for the claim
+volume; no physical footprint; …"); and the dense-label threshold lowered
+from 150 to 60 nodes so dense views keep only implicated labels while
+small views keep their useful context.
+
+**Click-path reorder (the highest-leverage change, zero code):** the demo
+now **opens with `impossible_travel`** and goes deep on `ghost_clinic`
+second. The travel alert lands in one sentence and one glance; the ghost
+alert needs narration to decode. Leading with the legible one buys
+attention for the complex one. PITCH.md carries the final path.
+
+**Not done, deliberately:** no redesign, no new views, no colour-system
+change. The palette discipline (heat ramp for severity, teal reserved for
+interaction, drama reserved for implicated nodes) is unchanged.
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*

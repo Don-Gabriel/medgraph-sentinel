@@ -79,26 +79,45 @@ feasible-but-suspicious reuse belongs to a frequency signal — reuse count
 across insurers — which is the typology's second axis, listed as
 next-build."
 
-## Demo click path (draft — finalize against the real dataset Aug 7)
+## Demo click path (FINAL — validated against the real console 2026-07-30)
 
-1. Console open pre-loaded (never boot live). Header stats: ~50k nodes,
-   ~190k relationships, alert counts by typology. *One breath on synthetic
-   data: "fictional entities, real corridor economics."*
-2. Alert queue sorted by score. Point at the spread of typologies. Filter to
-   `ghost_clinic`, open the top alert.
-3. Evidence subgraph: the clinic, its feeder broker(s), the payout account
-   hub, the claim fan. Narrate the structure ("every one of these claims
-   looks fine alone — watch what they share").
-4. Narration panel: the plain-English explanation. Say it's a cached Claude
-   call with an offline fallback — honesty beats magic.
-5. Mark the alert `reviewed` with a note — the investigator workflow beat.
-6. Second alert, different family: `impossible_travel` — one identity on two
-   operating tables in two countries days apart (structural, not
-   statistical — the contrast with alert #1 shows range, and it lands in
-   one sentence).
-7. Back to queue; point at an alert to *dismiss* live as a documented
-   false positive (standardized dental package) — showing FP awareness is
-   worth more than a seventh feature.
+**Ordering decision (from the projector review):** lead with
+`impossible_travel`, not `ghost_clinic`. The travel alert renders 19 nodes
+— two ember-haloed identities, two conflicting claims, two countries — and
+reads instantly from three metres. The ghost alert renders 117 nodes and
+needs narration to decode. Open with the one that lands in a glance, then
+go deep on the one that shows analytical depth. Screenshot deck beats are
+numbered in the OLD order; the deck is the fallback, not the script.
+
+1. Console open pre-loaded (never boot live). Header: 52,071 nodes,
+   199,349 relationships, 81 alerts, health `ok`. *One breath on synthetic
+   data: "fictional entities, real corridor economics, no real patient
+   data anywhere."*
+2. Alert queue: point at the severity zone — the hot band at the top is
+   colour-coded, and the typology chips are simultaneously the counts and
+   the filters. "Eighty-one alerts, and an investigator starts at the top."
+3. **Open ALT_000068 — impossible travel.** Let the graph land before
+   speaking. "One passport. Two patient identities. Two countries. Same
+   day. One person cannot be on two operating tables in two countries on
+   the same date — that is not a probability, it is a physical
+   impossibility." Point at the two haloed nodes.
+4. Narration panel: read one sentence aloud, then say what it is —
+   "pre-generated at build time, committed to the repo, no API call at
+   demo time. Offline by construction."
+5. Mark it `reviewed` with a note — the investigator workflow beat, two
+   seconds.
+6. **Back to queue, clear the filter, open ALT_000062 — ghost clinic.**
+   This is the depth beat: "Fifty-six claims. Zero beds. One doctor. One
+   broker feeding ninety-five percent of them. One account taking every
+   payout. Every patient visited exactly once and never appears again."
+   Then the line the whole project is built on: *"Every one of those
+   claims looks fine on its own. The fraud is only visible in what they
+   share."*
+7. Point at the evidence panel's opening sentence — "5 of 6 ghost-clinic
+   indicators fired strongly" — and say that a rule that cannot explain
+   itself is useless to an investigator.
+8. Optional if time (≥ 45 s left): dismiss a documented low-severity false
+   positive live — FP awareness beats a seventh feature.
 
 Fallback path: if anything hangs, switch to the screenshot deck (exported
 Aug 10) without breaking sentence rhythm — solo, this must be a rehearsed
