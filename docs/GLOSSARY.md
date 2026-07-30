@@ -60,7 +60,9 @@ the code.
 - **PageRank** — importance score from the structure of incoming links; ranks
   influential brokers in the referral flow.
 - **Betweenness centrality** — how often a node sits on shortest paths
-  between others; finds *bridges* (hub brokers) regardless of volume.
+  between others; finds *bridges*. Benchmarked out of the shipped rules
+  (ADR-028): steering is concentration, not bridging — know the number
+  (132 s exact at 51k nodes) and the sampling fallback.
 - **WCC (weakly connected components)** — the graph's disconnected islands;
   sanity checks and candidate scoping.
 - **Graph signature** — the structural shape a typology leaves in the graph

@@ -65,10 +65,10 @@ spread across the buffers. There is no second buffer behind Aug 5.
    PR per INTERFACES §6).
 5. **Opportunistic live-narration path** — committed cache + template only
    (~2 h back).
-6. **Typology 3 centrality enrichment** — ship concentration + shared
-   infrastructure + Louvain; drop the centrality percentile term (~3–4 h
-   back). Weakens the algorithm story; only if the alternative is missing
-   the freeze.
+6. ~~Typology 3 centrality enrichment~~ — **RETIRED 2026-07-30 (ADR-028):
+   the centrality term was measured out on evidence (worst discriminator,
+   only expensive signal), not cut under duress. The rung's hours never
+   existed to reclaim.**
 7. **Day-2 drill #2** — keep drill #1 (~2 h back).
 8. **Screenshot deck scope** — shrink to the seven click-path beats only
    (~1 h back).

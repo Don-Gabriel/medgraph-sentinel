@@ -489,6 +489,60 @@ jury reads the repo); dropping the held-out evaluation entirely (rejected —
 temporal separation is weaker than person-separation but still kills the
 "tuned after the fact" accusation, and it is cheap).
 
+## ADR-028 — Typology 3 drops betweenness: measured out, not assumed away (2026-07-30)
+
+*(Number reserved while its benchmark ran; landed the same day as ADR-029,
+which references it. Full measurements:
+`detection/benchmarks/typology3_centrality.md`.)*
+
+**Context:** DETECTION_SPEC §3 planned "PageRank + betweenness to rank hub
+brokers." Exact betweenness measured **122.5–131.6 s** on the 34k-node
+claim-participation projection (ADR-026 + re-run today) — it is O(n·m), so
+10× data ≈ 100× work: **hours**, breaking the boot budget (ADR-029), the
+Day-2 stress-test shape, and the 10M-node story. Before optimizing it, we
+asked whether typology 3 needs it at all.
+
+**Benchmark (seed 42, GDS 2.13.11, 2G/1G floor; K = 13 emergent steering
+brokers out of 250):**
+
+| broker ranking signal | hits@13 | precision@13 | median rank of true steerers |
+|---|---:|---:|---:|
+| betweenness on referral projection (exact, 73 ms) | 1 | 0.077 | 131 |
+| PageRank, unweighted (85–106 ms) | 1 | 0.077 | 129 |
+| PageRank, referral-weighted | 2 | 0.154 | 86 |
+| weighted degree ≡ raw referral count (2 ms) | 2 | 0.154 | 117 |
+| **top-clinic concentration share, ≥ 20 referrals (one Cypher line)** | **5** | **0.385** | **66** |
+
+Weighted degree and naive claim count agreed on all 250 brokers — the GDS
+call adds overhead to a feature one Cypher aggregation already computes.
+Sampled betweenness (Brandes `samplingSize`, verified against the live
+2.13 install): 512 → 1.79 s, Spearman ρ 0.894, top-50 overlap 80%;
+2048 → 7.09 s, ρ 0.946, overlap 94% — vs 131.6 s exact.
+
+**Decision:** the shipped typology 3 uses **no global centrality ranking**:
+mutual concentration (both directions, incl. top-clinic share) + shared
+infrastructure (stakes, common accounts, transfers, addresses) + Louvain
+community context. PageRank/betweenness leave the rule; sampled
+betweenness (samplingSize 2048) is the documented fallback if a future
+rule genuinely needs bridging structure.
+
+**Why (the finding, not just the timing):** steering is a *concentration*
+pattern, not a *bridging* pattern. 8 of 13 emergent steering brokers sit at
+or below the economy's median referral volume (≤ 10 referrals) — invisible
+to every volume- or topology-based score by construction; the five visible
+ones were ranked 1, 2, 3, 4 and 7 by the concentration feature alone.
+
+**The 10-million-node jury answer (say it like this):** "We measured
+instead of assuming. Exact betweenness took 132 seconds on 51 thousand
+nodes; it is O(n·m), so at ten million nodes that's hours — and our
+benchmark showed it was also the *worst* discriminator for kickback
+brokers, because steering is a concentration pattern, not a bridging
+pattern. So the shipped rule uses index-backed one-to-two-hop concentration
+and shared-infrastructure queries that scale linearly, and community
+detection for context. If a pattern ever truly needs betweenness, GDS's
+Brandes sampling reproduced 94% of the exact top-50 at 5% of the cost — in
+a batch window, never at boot."
+
 ## ADR-029 — Alerts are committed data; compose-up never runs detection (2026-07-30)
 
 **Context:** the compose `seed` service ran `loader && detection.run`,
