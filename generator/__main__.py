@@ -2,9 +2,10 @@
 
     python -m generator --seed 42 --out data/
 
-NOTE: no --scenario flag yet — scenario-overlay handling (INTERFACES §3)
-waits on the OQ #12 attestation before it is built, so that the red-team
-member's tooling needs are designed with the isolation rule settled.
+NOTE: no --scenario flag yet — scenario-overlay handling (INTERFACES §3,
+extended 2026-07-30) is scheduled for Jul 31 (MILESTONES): it must exist
+before the Aug 9 held-out evaluation, and it is built against the schema
+and the non-held-out fixture scenarios only (ADR-027 session discipline).
 """
 import argparse
 import json
