@@ -1,115 +1,174 @@
 # Defence Areas — Jury Q&A Assignments
 
-**This is not module ownership.** All five of us build everywhere (ADR-014).
-This maps each person to the area they have read most deeply and **answer
-first** when the jury asks about it. Anyone may add to an answer; the named
-person opens.
+**This is not module ownership — and as of the 2026-07-30 re-plan
+(ADR-024), it is explicitly not authorship either.** One person
+(J Don Gabriel) is writing nearly all the code on the one shared laptop.
+**Four of us will defend code we did not write.** That is normal in real
+engineering teams and the jury may probe exactly this; the defence is
+genuine understanding, rehearsed aloud — never pretended authorship. If
+asked "did you write this?", the answer is the honest one: "Don drove the
+implementation; this area is mine to know, and I can walk you through it."
 
-> Assignment below is **provisional** (owner-proposed, [ASSUMED]). Confirm or
-> reshuffle at the first team sync, then remove this notice.
+## Deliverables each person owns in git (ADR-024 reassignment)
 
-Rule of preparation: each person must be able to answer their questions
-**cold — out loud, without notes, without a laptop.** Practice answers on
-each other during the Aug 11 rehearsals. If you can't answer one, that's a
-gap in the docs — fix the doc, then learn it.
+Everyone commits **their own work under their own git identity** from the
+shared laptop (CONTRIBUTING "Shared-machine identity") in daily laptop
+slots (MILESTONES). This is real work product, not decoration:
+
+| person | owns and commits |
+|---|---|
+| J Don Gabriel | nearly all implementation (generator, loader, detection, api, frontend, ops) |
+| Pavithra R | held-out scenarios (off-repo until Aug 9 — ADR-016), demo rehearsal + demo driving, README/PITCH screenshots + screenshot fallback deck |
+| Vijayalakshmi G | PITCH.md (v2 with real click path, claim branch), GLOSSARY.md |
+| Mary Vivitha M | DEMO_RUNBOOK.md upkeep, **cold-start test execution** (ADR-019, Aug 10) and its recorded results |
+| Poonkundran R | DAY2_PLAYBOOK.md upkeep, **fresh-clone verification** (Aug 8, clean Docker state) and its recorded results |
+
+## Defending code you did not write
+
+Per area: what must be explainable **cold — out loud, no notes, no
+laptop — regardless of who typed it**. Rehearsal protocol (MILESTONES):
+**round 1 Aug 9 evening** (each person teaches their area to the room; every
+stumble is a doc fix that same evening), **round 2 Aug 10** after the dress
+rehearsal, **question roulette Aug 11** (any question below, any person,
+timed). A person who cannot explain an item aloud by Aug 10 does not get
+that question deflected to Don on Day 1 — they get more rehearsal.
 
 ---
 
 ## Vijayalakshmi G — data generation & the synthetic economy
 
-Primary docs: DATA_GENERATION.md, generator config.
+Primary docs: DATA_GENERATION.md, generator config. Also owns: PITCH.md,
+GLOSSARY.md.
 
-1. *"Didn't you just detect the fraud you planted?"* — the layered answer:
-   emergent vs planted vs held-out, thresholds tuned on the honest economy
-   only, hash-committed held-out scenarios, and what the protocol does NOT
-   prove (say the limits before they ask).
+**Must be explainable regardless of authorship:**
+- The layered fraud design: honest economy → emergent (incentive
+  parameters) → planted cells → held-out overlays; where ground truth comes
+  from and why no `is_fraud` flag exists anywhere.
+- Why thresholds are calibrated on the honest economy only (circularity
+  defense), and the honest limits of the whole protocol.
+- Determinism: seed 42, byte-identical regeneration, why the dataset is
+  committed (ADR-005/006).
+- What the population table says and why it was corrected (ADR-021).
+- Why `narrative_fingerprint` still ships although typology 4 is descoped
+  (ADR-024: substrate for next-build; one sentence).
+
+1. *"Didn't you just detect the fraud you planted?"* — the layered answer,
+   ending with the claim branch OQ #12 resolved to, limits stated unprompted.
 2. *"How do you know your synthetic economy is realistic?"* — gravity-model
-   corridors, Zipf clinic/broker sizes, lognormal pricing, and honest noise:
-   the honest world deliberately contains weak versions of every fraud signal.
-3. *"Why is the dataset committed to git instead of generated fresh?"* —
-   determinism, demo stability, 3-minute boot, byte-identical regeneration
-   (seed 42), ADR-005/006.
-4. *"What does 'emergent' fraud actually mean in your generator?"* — incentive
-   parameters on actors, fraud arises from decision rules interacting; ground
-   truth is derived from parameters, never written into the data.
-5. *"How would this work with real data?"* — it wouldn't, directly: entity
-   resolution, consortium data sharing, and privacy law are the real gaps;
-   the generator exists precisely because real data is unobtainable.
+   corridors, Zipf sizes, lognormal pricing, honest noise containing weak
+   versions of every fraud signal.
+3. *"Why is the dataset committed instead of generated fresh?"* — ADR-005/006.
+4. *"What does 'emergent' fraud actually mean here?"* — incentive parameters
+   on actors; fraud from decision rules; ground truth derived, never written
+   into the data.
+5. *"How would this work with real data?"* — it wouldn't directly: entity
+   resolution, consortium sharing, privacy law; the generator exists because
+   real data is unobtainable.
 
 ## Poonkundran R — graph schema, Cypher, and why Neo4j
 
-Primary docs: DATA_MODEL.md, graph/schema.cypher, loader.
+Primary docs: DATA_MODEL.md, graph/schema.cypher, loader. Also owns:
+DAY2_PLAYBOOK.md, fresh-clone verification.
+
+**Must be explainable regardless of authorship:**
+- The claim-centric star, drawn from memory on a whiteboard.
+- Every constraint and index, each mapped to the named query that needs it —
+  and why passport/licence are deliberately NOT unique.
+- The loader contract end-to-end: wait for Bolt → schema → wipe → load →
+  manifest validation → fail loudly; wipe-and-load vs incremental, and why.
+- The OQ #1 benchmark result: LOAD CSV vs neo4j-admin import numbers, which
+  won and why (ADR-025).
+- What breaks at 10M nodes (DATA_MODEL design notes).
 
 1. *"Why Neo4j over PostgreSQL?"* — relational-not-transactional fraud;
-   variable-length traversals and community detection vs recursive CTEs;
-   ADR-001 alternatives.
-2. *"Why these constraints and indexes?"* — every index maps to a named query
-   (licence sharing, passport sharing, date windows, alert filters); and why
-   passport/licence are deliberately NOT unique.
-3. *"What breaks at 10 million nodes?"* — exact betweenness first (O(n·m) →
-   sampled), then batch windows; Community Edition limits (single DB, no
-   RBAC) bite before algorithms; DATA_MODEL design notes.
-4. *"Walk me through the model for one claim."* — the claim-centric star,
-   drawn from memory on a whiteboard: Claim → Patient/Clinic/Doctor/
-   Procedure/Insurer/Broker/Account.
-5. *"How does data get in, and how fast?"* — loader contract (wipe-and-load,
-   manifest validation), LOAD CSV vs admin import benchmark result (OQ #1).
+   traversals + community detection vs recursive CTEs; ADR-001.
+2. *"Why these constraints and indexes?"* — each maps to a named query.
+3. *"What breaks at 10 million nodes?"* — sampled betweenness, batch windows,
+   Community Edition limits bite first.
+4. *"Walk me through the model for one claim."* — the star, from memory.
+5. *"How does data get in, and how fast?"* — loader contract + the measured
+   load time and benchmark numbers (ADR-025).
 
 ## Mary Vivitha M — detection typologies & graph algorithms
 
-Primary docs: DETECTION_SPEC.md, detection rules.
+Primary docs: DETECTION_SPEC.md, detection rules. Also owns:
+DEMO_RUNBOOK.md, cold-start test execution.
 
-1. *"Explain one typology end to end."* — pick ghost clinic: behaviour →
-   signature → features → score; be ready to switch if they name another.
+**Must be explainable regardless of authorship:**
+- All four shipping typologies: behaviour → signature → features → score,
+  each in under two minutes; ghost clinic in full depth.
+- The descope story as an asset: which two were cut, why those two, and
+  that they remain fully specified as next-build (ADR-024) — say it
+  before the jury finds it.
+- What Louvain, PageRank, and betweenness each contribute, in plain words.
+- Every rule's documented FP modes and the multi-feature score mitigation.
+- The rule registry: why a seventh typology is YAML + a query, no API or
+  frontend change (this doubles as the Day-2 answer).
+
+1. *"Explain one typology end to end."* — ghost clinic by default; be ready
+   to switch to any of the four.
 2. *"Why Louvain? What does betweenness give you that degree doesn't?"* —
-   Louvain finds ring communities without labels; betweenness finds brokers
-   *bridging* communities (hubs by position, not volume); PageRank ranks
-   influence in the referral flow.
-3. *"What's your false-positive story?"* — every rule has documented FP modes
-   (exclusive-but-legitimate partnerships, standardized packages, refunds);
-   multi-feature scoring; thresholds calibrated on honest actors.
-4. *"How do you score and threshold?"* — raw features → 0–100 normalization,
-   severity bands, calibration against honest-economy FP rates (OQ #4
-   resolution).
+   communities without labels; brokers bridging communities; PageRank ranks
+   referral influence.
+3. *"What's your false-positive story?"* — documented FP modes per rule,
+   thresholds calibrated on honest actors.
+4. *"Why only four typologies?"* — capacity honesty: cut ladder pre-agreed
+   (ADR-017), executed under the one-laptop constraint (ADR-024); two more
+   are fully specified with FP modes — that's the roadmap, not a gap.
 5. *"How would you add a seventh typology right now?"* — registry entry +
-   query, no API/frontend change; this doubles as the Day-2 answer.
+   query; live answer on Day 2 if asked.
 
 ## J Don Gabriel — API design, narration, and deployment
 
 Primary docs: INTERFACES.md §5–9, api/, docker-compose, DECISIONS.md.
+Also: nearly all implementation (and first responder for any deep
+implementation question another area cannot field).
 
-1. *"Walk me through the architecture."* — the one-breath version: generator
-   → committed CSVs → seed (load + detect) → Neo4j → FastAPI → console;
-   then the why of each arrow (ADR-005, ADR-008).
-2. *"What exactly does the LLM do, and what happens offline?"* — one narration
-   call per alert at build time, committed cache, template fallback, 5 s
-   timeout on opportunistic live calls; why narration is the *only* LLM use.
-3. *"Why is the API read-mostly? Where's the write path?"* — alerts are
-   precomputed (demo safety, Day-2 lever); the only writes are investigator
-   status/notes; PATCH contract.
-4. *"How does a judge run this?"* — clone, `.env` from example, compose up,
-   3 minutes post-pull; what's pinned and why (5.26 LTS + GDS 2.13, ADR-004).
-5. *"What would production need that this doesn't have?"* — auth/RBAC
-   (Enterprise), consortium ingestion, entity resolution, incremental
-   detection instead of wipe-and-load; honest prototype/product line.
+**Must be explainable regardless of authorship:** (he wrote it — his burden
+is breadth, plus backing up the other four without taking over their
+answers.)
+
+1. *"Walk me through the architecture."* — generator → committed CSVs →
+   seed (load + detect) → Neo4j → FastAPI → console; the why of each arrow.
+2. *"What exactly does the LLM do, and what happens offline?"* — one cached
+   call per alert, committed cache, template fallback, 5 s timeout.
+3. *"Why is the API read-mostly?"* — precomputed alerts; PATCH is the only
+   write; demo safety + Day-2 lever.
+4. *"How does a judge run this?"* — clone, .env, compose up, measured boot
+   time; what's pinned and why.
+5. *"What would production need?"* — auth/RBAC, consortium ingestion, entity
+   resolution, incremental detection.
 
 ## Pavithra R — the investigator console & the demo itself
 
 Primary docs: INTERFACES.md §6–7, frontend/, PITCH.md, DEMO_RUNBOOK.md.
+Also owns: held-out scenarios (ADR-016 isolation until Aug 9), demo
+rehearsal, screenshots + fallback deck.
 
-1. *"Why don't you show the whole graph?"* — investigators triage alerts, not
-   hairballs; alert-then-drill-down (ADR-009); the 200-node server-side cap.
-2. *"Why Cytoscape.js?"* — interactive small-subgraph rendering is its sweet
-   spot; sigma/D3 trade-offs (ADR-007).
-3. *"What does an investigator actually do in this tool?"* — queue → evidence
-   subgraph → narration → status/note; drive the demo path from muscle
-   memory, including the rehearsed recovery if something breaks (RUNBOOK).
+**⛔ Until the held-out results are committed (Aug 9) she does not read
+DETECTION_SPEC.md or `detection/` — her rehearsal of the demo click path
+uses the console only, and her typology vocabulary comes from GLOSSARY.md,
+which stays spec-safe.**
+
+**Must be explainable regardless of authorship:**
+- The demo click path from muscle memory, including every rehearsed
+  recovery (RUNBOOK failure drills) and the screenshot-deck fallback.
+- Why alert-then-drill-down, never the full graph (ADR-009); the 200-node
+  server-side cap.
+- How the console stays typology-agnostic (self-describing alerts,
+  data-driven styling).
+- The held-out protocol from the author's side: what she authored from,
+  what she never saw, what the hashes prove, what the claim does NOT prove.
+
+1. *"Why don't you show the whole graph?"* — investigators triage alerts,
+   not hairballs; ADR-009; the cap.
+2. *"Why Cytoscape.js?"* — small interactive subgraphs are its sweet spot;
+   trade-offs per ADR-007.
+3. *"What does an investigator actually do in this tool?"* — queue →
+   evidence → narration → status/note; drive it from muscle memory.
 4. *"How does the console handle a brand-new typology?"* — it doesn't need
-   to know: alerts are self-describing (typology key, title, implicated
-   roles), styling is data-driven.
+   to know; alerts are self-describing.
 5. *"You wrote the held-out scenarios — how, and why you?"* — authored
-   outside the repo from schema docs only, without reading the detection
-   spec (isolation rule, ADR-016 — role confirmed via the OQ #12
-   attestation); hash-committed before evaluation; state the protocol's
-   limits unprompted (she is the person most fluent in its honest
-   boundaries).
+   off-repo from schema docs only, without reading the detection spec
+   (ADR-016, OQ #12 attestation); hash-committed before evaluation; state
+   the protocol's limits unprompted.

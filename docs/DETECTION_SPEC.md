@@ -1,6 +1,18 @@
 # Detection Specification
 
-Each of the six typologies: the real-world behaviour, its graph signature, the
+> **Scope status (2026-07-30, ADR-024):** typologies **1, 2, 3 and 5 ship**.
+> Typologies **4 and 6 are descoped** — the ADR-017 cut ladder was executed
+> when capacity collapsed to one shared machine (~110–130 h). Their sections
+> below are kept in full, deliberately: they are the specified,
+> FP-mode-documented **"what we would build next"** — a pitch and Day-2
+> asset, not a gap. Generator-output consequences:
+> `narrative_fingerprint` (claims.csv) is now **unused by any shipping
+> typology** — it still ships in the data as the ready substrate for
+> typology 4. `OWNS_STAKE_IN` and `TRANSFERRED` remain **in use** by
+> shipping typology 3 (shared-infrastructure signature) — descoping 6 does
+> not orphan them.
+
+Each typology below: the real-world behaviour, its graph signature, the
 detection approach, the inputs it needs, and — critically — the ways it
 produces **false positives**. Being able to explain the FP modes is what
 separates "we detect fraud" from "we understand fraud detection."
@@ -138,7 +150,12 @@ infrastructure overlap, and centrality percentile.
 
 ---
 
-## 4. Template cloning
+## 4. Template cloning — DESCOPED (ADR-024; not built)
+
+*Descoped 2026-07-30: highest algorithmic risk (fingerprint-distance tuning,
+OQ #3) and the most calibration time, against a collapsed hour budget. Kept
+specified as the first thing we would build next — the data
+(`narrative_fingerprint` on every claim) already supports it.*
 
 **Real-world behaviour.** A claim mill perfects one claim package — narrative,
 line items, cost breakdown — and resubmits it across many patients, sometimes
@@ -206,7 +223,12 @@ table.
 
 ---
 
-## 6. Circular payment
+## 6. Circular payment — DESCOPED (ADR-024; not built)
+
+*Descoped 2026-07-30: bounded Cypher work, but the least demo-critical of the
+six against a collapsed hour budget. Kept specified as next-build — the data
+(`TRANSFERRED` flows, shell accounts) already supports it, and typology 3
+still uses those same edges.*
 
 **Real-world behaviour.** Money leaves a clinic's account and returns to it
 (or its broker's) through one or more shell accounts — laundering kickbacks
@@ -239,4 +261,5 @@ at our scale; the filters do the work.
 Detection quality is reported as precision/recall against (a) planted-fraud
 ground truth and (b) the held-out scenarios, exactly once, after the freeze —
 protocol and honest limits in DATA_GENERATION.md §5–6. Numbers, including
-misses, go into PITCH.md and DECISIONS.md.
+misses, go into PITCH.md and DECISIONS.md. The evaluation covers the four
+shipping typologies only (ADR-024).

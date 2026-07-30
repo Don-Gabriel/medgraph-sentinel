@@ -33,10 +33,12 @@ Fraud is a network. Detection that can't see the network can't see the fraud.
 1. **Builds the graph.** Patients, doctors, clinics, brokers, claims,
    credentials, payment accounts, devices, and addresses become nodes in a
    Neo4j graph database; every real-world relationship becomes an edge.
-2. **Finds suspicious structure.** Six detection typologies — from ghost
-   clinics to circular payment loops — implemented as graph algorithms
-   (community detection, centrality) and targeted graph queries. Each finding
-   becomes a scored, explainable alert.
+2. **Finds suspicious structure.** Four detection typologies — ghost
+   clinics, credential laundering, kickback rings, impossible travel —
+   implemented as graph algorithms (community detection, centrality) and
+   targeted graph queries. Each finding becomes a scored, explainable
+   alert. (Two further typologies are specified as the roadmap —
+   DETECTION_SPEC, ADR-024.)
 3. **Explains it to a human.** An investigator console shows an alert queue;
    clicking an alert reveals the exact subgraph of evidence and a plain-English
    narration of why this pattern is suspicious.

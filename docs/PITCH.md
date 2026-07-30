@@ -9,7 +9,7 @@ runs at every rehearsal. Speaker names follow DEFENCE_AREAS (provisional).
 | time | beat | speaker | content |
 |---|---|---|---|
 | 0:00–1:00 | Hook | Don Gabriel | One patient journey, five record-keepers, nobody sees the chain. "Every record looks fine. The fraud is only visible in the relationships." One sentence on what we built. |
-| 1:00–2:00 | The insight | Mary Vivitha | Per-claim detection catches bad claims, never bad *networks*; organised fraud is always a network. Fraud-is-relational ⇒ graph database. Name the six typologies in one breath. |
+| 1:00–2:00 | The insight | Mary Vivitha | Per-claim detection catches bad claims, never bad *networks*; organised fraud is always a network. Fraud-is-relational ⇒ graph database. Name the four shipping typologies in one breath; "two more are specified and waiting" (ADR-024 — roadmap, said with confidence, not apology). |
 | 2:00–2:45 | What we built | Poonkundran | 30-second architecture: synthetic economy → Neo4j graph (50k nodes) → detection layer → investigator console. "docker compose up, three minutes, everything you're about to see runs offline on this laptop." |
 | 2:45–6:30 | **Live demo** | Pavithra (drives) + Mary (narrates findings) | The click path below. |
 | 6:30–7:45 | How we know it works | Vijayalakshmi | The circularity defense as a *feature*: emergent vs planted fraud, frozen detection spec, hash-committed held-out scenarios, evaluated once. Show the precision/recall slide **including misses**. Use the claim branch that OQ #12 resolved to (below) — never the stronger one on spec. State the limits unprompted (synthetic ≠ real world). |
@@ -29,9 +29,10 @@ runs at every rehearsal. Speaker names follow DEFENCE_AREAS (provisional).
 4. Narration panel: the plain-English explanation. Say it's a cached Claude
    call with an offline fallback — honesty beats magic.
 5. Mark the alert `reviewed` with a note — the investigator workflow beat.
-6. Second alert, different family: `circular_payment` — walk the money cycle
-   through the shell account (structural, not statistical — the contrast
-   with alert #1 shows range).
+6. Second alert, different family: `impossible_travel` — one identity on two
+   operating tables in two countries days apart (structural, not
+   statistical — the contrast with alert #1 shows range, and it lands in
+   one sentence).
 7. Back to queue; point at an alert we'll *dismiss* live as a documented
    false positive (standardized dental package) — showing FP awareness is
    worth more than a seventh feature.

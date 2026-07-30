@@ -324,6 +324,60 @@ truth as `hidden_stake`. **Measured, seed 42: 35 stake edges — 25 honest,
 feature, not a label, and the circularity defense holds. DETECTION_SPEC
 needs no change — its signature and FP modes now both exist in data.
 
+## ADR-024 — Capacity collapse to one laptop; ADR-017 cut ladder executed (2026-07-30)
+
+**Context (owner-reported):** the team no longer works in parallel — all
+five members share **one laptop**, with J Don Gabriel driving nearly all
+implementation. Real capacity is **~110–130 total hours**, not the ~475
+person-hours MILESTONES assumed. ADR-017 said any further loss triggers the
+pre-agreed cut order; this is that loss, at maximum size.
+
+**Decisions:**
+
+1. **Cut ladder steps 1–2 executed now**, not held as contingency:
+   typology 4 (template cloning) and typology 6 (circular payment) are
+   descoped. We ship typologies **1, 2, 3, 5**. Both descoped sections stay
+   fully specified in DETECTION_SPEC as the deliberate "what we would build
+   next" — a pitch asset (roadmap with documented FP modes), not a gap.
+2. **Generator-output consequences, stated precisely:**
+   `narrative_fingerprint` is now consumed by no shipping typology (it
+   still ships in claims.csv as typology-4 substrate; the
+   `claim_fingerprint` index was removed from schema.cypher/DATA_MODEL so
+   that every index maps to a shipping query). **`OWNS_STAKE_IN` and
+   `TRANSFERRED` are NOT orphaned** — shipping typology 3's
+   shared-infrastructure signature uses both (the tasking's assumption that
+   OWNS_STAKE_IN falls unused was checked against DETECTION_SPEC §3 and is
+   incorrect; flagged rather than silently adopted, per working rule 1).
+3. **MILESTONES rewritten** for 13 days / one implementer / ~125 h planned
+   (fits 110–130 with zero slack). All anchored dates hold: detection
+   freeze Aug 6, integration freeze Aug 8, dress rehearsal Aug 10, Day 1
+   Aug 12. Extended cut ladder recorded there (next: console conveniences →
+   subgraph hops=2 → live-narration path → typology 3 centrality term).
+4. **Non-code work reassigned** so git history shows five real
+   contributors and each person owns a defensible deliverable: Pavithra
+   (held-out scenarios, demo rehearsal, screenshots), Vijayalakshmi
+   (PITCH, GLOSSARY), Mary (DEMO_RUNBOOK, cold-start execution),
+   Poonkundran (DAY2_PLAYBOOK, fresh-clone verification). Each commits
+   under their own git identity from the shared laptop — CONTRIBUTING
+   "Shared-machine identity" documents the switch procedure.
+5. **DEFENCE_AREAS updated for the harder truth:** four people defend code
+   they did not write. Per area it now lists what must be explainable
+   regardless of authorship; MILESTONES adds aloud-rehearsal rounds
+   (Aug 9, Aug 10) plus the Aug 11 question roulette. Authorship is never
+   pretended — "Don drove the implementation; this area is mine to know."
+6. **CONTRIBUTING's parallel-work/collision protocol retired** (it assumed
+   five machines). INTERFACES.md remains the contract, including its change
+   protocol. New standing risk: the laptop is a single point of failure —
+   push at the end of every session.
+7. **PITCH demo beat 6 swapped** from `circular_payment` to
+   `impossible_travel` (the vivid one-sentence contrast that survives the
+   cut).
+
+**Alternatives considered:** keeping six typologies with shallower
+implementations (rejected: five solid beat six shaky was already ADR-017's
+logic — four solid beats six shaky harder); moving a freeze (rejected: the
+freezes protect the held-out protocol and the demo, which are the pitch).
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*
