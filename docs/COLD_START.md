@@ -6,9 +6,11 @@ at the venue. Written for a tired person on any Docker-capable machine.
 Every command is copy-pasteable into PowerShell. **Nothing in this
 sequence needs the internet after step 2.**
 
-The bundle lives at `C:\WorkSpace\Private\medgraph-demo-usb\`
-(built 2026-07-30: `medgraph-images.tar` **476 MB**, `medgraph.bundle`
-**2.1 MB**, `RESTORE.txt`). Any USB stick of 1 GB+ works.
+The bundle lives at `C:\WorkSpace\Private\medgraph-demo-usb\`, rebuilt
+from final `main` on 2026-07-31 (measured): `medgraph-images.tar`
+**475 MB**, `medgraph.bundle` **9.7 MB**, the 7 deck PNGs and
+`demo-recording.webm` loose (**8.4 MB**), `RESTORE.txt` — **493 MB
+total.** Any USB stick of 1 GB+ works.
 
 **The screenshot deck and the demo recording are committed to the repo**, so
 they are already inside `medgraph.bundle` — nothing extra to remember at
