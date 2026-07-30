@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import cytoscape from "cytoscape";
-import { buildStylesheet, typeStyle, COSE_LAYOUT } from "../lib/graphStyle";
+import {
+  buildStylesheet,
+  typeStyle,
+  COSE_LAYOUT,
+  spreadImplicatedActors,
+} from "../lib/graphStyle";
 import { formatValue, labelize } from "../lib/format";
 
 // Props shown in the hover tooltip, in priority order; the first four
@@ -39,12 +44,26 @@ export default function SubgraphCanvas({ elements, onNodeClick, onReady }) {
   useEffect(() => {
     if (!elements) return undefined;
     setTip(null); // a rebuilt graph invalidates any hover tooltip
-    const dense = elements.nodes.length > 150;
+    // Dense mode = labels only on implicated nodes. Threshold 60, not 150:
+    // the ghost-clinic evidence view is 117 nodes, so at 150 it labelled
+    // every neighbouring patient and doctor — thirty-odd names competing
+    // with the four that carry the finding (clinic, broker, account,
+    // address). The 19-node impossible-travel view sits well under 60 and
+    // keeps its neighbour labels, where they still help.
+    const dense = elements.nodes.length > 60;
     const cy = cytoscape({
       container: containerRef.current,
       elements, // verbatim from GET /alerts/{id}/subgraph
       style: buildStylesheet(dense),
       layout: { ...COSE_LAYOUT },
+    });
+
+    // cose can drop the co-hubbed key actors on one spot (see
+    // spreadImplicatedActors); separate them once the layout settles, then
+    // re-fit so nothing sits outside the frame.
+    cy.one("layoutstop", () => {
+      spreadImplicatedActors(cy);
+      cy.fit(undefined, 30);
     });
 
     cy.on("tap", "node", (evt) => {

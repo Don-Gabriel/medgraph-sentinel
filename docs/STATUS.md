@@ -1,76 +1,70 @@
 # STATUS — snapshot, not a log
 
-**Updated:** 2026-07-30 late (batch 2: freeze + API + console session,
-J Don Gabriel) · **Days to Day 1 (Aug 12): 13**
+**Updated:** 2026-07-30, end of build · **Days to Day 1 (Aug 12): 13**
 
-## ⛔ THE DATASET IS FROZEN (ADR-031)
+---
 
-`data/` — 51,990 nodes / 197,251 relationships / 7.6 MB, seed 42, planted
-cells + parallel recycling included — plus the exported **81 alerts /
-2,098 IMPLICATES** (`alerts.csv`, `rel_implicates.csv`, pinned
-`created_at 2026-07-30T00:00:00Z`) are the demo artifacts. Compose-up
-loads alerts as data (ADR-029); no clone ever runs detection.
+# ⛔ CODE IS FROZEN (2026-07-30)
 
-**Unfreeze cost, stated plainly:** any regeneration or detection re-run
-= the FULL ADR-018 chain from the top (regenerate → load → detect →
-export → rebuild narration cache → recommit as one unit) and eats a
-rehearsal day. After Aug 8: demo-blocker emergency only. The narration
-cache (Aug 3) is chain stage 2 — nothing regenerates between.
+**The build is done. From this moment, changes are permitted for exactly
+three reasons:**
 
-## Standing context
+1. **Cold-start findings** — whatever the Aug 4–5 offline drill breaks.
+2. **Rehearsal breakage** — something that reads wrong or fails when said
+   aloud, or a demo-path defect found while practising.
+3. **Factual corrections** — a wrong number or stale claim in a doc.
 
-- **SOLO (ADR-027).** Held-out scenarios sealed outside the repo
-  (hashes: HELDOUT_COMMITMENT.md, commit `290101e`) until the Aug 9
-  one-shot. Claim = ordering, not independence (DATA_GENERATION §5).
-- Rehearsal-weighted plan (MILESTONES): console → narration Aug 3 →
-  **early cold-start Aug 4–5** → freezes Aug 6/8 → held-out Aug 9 →
-  dress rehearsal Aug 10 (confirmation).
+**Everything else is out of scope, including "just polishing".** No new
+features, no refactors, no visual tweaks, no extra typologies, no
+"while I'm in here". If you find yourself editing code for any reason not
+on that list of three, stop — the remaining risk in this project is
+delivery, not software.
 
-## DONE (2026-07-30, batch 2 — PRs #6, #7 + freeze commit)
+Unfreezing the dataset is a separate, harder rule (ADR-031/032): any
+regeneration re-runs the whole ADR-018 chain including re-narration, and
+after Aug 8 it is a demo-blocker emergency only.
 
-- **API complete (INTERFACES §6):** stats/list/detail/subgraph(300 cap)/
-  narration-fallback/PATCH/entities; 29 new tests (suite 64+); live
-  smoke: list 18 ms, hops=1 subgraph 267–712 ms, hops=2 3–5 s (watch
-  item — console defaults hops=1). Contract change: subgraph cap 300
-  (owner decision).
-- **Generator finished + dataset frozen (ADR-031):** scenario overlays
-  (full §3, fixtures, byte-determinism proven), planted cells (3 ghost +
-  3 credential), parallel recycling (3 impossible passport groups).
-- **Dev-set results (frozen rules, nothing tuned):** planted cells 3/3
-  caught at high for BOTH typologies 1 and 2; impossible groups 3/3 at
-  high; kickback 6/13 brokers (unchanged misses = sub-median-volume
-  steerers); low-severity FP tail is the documented honest-noise floor.
-  Full table + honest findings: ADR-031.
-- Honest economy still yields **zero medium+ alerts on every rule**.
-- **Console COMPLETE (M2 exit passed):** queue (filters = counts,
-  heat-ramp severity), Cytoscape hero view (ember-haloed implicated
-  nodes, tuned cose — OQ #6 closed, type legend, hover/click inspect,
-  async 2-hop expand), evidence panel (formatted summary_params, roles,
-  narration with honest source tag), PATCH disposition with optimistic
-  update. Visually verified at 1440/768; 0 console errors; fonts
-  bundled offline (@fontsource); build 614 kB.
+---
 
-- **Narration COMPLETE (ADR-032, pulled forward from Aug 3):** all 81
-  alerts carry committed pre-generated narrations (assistant session,
-  canonical prompt template, prompt_sha256 pinned, zero API calls ever);
-  UI tags them "pre-generated AI narration"; `/health` now checks cache
-  completeness by alert-id set (`missing` surfaced, tested). **The
-  ADR-018 chain is fully committed: dataset + alerts + narration cache.**
-- **Cold-start prepared (ADR-033 single machine):** offline bundle built
-  and staged; docs/COLD_START.md is the hand-run venue script; only the
-  owner-physical steps remain (USB walk, network adapter, Aug 4–5 run).
+## What exists (all merged to main, all verified running)
 
-## NEXT (priority order)
+| layer | state |
+|---|---|
+| Generator | Frozen seed-42 economy + overlays + planted cells (ADR-031). Byte-identical on re-run. |
+| Graph | Neo4j 5.26 + GDS 2.13.11, our own image with GDS baked in (ADR-026). Seeds in ~21 s. |
+| Detection | 4 typologies, config-driven registry, calibrated on the honest economy only (ADR-030); centrality benchmarked out (ADR-028). |
+| Alerts | **81**, precomputed and committed as CSV data — no clone ever runs detection (ADR-029). |
+| Narration | **81/81 pre-generated and committed**, zero API calls ever (ADR-032). `/health` guards completeness by alert-id set. |
+| API | Full INTERFACES §6 surface, 300-node subgraph cap. |
+| Console | Queue + Cytoscape evidence view + case file + disposition; projector-legibility pass done (ADR-035). |
+| Demo backup | `screenshot-deck/` (7 beats, 1920×1080) + `demo-recording.webm` (53.7 s, 5.9 MB), both committed. |
+| Offline bundle | Staged at `C:\WorkSpace\Private\medgraph-demo-usb\`; drill script `docs/COLD_START.md`. |
+| Tests | **70 passing.** |
 
-1. Owner-physical: EARLY COLD-START (Aug 4–5) per docs/COLD_START.md.
-2. Aug 3: contingency + PITCH v3 + first full aloud pass of the
-   DEFENCE_AREAS bank.
-3. Freezes Aug 6/8, held-out one-shot Aug 9, rehearsals Aug 9–11 —
-   unchanged.
+## Evaluation results (final — do not restate from memory, read them)
+
+- **Honest economy:** zero medium-or-high alerts on every rule.
+- **Dev set:** planted cells 3/3 (ghost) and 3/3 (credential), all `high`;
+  impossible-travel groups 3/3 `high`; kickback precision 1.0, broker
+  recall 6/13.
+- **Held-out (one shot, pre-registered):** 5 scenarios · 8 legs expected ·
+  **5 detected · 3 missed · 2 root causes**; all 5 scenarios raised at
+  least one alert. Identical numbers in PITCH.md, README.md and
+  HELDOUT_COMMITMENT.md — change one, change all three.
+
+## What remains — rehearsal, not building
+
+1. **Rehearsal.** The pitch has never been said out loud. This is now the
+   single largest risk in the project. Kit is ready: PITCH.md is a runnable
+   script with cumulative timestamps, a self-scoring rubric, 15 ranked
+   questions, and 60-second / 3-minute versions.
+2. **Cold start (Aug 4–5, owner-physical).** docs/COLD_START.md, phases
+   1–6. Only the USB walk and the network adapter are human steps.
+3. **Day-2 drills.** Three turnkey cards in DAY2_PLAYBOOK.md.
+4. **Two freeze-formality commits** (Aug 6 detection, Aug 8 integration),
+   each recording that nothing changed — which is the point.
+5. **Repo public**, Aug 11 evening.
 
 ## Decisions awaiting a human
 
-- (none) — API key moot (ADR-032); backup laptop resolved (ADR-033:
-  single machine, owner-owned contingency); OQ #14 moot for this build
-  (dataset frozen with the planted post-revocation biller exercising
-  the ramp).
+- (none)

@@ -8,8 +8,14 @@ sequence needs the internet after step 2.**
 
 The bundle lives at `C:\WorkSpace\Private\medgraph-demo-usb\`
 (built 2026-07-30: `medgraph-images.tar` **476 MB**, `medgraph.bundle`
-**2.1 MB**, `RESTORE.txt`). Any USB stick of 1 GB+ works; 4 GB+ if you
-also carry the screenshot deck and demo recording (added Aug 7).
+**2.1 MB**, `RESTORE.txt`). Any USB stick of 1 GB+ works.
+
+**The screenshot deck and the demo recording are committed to the repo**, so
+they are already inside `medgraph.bundle` — nothing extra to remember at
+export time. After cloning (step 8) they are at
+`screenshot-deck/` (7 PNGs, 1920×1080) and `demo-recording.webm`. Copy both
+loose onto the stick as well: if Docker itself is dead, the stick must hand
+you the fallback deck without a git clone standing between you and it.
 
 ## Phase 1 — copy to USB (one-time, online is fine)
 

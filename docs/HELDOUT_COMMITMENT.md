@@ -73,10 +73,27 @@ verifiably, and the calendar date is retired.
 
 Executed the same evening as the pre-registration above, in order:
 hashes re-verified (all five match the table) → injected into a separate
-data dir → frozen rules run once → results committed verbatim (ADR-034:
-leg recall 5/8, two structural misses explained in PITCH.md) → scenario
+data dir → frozen rules run once → results committed verbatim → scenario
 files committed to `data/scenarios/heldout/`, where `Get-FileHash
 -Algorithm SHA256` reproduces the rows above.
+
+**The numbers, stated unambiguously (identical in PITCH.md §held-out and
+README.md §validation — change one, change all three):**
+
+| quantity | value |
+|---|---|
+| scenarios injected | **5** |
+| scenarios raising ≥ 1 alert | **5 of 5** |
+| detection legs expected | **8** (S1–S4 one each; S5 composite expects all four) |
+| legs detected | **5** |
+| legs missed | **3** |
+| distinct root causes for the misses | **2** |
+
+The three missed legs: S2 credential, S5 credential, S5 travel. Root cause
+A (composed false-positive guards in the credential rule) accounts for two
+of them; root cause B (deliberately conservative whole-day travel matrix)
+accounts for the third. Neither was fixed — see the pre-registration
+above. Full analysis: ADR-034; delivery wording: PITCH.md.
 
 ## What this does and does not prove
 

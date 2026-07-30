@@ -763,18 +763,21 @@ against the 290101e commitment (all five match) → scenarios injected via
 **Stability proof:** 97 total alerts − 16 touching scenario entities =
 exactly the 81 dev alerts — injection perturbed nothing upstream.
 
-**Results (expected-typology leg recall 5/8):**
+**Results — exact counts (5 scenarios · 8 legs expected · **5 detected** ·
+**3 missed** · **2 distinct root causes**; 5 of 5 scenarios raised at
+least one alert). The three missed legs are S2 credential, S5 credential,
+S5 travel — the first two share one root cause.**
 
 | scenario | expected | outcome |
 |---|---|---|
 | S1 ghost_satellite | ghost_clinic | caught low 42.7 (veneer suppressed footprint, as probed) + kickback/credential cross-hits |
-| S2 license_shadow | credential_laundering | **MISSED** — both designed traps worked: the same-body-or-country guard nulls cross-jurisdiction shares; the other-active-credential guard nulls the revoked biller |
+| S2 license_shadow | credential_laundering | **MISSED** — the rule's same-body-or-country guard nulls a cross-jurisdiction licence share, and its other-active-credential guard nulls the revoked biller. Both guards are individually justified; composed, they leave a gap |
 | S3 quiet_kickback | kickback_ring | caught medium 54.6 + low 40.8 (both pairs); clinics drew ghost mediums 66.9/65.8 |
 | S4 split_ledger | impossible_travel | caught low 42.0 (same-day pair fired; severity floor because every escalation signal was deliberately absent) |
-| S5 confluence | all four | ghost medium 56.9/52.4 + kickback low 45.2/44.7 caught; credential + travel legs missed **as engineered** (gaps 2–26 days all feasible; both-active cross-country licence) |
+| S5 confluence | all four | ghost medium 56.9/52.4 + kickback low 45.2/44.7 caught; **credential and travel legs MISSED** — same credential guard-composition gap as S2, and the travel rule does not flag the scenario's 2–26 day gaps because they are physically feasible |
 
 Every scenario was touched by at least one rule (5/5) — cross-typology
-redundancy is real — but the two misses are systematic, not noise:
+redundancy is real — but the three missed legs are systematic, not noise:
 **FP guards compose into blind spots** (credential) and **conservatism
 excludes feasible-but-suspicious** (travel). Both fixes specified as
 next-build; neither applied (pre-registration). Precision is not scored on

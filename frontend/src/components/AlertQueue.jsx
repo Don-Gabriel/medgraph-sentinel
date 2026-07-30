@@ -1,10 +1,26 @@
 import { formatDate, formatScore } from "../lib/format";
 
+// Severity banding: every row carries a full-height left edge in its heat
+// colour (ember/amber/ash), and high/medium rows get a whisper of the same
+// hue as background tint — the hot top of the queue reads as a zone before
+// any number is read. Heat ramp only; teal stays reserved for interaction.
 const SEVERITY = {
-  high: { text: "text-heat-high", bar: "bg-heat-high" },
-  medium: { text: "text-heat-med", bar: "bg-heat-med" },
-  low: { text: "text-heat-low", bar: "bg-heat-low" },
+  high: {
+    text: "text-heat-high",
+    edge: "border-l-heat-high",
+    tint: "bg-heat-high/[0.05]",
+  },
+  medium: {
+    text: "text-heat-med",
+    edge: "border-l-heat-med",
+    tint: "bg-heat-med/[0.04]",
+  },
+  low: { text: "text-heat-low", edge: "border-l-heat-low", tint: "" },
 };
+
+// Row grid: STATUS / IMPLICATED / CREATED are right-compressed to the
+// minimum their content needs so the title column absorbs the dead space.
+const ROW_GRID = "md:grid-cols-[92px_1fr_84px_80px_84px]";
 
 /**
  * The risk-sorted queue. The API already sorts by score desc (INTERFACES
@@ -24,8 +40,8 @@ export default function AlertQueue({ items, onOpen }) {
 
   return (
     <div className="border border-ink-700 bg-ink-900">
-      {/* column header */}
-      <div className="hidden grid-cols-[92px_1fr_120px_96px_104px] gap-4 border-b border-ink-700 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.16em] text-paper-dim md:grid">
+      {/* column header — pl matches the rows' 3px severity edge + 13px pad */}
+      <div className={`hidden ${ROW_GRID} gap-3 border-b border-ink-700 py-2 pl-4 pr-4 font-mono text-[10px] uppercase tracking-[0.16em] text-paper-dim md:grid`}>
         <span>Score</span>
         <span>Alert</span>
         <span>Status</span>
@@ -50,20 +66,17 @@ function QueueRow({ alert, onOpen }) {
       <button
         type="button"
         onClick={() => onOpen(alert.id)}
-        className={`grid w-full grid-cols-[92px_1fr] items-center gap-x-4 gap-y-1 px-4 py-2.5 text-left transition-colors hover:bg-ink-800 md:grid-cols-[92px_1fr_120px_96px_104px] ${
+        className={`grid w-full grid-cols-[92px_1fr] items-center gap-x-3 gap-y-1 border-l-[3px] py-2.5 pl-[13px] pr-4 text-left transition-colors hover:bg-ink-800 ${ROW_GRID} ${sev.edge} ${sev.tint} ${
           dismissed ? "opacity-50" : ""
         }`}
       >
         {/* score block: the heat ramp made visible */}
-        <span className="flex items-center gap-2.5">
-          <span className={`h-8 w-[3px] shrink-0 rounded-sm ${sev.bar}`} />
-          <span>
-            <span className={`block font-mono text-lg leading-none ${sev.text}`}>
-              {formatScore(alert.score)}
-            </span>
-            <span className={`mt-0.5 block font-mono text-[9px] uppercase tracking-[0.14em] ${sev.text} opacity-70`}>
-              {alert.severity}
-            </span>
+        <span>
+          <span className={`block font-mono text-lg leading-none ${sev.text}`}>
+            {formatScore(alert.score)}
+          </span>
+          <span className={`mt-0.5 block font-mono text-[9px] uppercase tracking-[0.14em] ${sev.text} opacity-70`}>
+            {alert.severity}
           </span>
         </span>
 
