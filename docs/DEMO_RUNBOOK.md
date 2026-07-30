@@ -4,9 +4,12 @@ Assumption baked into everything here (owner decision Q3): **the venue has no
 usable network and an untrustworthy projector.** The demo must be complete
 and impressive from local Docker on the demo laptop, cold.
 
-Executed in full on the actual demo laptop (OQ #9) at the Aug 10 dress
-rehearsal — including the cold-start acceptance test below. Every drill gets
-run at least once before Aug 12.
+Executed in full **twice** (re-planned 2026-07-30): an **early discovery
+run on Aug 4–5** — six days of slack to fix whatever it finds — and the
+Aug 10 dress rehearsal on the demo laptop (OQ #9), which is then a
+*confirmation*, not a discovery. The validity rule below (cold caches,
+adapter off) applies to both runs. Every drill gets run at least once
+before Aug 12.
 
 ## One-way demo build chain (ADR-018)
 
