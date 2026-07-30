@@ -1,0 +1,117 @@
+id,code,category,name,base_cost_usd
+PRC_000001,CAR-001,cardiac,Coronary Artery Bypass Graft,16934.74
+PRC_000002,CAR-002,cardiac,Percutaneous Coronary Intervention,9246.56
+PRC_000003,CAR-003,cardiac,Aortic Valve Replacement,20696.15
+PRC_000004,CAR-004,cardiac,Mitral Valve Repair,22544.67
+PRC_000005,CAR-005,cardiac,Cardiac Ablation,6136.65
+PRC_000006,CAR-006,cardiac,Pacemaker Implantation,8217.48
+PRC_000007,CAR-007,cardiac,Carotid Endarterectomy,15639.08
+PRC_000008,CAR-008,cardiac,Septal Defect Closure,12806.28
+PRC_000009,CAR-009,cardiac,Coronary Artery Bypass Graft - Bilateral,14653.57
+PRC_000010,CAR-010,cardiac,Percutaneous Coronary Intervention - Bilateral,10058.07
+PRC_000011,CAR-011,cardiac,Aortic Valve Replacement - Bilateral,21932.59
+PRC_000012,CAR-012,cardiac,Mitral Valve Repair - Bilateral,20952.36
+PRC_000013,CAR-013,cardiac,Cardiac Ablation - Bilateral,15210.08
+PRC_000014,CAR-014,cardiac,Pacemaker Implantation - Bilateral,24520.35
+PRC_000015,CAR-015,cardiac,Carotid Endarterectomy - Bilateral,18221.90
+PRC_000016,CAR-016,cardiac,Septal Defect Closure - Bilateral,10029.82
+PRC_000017,CAR-017,cardiac,Coronary Artery Bypass Graft - Revision,17429.82
+PRC_000018,CAR-018,cardiac,Percutaneous Coronary Intervention - Revision,9590.26
+PRC_000019,CAR-019,cardiac,Aortic Valve Replacement - Revision,21923.24
+PRC_000020,CAR-020,cardiac,Mitral Valve Repair - Revision,14436.76
+PRC_000021,CAR-021,cardiac,Cardiac Ablation - Revision,13586.23
+PRC_000022,CAR-022,cardiac,Pacemaker Implantation - Revision,10868.04
+PRC_000023,ORT-001,orthopaedic,Total Knee Replacement,16139.36
+PRC_000024,ORT-002,orthopaedic,Total Hip Replacement,9303.89
+PRC_000025,ORT-003,orthopaedic,Spinal Fusion,8338.75
+PRC_000026,ORT-004,orthopaedic,Rotator Cuff Repair,8596.81
+PRC_000027,ORT-005,orthopaedic,ACL Reconstruction,12245.62
+PRC_000028,ORT-006,orthopaedic,Lumbar Discectomy,11454.95
+PRC_000029,ORT-007,orthopaedic,Shoulder Arthroscopy,11673.69
+PRC_000030,ORT-008,orthopaedic,Ankle Fixation,11758.46
+PRC_000031,ORT-009,orthopaedic,Total Knee Replacement - Bilateral,23310.50
+PRC_000032,ORT-010,orthopaedic,Total Hip Replacement - Bilateral,8412.16
+PRC_000033,ORT-011,orthopaedic,Spinal Fusion - Bilateral,8063.50
+PRC_000034,ORT-012,orthopaedic,Rotator Cuff Repair - Bilateral,7147.31
+PRC_000035,ORT-013,orthopaedic,ACL Reconstruction - Bilateral,12662.39
+PRC_000036,ORT-014,orthopaedic,Lumbar Discectomy - Bilateral,15546.47
+PRC_000037,ORT-015,orthopaedic,Shoulder Arthroscopy - Bilateral,9456.15
+PRC_000038,ORT-016,orthopaedic,Ankle Fixation - Bilateral,7072.27
+PRC_000039,ORT-017,orthopaedic,Total Knee Replacement - Revision,7116.76
+PRC_000040,ORT-018,orthopaedic,Total Hip Replacement - Revision,12838.93
+PRC_000041,ORT-019,orthopaedic,Spinal Fusion - Revision,13323.73
+PRC_000042,ORT-020,orthopaedic,Rotator Cuff Repair - Revision,12298.86
+PRC_000043,ORT-021,orthopaedic,ACL Reconstruction - Revision,7584.00
+PRC_000044,ORT-022,orthopaedic,Lumbar Discectomy - Revision,10860.25
+PRC_000045,COS-001,cosmetic,Rhinoplasty,4714.24
+PRC_000046,COS-002,cosmetic,Abdominoplasty,4960.91
+PRC_000047,COS-003,cosmetic,Blepharoplasty,6875.46
+PRC_000048,COS-004,cosmetic,Liposuction,4973.10
+PRC_000049,COS-005,cosmetic,Hair Transplantation,6244.50
+PRC_000050,COS-006,cosmetic,Breast Augmentation,4599.90
+PRC_000051,COS-007,cosmetic,Facelift,5138.72
+PRC_000052,COS-008,cosmetic,Otoplasty,6097.56
+PRC_000053,COS-009,cosmetic,Rhinoplasty - Bilateral,2146.13
+PRC_000054,COS-010,cosmetic,Abdominoplasty - Bilateral,3790.16
+PRC_000055,COS-011,cosmetic,Blepharoplasty - Bilateral,3515.07
+PRC_000056,COS-012,cosmetic,Liposuction - Bilateral,3231.05
+PRC_000057,COS-013,cosmetic,Hair Transplantation - Bilateral,3875.50
+PRC_000058,COS-014,cosmetic,Breast Augmentation - Bilateral,9390.66
+PRC_000059,COS-015,cosmetic,Facelift - Bilateral,2884.44
+PRC_000060,COS-016,cosmetic,Otoplasty - Bilateral,7216.60
+PRC_000061,COS-017,cosmetic,Rhinoplasty - Revision,1917.09
+PRC_000062,COS-018,cosmetic,Abdominoplasty - Revision,3761.44
+PRC_000063,COS-019,cosmetic,Blepharoplasty - Revision,4824.09
+PRC_000064,COS-020,cosmetic,Liposuction - Revision,5961.70
+PRC_000065,DEN-001,dental,Dental Implant Placement,2655.77
+PRC_000066,DEN-002,dental,Full Mouth Rehabilitation,2744.46
+PRC_000067,DEN-003,dental,Sinus Lift,1738.03
+PRC_000068,DEN-004,dental,Bone Graft,1660.81
+PRC_000069,DEN-005,dental,Zirconia Crown Restoration,2816.33
+PRC_000070,DEN-006,dental,Root Canal Retreatment,1850.99
+PRC_000071,DEN-007,dental,Veneer Placement,1199.58
+PRC_000072,DEN-008,dental,Wisdom Tooth Extraction,1269.89
+PRC_000073,DEN-009,dental,Dental Implant Placement - Bilateral,1383.29
+PRC_000074,DEN-010,dental,Full Mouth Rehabilitation - Bilateral,2437.83
+PRC_000075,DEN-011,dental,Sinus Lift - Bilateral,2115.34
+PRC_000076,DEN-012,dental,Bone Graft - Bilateral,2633.83
+PRC_000077,DEN-013,dental,Zirconia Crown Restoration - Bilateral,1684.29
+PRC_000078,DEN-014,dental,Root Canal Retreatment - Bilateral,2129.02
+PRC_000079,DEN-015,dental,Veneer Placement - Bilateral,2566.34
+PRC_000080,DEN-016,dental,Wisdom Tooth Extraction - Bilateral,1765.63
+PRC_000081,DEN-017,dental,Dental Implant Placement - Revision,2398.77
+PRC_000082,DEN-018,dental,Full Mouth Rehabilitation - Revision,1533.38
+PRC_000083,DEN-019,dental,Sinus Lift - Revision,1728.10
+PRC_000084,DEN-020,dental,Bone Graft - Revision,1715.23
+PRC_000085,FER-001,fertility,In Vitro Fertilisation Cycle,4824.47
+PRC_000086,FER-002,fertility,Intracytoplasmic Sperm Injection,8694.45
+PRC_000087,FER-003,fertility,Frozen Embryo Transfer,6221.14
+PRC_000088,FER-004,fertility,Egg Retrieval,7364.11
+PRC_000089,FER-005,fertility,Intrauterine Insemination,8675.53
+PRC_000090,FER-006,fertility,Ovarian Reserve Assessment,8572.25
+PRC_000091,FER-007,fertility,Hysteroscopic Polypectomy,9254.68
+PRC_000092,FER-008,fertility,Embryo Cryopreservation,7083.55
+PRC_000093,FER-009,fertility,In Vitro Fertilisation Cycle - Bilateral,6322.35
+PRC_000094,FER-010,fertility,Intracytoplasmic Sperm Injection - Bilateral,7130.23
+PRC_000095,FER-011,fertility,Frozen Embryo Transfer - Bilateral,4062.01
+PRC_000096,FER-012,fertility,Egg Retrieval - Bilateral,4418.30
+PRC_000097,FER-013,fertility,Intrauterine Insemination - Bilateral,4614.94
+PRC_000098,FER-014,fertility,Ovarian Reserve Assessment - Bilateral,5171.74
+PRC_000099,FER-015,fertility,Hysteroscopic Polypectomy - Bilateral,8433.11
+PRC_000100,FER-016,fertility,Embryo Cryopreservation - Bilateral,5340.54
+PRC_000101,ONC-001,oncology,Tumour Resection,14926.88
+PRC_000102,ONC-002,oncology,Chemotherapy Cycle,34531.05
+PRC_000103,ONC-003,oncology,Radiotherapy Course,15091.21
+PRC_000104,ONC-004,oncology,Radical Prostatectomy,26075.67
+PRC_000105,ONC-005,oncology,Mastectomy,11307.16
+PRC_000106,ONC-006,oncology,Colorectal Resection,16273.30
+PRC_000107,ONC-007,oncology,Thyroidectomy,11214.79
+PRC_000108,ONC-008,oncology,Lymph Node Dissection,15221.79
+PRC_000109,ONC-009,oncology,Tumour Resection - Bilateral,27450.90
+PRC_000110,ONC-010,oncology,Chemotherapy Cycle - Bilateral,7603.32
+PRC_000111,ONC-011,oncology,Radiotherapy Course - Bilateral,22408.86
+PRC_000112,ONC-012,oncology,Radical Prostatectomy - Bilateral,20309.98
+PRC_000113,ONC-013,oncology,Mastectomy - Bilateral,13398.86
+PRC_000114,ONC-014,oncology,Colorectal Resection - Bilateral,8751.42
+PRC_000115,ONC-015,oncology,Thyroidectomy - Bilateral,18696.00
+PRC_000116,ONC-016,oncology,Lymph Node Dissection - Bilateral,13839.11
