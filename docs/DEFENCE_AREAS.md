@@ -9,6 +9,12 @@ the full answer lives. Rehearsal protocol at the bottom.
 Format per question: **Q** → the answer skeleton (the 3–5 things that must
 come out of my mouth) → pointer.
 
+**On pitch day, use [PITCH.md's 15 ranked questions](PITCH.md#the-15-questions-ordered-by-likelihood)
+— that is the ordered-by-likelihood bank with delivery wording.** This
+file is the wider syllabus: everything a judge *could* ask, grouped by
+area, for drilling in the days before. Where the two overlap, PITCH.md's
+wording is the one to say out loud.
+
 ---
 
 ## Area 1 — The problem & the product
