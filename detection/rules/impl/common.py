@@ -35,7 +35,11 @@ _STREAM = (
     "YIELD nodeId, communityId "
     "RETURN gds.util.asNode(nodeId).id AS id, communityId"
 )
-_DROP = f"CALL gds.graph.drop('{_LOUVAIN_GRAPH}', false)"
+# Explicit YIELD: without it the procedure returns its full row including
+# the deprecated `schema` field, and the server sends a DEPRECATION
+# notification the driver prints on every run (verified live on GDS
+# 2.13.11 / driver 6.2.0: bare call warns, YIELD graphName is silent).
+_DROP = f"CALL gds.graph.drop('{_LOUVAIN_GRAPH}', false) YIELD graphName"
 
 _louvain_cache: dict[str, str] | None = None
 
