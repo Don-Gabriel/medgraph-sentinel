@@ -1,75 +1,68 @@
-# Milestones — Solo, Rehearsal-Weighted (re-planned 2026-07-30 evening)
+# Milestones — Build Done, Rehearsal Remaining (re-planned 2026-07-30, third pass)
 
-Second re-plan of 2026-07-30: the detection layer landed **seven days ahead
-of the old M3 dates** (ADR-028/029/030), buying ~5 days. Owner decision:
-that slack goes to **the console and rehearsal, not more detection
-features**. Agreed without reservation — the jury sees the console and the
-delivery; a fifth typology would be invisible next to either. The one
-addition to the owner's framing already incorporated below: the cold-start
-test moves forward a full five days (Aug 4–5), because it is the single
-riskiest unknown left and slack only helps if the discovery happens early.
+Timeline compressed by owner direction: everything movable was pulled out
+of the calendar and into Jul 30. As of tonight the following are DONE and
+merged: detection (4 typologies, calibrated, ADR-030), frozen dataset +
+committed alerts (ADR-031), pre-generated narration cache with green
+health (ADR-032), full API (§6), the console with its projector-legibility
+fix pass, **the held-out one-shot under pre-registration (ADR-034 — leg
+recall 5/8, misses explained in PITCH)**, screenshot deck + demo
+recording, judge-facing README, turnkey Day-2 drill cards, offline bundle
+staged (476 MB tar + bundle at `C:\WorkSpace\Private\medgraph-demo-usb\`).
 
-Anchored and immovable: detection freeze **Aug 6**, integration freeze
-**Aug 8**, dress rehearsal **Aug 10**, Day 1 **Aug 12**, Day 2 **Aug 13**.
+## What code work genuinely remains — the honest answer
 
-## Order of work (owner-directed, 2026-07-30)
+**Almost none.** Exactly three things, none of them features:
 
-1. Generator: finish (overlays, planted cells, impossible-travel cases) →
-   re-evaluate all four typologies → **dataset FROZEN**.
-2. API alert endpoints per INTERFACES §6 (300-node subgraph cap).
-3. **The console — the highest-priority remaining item.** Treated as the
-   deliverable, not the wrapper.
-4. Narration build (needs `ANTHROPIC_API_KEY` — owner input; template
-   fallback ships either way).
-5. **Early cold-start rehearsal** (Aug 4–5, not Aug 10).
-6. Everything after that is rehearsal, drills, and polish.
+1. Whatever the **cold-start discovery run (Aug 4–5)** finds — the last
+   unknown in the project. Budget: unknown until it runs; historically
+   this class of test finds path/env issues worth hours, not days.
+2. Whatever **rehearsal breaks** — a wrong number in a doc, a console
+   nit that reads badly aloud. Bug-fix scale.
+3. The **freezes themselves** (Aug 6, Aug 8) — each a dedicated commit +
+   one-paragraph ADR stating nothing changed since Jul 30, which is the
+   point.
 
-## Schedule
+No new scope will be invented to fill the days. Everything else below is
+rehearsal, drills, and the physical steps only the owner can do.
 
-| date | day | target |
+## Schedule (fixed dates unchanged: freezes Aug 6/8, dress Aug 10, Day 1 Aug 12)
+
+| date | focus (h) | content |
 |---|---|---|
-| Jul 30 Thu (evening) | **generator freeze + API** | Overlay support per INTERFACES §3; planted cells (typologies 1/2); tight-window impossible recycled identities (fixes the 0-of-5 finding); full regen + re-evaluation, real numbers per typology; **dataset declared FROZEN** (unfreeze cost documented in STATUS); alert CSVs exported + committed (ADR-029). API endpoints per §6 with tests. |
-| Jul 31 Fri | **console day 1** (~8 h) | Design pass first (frontend-design skill — the console must read as designed, not default-bootstrap); alert queue: risk-sorted, severity colour-coded, typology/status filters, counts at a glance; app shell + data layer against the live API. |
-| Aug 1 Sat | **console day 2 — the hero view** (~8 h) | Cytoscape subgraph drill-down: implicated nodes visually distinct, force-directed layout, hover detail, click-to-expand one hop, never the full graph; evidence panel (rule, triggering features, specific values from summary_params). |
-| Aug 2 Sun | **console day 3 + M2 exit** (~8 h) | Status/note controls wired to PATCH; polish; **visual verification at 1440/768 px minimum**; screenshot batch 1; CI decision (OQ #7). **Exit test: queue → drill-down → evidence → status change, on the frozen dataset, end-to-end.** |
-| Aug 3 Mon | **contingency + pitch v3** (~6 h) | *(Narration landed Jul 30 — ADR-032 pre-generated cache, zero API calls; this slot converts to what the owner directed: rehearsal and contingency, not scope.)* Fix anything bleeding; PITCH v3 against the real console; first full pass of the DEFENCE_AREAS question bank aloud. |
-| Aug 4 Tue | **EARLY COLD-START — discovery run** (~5 h, mostly owner-physical) | Bundle + COLD_START.md already prepared Jul 30. Owner runs the physical sequence: copy to USB → **network adapter disabled** → restore → clean compose up → 81 alerts with pre-generated narrations. Report exactly what failed. |
-| Aug 5 Wed | **fix + drill** (~7 h) | Cold-start fix list burn-down; **Day-2 drill #1** (Shape A: Accreditor end-to-end, timed, target 90 min); PITCH v3 against the real console click path. |
-| Aug 6 Thu | **DETECTION FREEZE** (~6 h) | Dedicated freeze commit + ADR (a formality — no detection change since Jul 30, and that is the point; say so in the ADR). Timed pitch ×2. Rehearsal cards from stumbles. |
-| Aug 7 Fri | **demo assets** (~6 h) | Screenshot deck (all click-path beats) + full demo screen recording; USB sticks v1 per RUNBOOK manifest; **Day-2 drill #2** (Shape C: ×10 scale run, timed, numbers recorded). |
-| Aug 8 Sat | **INTEGRATION FREEZE (evening)** (~6 h) | Fresh-clone verification from clean Docker state, result committed to RUNBOOK; USB sticks final; git bundle. **Aloud rehearsal round 1** (every DEFENCE_AREAS question, recorded, stumbles fixed same evening). After tonight: bug fixes and docs only. |
-| Aug 9 Sun | **HELD-OUT EVALUATION** (~6 h) | The one-shot: regenerate with the five sealed overlays into a separate data dir, run frozen rules ONCE, commit precision/recall including misses (DECISIONS + PITCH + slide); commit scenario files. **Aloud rehearsal round 2.** |
-| Aug 10 Mon | **DRESS REHEARSAL — confirmation, not discovery** (~6 h) | Cold-start re-run on the demo laptop from USB (should confirm Aug 4's result); timed pitch ×2 with failure drills; remaining fix list must be empty of demo blockers by tonight. |
-| Aug 11 Tue | **final prep** (~5 h) | Question roulette (90 s/answer, full pass); pitch ×3 timed; **repo public in the evening**; both USBs re-verified item-by-item; early night. |
-| Aug 12 Wed | **Day 1** | Laptop pre-booted, compose up, click path warmed. 10-minute pitch. |
-| Aug 13 Thu | **Day 2** | Surprise-constraint sprint per DAY2_PLAYBOOK (solo protocol). |
+| Jul 31 Thu | rehearsal 1 (~5) | Timed pitch ×2 against the real console with the ADR-034 numbers; first full aloud pass of the DEFENCE_AREAS bank (record, listen back, fix stumble docs). **Fresh-clone verification pulled forward** (clone → .env → compose up → 81 alerts; ~30 min, record in RUNBOOK). |
+| Aug 1 Fri | drill A (~5) | DAY2 DRILL A executed cold, timed against the 90-min target; result + timing into the drill card. Pitch ×1. |
+| Aug 2 Sat | drill B + C (~5) | DRILL B (60 min) and DRILL C (90 min — capture the ×10 numbers table for the jury). Question-bank pass 2 on stumble cards. |
+| Aug 3 Sun | contingency (~4) | Deliberately unscheduled. If nothing is broken: rest + pitch ×1. Do not invent scope. |
+| Aug 4–5 Mon–Tue | **COLD START (owner-physical)** (~4) | docs/COLD_START.md end-to-end: USB copy, airplane mode, restore, boot, verify 81 alerts + pre-generated narrations, timing recorded. Fix list (if any) burns down Aug 5. |
+| Aug 6 Wed | **DETECTION FREEZE** (~3) | Formality commit + ADR: no detection change since Jul 30 — say so. Pitch ×2 timed. |
+| Aug 7 Thu | USB final (~4) | Both USB sticks written and verified item-by-item per RUNBOOK manifest (deck + recording now ride inside the repo). Question roulette round 1. |
+| Aug 8 Fri | **INTEGRATION FREEZE** (~3) | Formality commit + ADR. After tonight: docs and demo-blocker fixes only. Pitch ×2. |
+| Aug 9 Sat | mock day (~5) | Full dress-rehearsal dry run at home: boot sequence, 10-min pitch to a timer, roulette round 2, failure drills (deck switch under 30 s). *(The held-out evaluation formerly here ran Jul 30 under pre-registration — ADR-034.)* |
+| Aug 10 Sun | **DRESS REHEARSAL** (~4) | Cold-start CONFIRMATION run on this machine; timed pitch ×2; remaining fix list must be empty of demo blockers tonight. |
+| Aug 11 Mon | final (~3) | Pitch ×3; **repo public in the evening**; sticks re-verified; early night. |
+| Aug 12 Tue | **Day 1** | Boot sequence per RUNBOOK; pitch. |
+| Aug 13 Wed | **Day 2** | Constraint sprint per DAY2_PLAYBOOK drill discipline. |
 
-Total scheduled: **~85 h** at 5–8 h/day — genuinely lighter than the
-previous plan because the build back-half became rehearsal. Roughly 40% of
-remaining hours are rehearsal/drill/demo-prep, which is the point: the
-build is ahead; the delivery is not, yet.
+Roughly **45 scheduled hours**, ~80% rehearsal/drills/verification. The
+build phase is over; from here the deliverable is delivery.
 
-## Cut ladder (unchanged rungs that still exist)
+## Cut ladder (what's left of it)
 
-1–2. ~~Typologies 4/6~~ — cut (ADR-024). 3. Console conveniences (~3–4 h).
-4. Subgraph hops=2 (~2–3 h, `contract:`). 5. Live-narration path (~2 h).
-6. ~~Typology 3 centrality~~ — retired on evidence (ADR-028).
-7. Day-2 drill #2 (~2 h). 8. Screenshot-deck scope (~1 h).
-
-Never cut: freezes, both cold-start runs, held-out evaluation, narration
-fallback, typologies 1/2/3/5, aloud rehearsals, at least one Day-2 drill.
+Nothing meaningful remains to cut — the ladder's remaining rungs
+(console conveniences, hops=2, drill #2, deck scope) are all shipped and
+cheap to keep. If a day collapses, the cut is a rehearsal repetition,
+never a freeze, never a cold-start run.
 
 ## What this schedule cannot absorb
 
-- **The laptop dying** — push at every stop-point; USB bundle from Aug 7.
-- **Unfreezing the dataset after Aug 3** — the full chain re-runs
-  (regenerate → load → detect → export → narration cache rebuild → recommit
-  as one unit) and eats a rehearsal day. After Aug 8 it is a demo-blocker
-  emergency, nothing less.
-- ~~An API key arriving late~~ — moot (ADR-032): narration is committed
-  pre-generated data; there is no key and nothing to wait for.
+- **The machine dying** (ADR-033: no backup laptop, owner-owned risk).
+  Mitigation unchanged: everything pushed; USB bundle restores anywhere
+  Docker runs; deck + recording deliver the pitch with zero live software.
+- **Unfreezing the dataset** — full ADR-018 chain re-run including
+  re-narration (ADR-031/032). Demo-blocker emergencies only.
 
-## Standing cadence (solo)
+## Standing cadence
 
-End of session: STATUS + push. End of day: tomorrow's first task written
-down. Rehearsals are calendar events: Aug 8, 9, 10, 11.
+End of session: STATUS + push. Every rehearsal is a calendar event with a
+timer, not an intention. The question bank (DEFENCE_AREAS) is the syllabus.

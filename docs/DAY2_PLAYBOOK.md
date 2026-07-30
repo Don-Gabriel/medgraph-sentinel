@@ -112,6 +112,95 @@ half-time cut. Any constraint decomposes into data (Shape A thinking),
 service (Shape B thinking), or load (Shape C thinking) parts. The rehearsed
 muscle is the deliverable; the shapes are just where it was built.
 
+## Drill cards — turnkey (open, start timer, go)
+
+Each card is self-contained: constraint, timer, exact files, success
+criterion. No setup thinking required — the setup IS step 0 of the card.
+Run drills against a scratch data dir + throwaway container so the demo
+stack stays untouched (the pattern below is proven — it ran the
+calibration, the freeze re-evaluation and the held-out one-shot).
+
+**Shared step 0 (every drill):** open a terminal in the repo root, then:
+
+```
+docker run -d --name mg-drill -p 7991:7687 -e NEO4J_AUTH=neo4j/drill_pw -e NEO4J_server_memory_heap_initial__size=2G -e NEO4J_server_memory_heap_max__size=2G -e NEO4J_server_memory_pagecache_size=1G -e NEO4J_dbms_security_procedures_unrestricted="gds.*" -v "%TEMP%\mg_drill_import:/var/lib/neo4j/import" medgraph-neo4j:demo
+```
+
+Env for every python command in a drill:
+`NEO4J_URI=bolt://localhost:7991  NEO4J_PASSWORD=drill_pw`.
+Teardown when done: `docker rm -f mg-drill`.
+
+---
+
+### DRILL A — new node type + rule (Shape A) · timer: 90 min
+
+**Constraint (read verbatim, start timer):** "Add Accreditor
+organisations. Clinics are ACCREDITED_BY an Accreditor; some accreditors
+have been sanctioned. Flag clinics whose accreditor was sanctioned."
+
+Files, in strict order (this IS the rehearsed path):
+1. `docs/DATA_MODEL.md` — add the `Accreditor` node table
+   (id `ACR_` prefix, name, sanctioned: bool) + `ACCREDITED_BY`
+   (Clinic)→(Accreditor) row. ~5 min.
+2. `graph/schema.cypher` — one uniqueness constraint line. ~2 min.
+3. `generator/config.py` — config model block; `generator/config.yaml` —
+   population (e.g. 12 accreditors, 2 sanctioned, 70% of accredited
+   clinics linked); `generator/economy.py` — emit in `build_static`;
+   `generator/writer.py` — register `accreditors.csv` +
+   `rel_accredited_by.csv`. ~25 min.
+4. `loader/load.py` — one line each in `NODES` and `RELS`, prefix `ACR_`
+   into `PREFIX_LABEL`. ~5 min.
+5. Regenerate to scratch + load into mg-drill:
+   `python -m generator --seed 42 --out %TEMP%\mg_drill_data` then copy
+   csv → `%TEMP%\mg_drill_import`, then
+   `DATA_DIR=%TEMP%\mg_drill_data python -m loader`. ~10 min.
+6. **Payoff:** `detection/rules/sanctioned_accreditor.yaml`
+   (kind: cypher) + `detection/rules/impl/sanctioned_accreditor.cypher` —
+   match (c:Clinic)-[:ACCREDITED_BY]->(a:Accreditor {sanctioned:true}),
+   count claims, score by volume ramp. Run
+   `python -m detection.run --rules sanctioned_accreditor`. ~25 min.
+7. Success = alert visible via the API/console pointed at mg-drill, and
+   the closing ADR paragraph committed. Buffer: ~15 min.
+
+**Rehearse aloud:** why the console needs zero changes (self-describing
+alerts, ADR-008) — that sentence is the payoff of the whole drill.
+
+### DRILL B — external service adapter (Shape B) · timer: 60 min
+
+**Constraint:** "Check doctors against a sanctions-list API and surface
+it on entities."
+
+1. `api/integrations/__init__.py` + `api/integrations/sanctions.py`
+   copying the narration shape: fetch → normalize → disk cache
+   (`api/integrations_cache/`) → deterministic fallback (empty list +
+   `source: fallback`) when offline. Stub client returns 2–3 fictional
+   hits keyed by doctor id. ~30 min.
+2. Surface: `GET /api/v1/entities/{id}` gains a `sanctions` field (one
+   line in `api/entities.py`). ~10 min.
+3. Success = entity endpoint shows the field with `source` honestly
+   labeled; say the pattern sentence: "same cache-or-fallback contract as
+   narration — the venue never depends on someone else's uptime." ~5 min
+   + buffer.
+
+### DRILL C — ×10 scale test (Shape C) · timer: 90 min
+
+**Constraint:** "How does it behave at 10×?"
+
+1. Copy `generator/config.yaml` → `%TEMP%\big.yaml`; multiply
+   `patients`, `claims`-driving counts ×10 (leave fraud rates alone). ~10 min.
+2. `python -m generator --seed 42 --config %TEMP%\big.yaml --out
+   %TEMP%\mg_big` (~2 min measured at 1×; expect ~1–2 min at 10×). Copy
+   csv → import mount; `DATA_DIR=%TEMP%\mg_big python -m loader` —
+   record load time (15 s at 1×; LOAD CSV batching is the watch item).
+3. `python -m detection.run` against mg-drill — record per-rule seconds
+   (3–9 s at 1×; all rules are index-backed 1–2 hop queries + one
+   Louvain, so expect roughly linear).
+4. Deliver as a table + the ADR-028 sentence: exact betweenness would be
+   hours here, which is why no shipped rule uses it; sampled betweenness
+   (2048) is the documented fallback.
+5. Success = three measured numbers (generate / load / detect) written
+   into the live ADR before the timer ends.
+
 ## What is explicitly NOT attempted solo on Day 2
 
 - Parallel tracks of any kind — one seam, one sequence, one demoable slice.
