@@ -50,10 +50,23 @@ class World:
     practises: list = field(default_factory=list)
     owns_stake: list = field(default_factory=list)
     used_device: dict = field(default_factory=dict)  # (patient_id, device_id) -> [min, max]
+    # metadata only (no CSV output): recycled-clone events recorded by
+    # build_journeys, consumed by fraud.parallel_recycling (typology-5 fix)
+    recycled_clones: list = field(default_factory=list)
+    # scenario-overlay generic edges: rel file stem -> extra rows (appended
+    # by generator/scenario.py, written by writer.py)
+    extra_rels: dict = field(default_factory=dict)
 
     def __post_init__(self):
         self.seq = {
             p: IdSeq(p)
+            for p in ("PAT", "DOC", "CLI", "BRK", "CLM", "CRD", "ACC", "DEV", "ADR", "PRC", "INS")
+        }
+        # Scenario actors draw from a reserved ID range (INTERFACES §3) so
+        # they can never collide with base entities: base populations stay
+        # far below 900000 (claims below 9000000).
+        self.scn_seq = {
+            p: IdSeq(p, start=9000001 if p == "CLM" else 900001)
             for p in ("PAT", "DOC", "CLI", "BRK", "CLM", "CRD", "ACC", "DEV", "ADR", "PRC", "INS")
         }
 
@@ -297,6 +310,104 @@ def build_static(cfg, rng, fake, w: World) -> None:
 
 # ---------- journeys -> claims ----------
 
+@dataclass
+class JourneyContext:
+    """Derived lookup tables the claim emitter needs. Built once per pass
+    (base journeys, planted cells, scenario overlays) — pure derivation from
+    cfg + world, no RNG draws."""
+    procs_by_cat: dict
+    status_names: list
+    status_p: np.ndarray
+    cmult: dict
+    last_day: date
+
+    @classmethod
+    def build(cls, cfg, w: "World") -> "JourneyContext":
+        procs_by_cat: dict[str, list[dict]] = {}
+        for p in w.procedures:
+            procs_by_cat.setdefault(p["category"], []).append(p)
+        status_names = list(cfg.claims.status_weights)
+        status_p = np.array([cfg.claims.status_weights[s] for s in status_names])
+        status_p = status_p / status_p.sum()
+        cmult = {c["code"]: c["cost_multiplier"] for c in w.countries}
+        # last treatment window day leaving room for submission lag + transfers
+        last_day = cfg.window.end - timedelta(days=cfg.claims.submission_lag_max_days + 20)
+        return cls(procs_by_cat, status_names, status_p, cmult, last_day)
+
+
+def emit_journey_claims(cfg, rng, w: World, ctx: JourneyContext, *, patient: dict,
+                        clinic: dict, doctor: dict, procedure: dict, category: str,
+                        insurer: dict, broker: dict | None, commission,
+                        account_id: str, proc_date: date, days_in_care: int,
+                        device_id: str, over: dict | None, steered: bool,
+                        claim_seq=None) -> list[dict]:
+    """Emit one journey's 1-3 claims (main + ancillary) exactly as the base
+    journey model does — planted cells and scenario overlays route through
+    this same function so their claims don't glow statistically
+    (DATA_GENERATION §4). Extracted verbatim from build_journeys; the RNG
+    draw order in here is part of the byte-determinism contract (ADR-006).
+    `claim_seq` overrides the ID source (scenario-reserved range)."""
+    seq = claim_seq or w.seq["CLM"]
+    emitted = []
+    n_claims = int(rng.integers(cfg.claims.claims_per_journey_min,
+                                cfg.claims.claims_per_journey_max + 1))
+    main_amount = None
+    for k in range(n_claims):
+        if k == 0:
+            amount = _price(rng, cfg, procedure["base_cost_usd"],
+                            ctx.cmult[clinic["country_code"]])
+            line_items = int(rng.integers(3, 13))
+            claim_proc = procedure
+            claim_date = proc_date
+        else:
+            claim_proc = pick(rng, ctx.procs_by_cat[category])
+            amount = money(main_amount * rng.uniform(cfg.claims.ancillary_amount_min,
+                                                     cfg.claims.ancillary_amount_max))
+            line_items = int(rng.integers(1, 4))
+            claim_date = proc_date + timedelta(days=int(rng.integers(0, 6)))
+        if over and rng.random() < over["claim_share"]:
+            amount = money(amount * over["factor"])
+            line_items += int(rng.integers(1, 5))
+        if k == 0:
+            main_amount = amount
+        submission = claim_date + timedelta(
+            days=int(rng.integers(cfg.claims.submission_lag_min_days,
+                                  cfg.claims.submission_lag_max_days + 1))
+        )
+        narrative = build_narrative(rng, claim_proc["name"], clinic["name"],
+                                    days_in_care if k == 0 else int(rng.integers(0, 3)))
+        claim = {
+            "id": seq.take(),
+            "amount_usd": amount,
+            "procedure_date": claim_date.isoformat(),
+            "submission_date": submission.isoformat(),
+            "status": pick(rng, ctx.status_names, ctx.status_p),
+            "line_item_count": line_items,
+            "narrative_fingerprint": simhash64(narrative),
+            "patient_id": patient["id"],
+            "clinic_id": clinic["id"],
+            "doctor_id": doctor["id"],
+            "procedure_id": claim_proc["id"],
+            "insurer_id": insurer["id"],
+            "broker_id": broker["id"] if broker else "",
+            "commission_pct": commission if broker else "",
+            "account_id": account_id,
+            "steered_by": broker["id"] if steered else "",
+        }
+        w.claims.append(claim)
+        emitted.append(claim)
+        _track_device(w, patient["id"], device_id, claim_date)
+        if broker:
+            w.transfers.append({
+                "src": account_id,
+                "dst": pick(rng, broker["account_ids"]),
+                "amount_usd": money(amount * commission / 100.0),
+                "date": (submission + timedelta(days=cfg.transfers.commission_lag_days)
+                         ).isoformat(),
+            })
+    return emitted
+
+
 def _doctor_for(rng, w: World, clinic: dict, category: str) -> dict:
     roster = w.clinic_doctors[clinic["id"]]
     matching = [d for d in roster if d["specialty"] == category]
@@ -327,20 +438,13 @@ def _track_device(w: World, patient_id: str, device_id: str, d: date) -> None:
 
 def build_journeys(cfg, rng, fake, w: World, fraud_params) -> None:
     treatment_codes = [c.code for c in cfg.countries.treatment]
-    cmult = {c["code"]: c["cost_multiplier"] for c in w.countries}
     categories = list(cfg.category_weights)
     cat_p = np.array([cfg.category_weights[c] for c in categories]); cat_p = cat_p / cat_p.sum()
     broker_p = np.array([b["weight"] for b in w.brokers]); broker_p = broker_p / broker_p.sum()
     ins_p = np.array([i["weight"] for i in w.insurers]); ins_p = ins_p / ins_p.sum()
-    procs_by_cat: dict[str, list[dict]] = {}
-    for p in w.procedures:
-        procs_by_cat.setdefault(p["category"], []).append(p)
     clinics_by_id = {c["id"]: c for c in w.clinics}
-    status_names = list(cfg.claims.status_weights)
-    status_p = np.array([cfg.claims.status_weights[s] for s in status_names])
-    status_p = status_p / status_p.sum()
-    # last treatment window day leaving room for submission lag + transfers
-    last_day = cfg.window.end - timedelta(days=cfg.claims.submission_lag_max_days + 20)
+    ctx = JourneyContext.build(cfg, w)
+    last_day = ctx.last_day
     recycle_pool: dict[str, list[tuple[str, str]]] = {}  # broker -> [(patient_id, insurer_id)]
 
     journeys = list(range(len(w.patients)))
@@ -383,11 +487,15 @@ def build_journeys(cfg, rng, fake, w: World, fraud_params) -> None:
                 "device_ids": [pick(rng, src["device_ids"])],
             }
             w.patients.append(clone)
+            # metadata for fraud.parallel_recycling (typology-5 fix): which
+            # clone belongs to which broker. Recording only — no RNG draws.
+            w.recycled_clones.append({"clone_id": clone_id, "source_id": src_pid,
+                                      "broker_id": broker["id"]})
             patient = clone
             insurer_exclude = src_ins
 
         doctor = _doctor_for(rng, w, clinic, category)
-        procedure = pick(rng, procs_by_cat[category])
+        procedure = pick(rng, ctx.procs_by_cat[category])
         insurer = pick(rng, w.insurers, ins_p)
         if insurer_exclude is not None:
             while insurer["id"] == insurer_exclude:
@@ -404,61 +512,12 @@ def build_journeys(cfg, rng, fake, w: World, fraud_params) -> None:
             if broker else None
         )
 
-        n_claims = int(rng.integers(cfg.claims.claims_per_journey_min,
-                                    cfg.claims.claims_per_journey_max + 1))
-        main_amount = None
-        for k in range(n_claims):
-            if k == 0:
-                amount = _price(rng, cfg, procedure["base_cost_usd"],
-                                cmult[clinic["country_code"]])
-                line_items = int(rng.integers(3, 13))
-                claim_proc = procedure
-                claim_date = proc_date
-            else:
-                claim_proc = pick(rng, procs_by_cat[category])
-                amount = money(main_amount * rng.uniform(cfg.claims.ancillary_amount_min,
-                                                         cfg.claims.ancillary_amount_max))
-                line_items = int(rng.integers(1, 4))
-                claim_date = proc_date + timedelta(days=int(rng.integers(0, 6)))
-            if over and rng.random() < over["claim_share"]:
-                amount = money(amount * over["factor"])
-                line_items += int(rng.integers(1, 5))
-            if k == 0:
-                main_amount = amount
-            submission = claim_date + timedelta(
-                days=int(rng.integers(cfg.claims.submission_lag_min_days,
-                                      cfg.claims.submission_lag_max_days + 1))
-            )
-            narrative = build_narrative(rng, claim_proc["name"], clinic["name"],
-                                        days_in_care if k == 0 else int(rng.integers(0, 3)))
-            claim = {
-                "id": w.seq["CLM"].take(),
-                "amount_usd": amount,
-                "procedure_date": claim_date.isoformat(),
-                "submission_date": submission.isoformat(),
-                "status": pick(rng, status_names, status_p),
-                "line_item_count": line_items,
-                "narrative_fingerprint": simhash64(narrative),
-                "patient_id": patient["id"],
-                "clinic_id": clinic["id"],
-                "doctor_id": doctor["id"],
-                "procedure_id": claim_proc["id"],
-                "insurer_id": insurer["id"],
-                "broker_id": broker["id"] if broker else "",
-                "commission_pct": commission if broker else "",
-                "account_id": account_id,
-                "steered_by": broker["id"] if steered else "",
-            }
-            w.claims.append(claim)
-            _track_device(w, patient["id"], device_id, claim_date)
-            if broker:
-                w.transfers.append({
-                    "src": account_id,
-                    "dst": pick(rng, broker["account_ids"]),
-                    "amount_usd": money(amount * commission / 100.0),
-                    "date": (submission + timedelta(days=cfg.transfers.commission_lag_days)
-                             ).isoformat(),
-                })
+        emit_journey_claims(cfg, rng, w, ctx, patient=patient, clinic=clinic,
+                            doctor=doctor, procedure=procedure, category=category,
+                            insurer=insurer, broker=broker, commission=commission,
+                            account_id=account_id, proc_date=proc_date,
+                            days_in_care=days_in_care, device_id=device_id,
+                            over=over, steered=steered)
         if broker:
             recycle_pool.setdefault(broker["id"], []).append((patient["id"], insurer["id"]))
 

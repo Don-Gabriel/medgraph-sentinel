@@ -1,0 +1,40 @@
+# FIXTURE — schema smoke test, NOT a fraud test set.
+# Exercises recycled:<n> patients (clone-on-reuse identities), a journey
+# without a broker pin on an EXISTING base entity id, and an edge targeting
+# an existing entity (PRACTISES_AT to a base clinic). Companion to
+# fixture_smoke.yaml; together they cover the full INTERFACES §3 schema.
+scenario: fixture_recycled
+description: >
+  Schema smoke fixture: recycled identities cycled across journeys at a
+  second clinic, plus a scenario doctor practising at an existing base
+  clinic (CLI_000001) with a journey routed there through the doctor pin.
+typology: fixture
+actors:
+  - kind: clinic
+    ref: c1
+    props: { country: IN }
+  - kind: broker
+    ref: b1
+    props: { country: IN }
+    params: { identity_recycling: 1.0 }
+  - kind: doctor
+    ref: d2
+    props: { specialty: cardiac }
+edges:
+  - type: PRACTISES_AT
+    from: d2
+    to: CLI_000001
+    props: { since: 2020-06-01 }
+journeys:
+  - count: 9
+    clinic: c1
+    broker: b1
+    patients: recycled:3
+    category: dental
+    date_range: [2025-08-01, 2026-04-30]
+  - count: 3
+    clinic: CLI_000001
+    doctor: d2
+    patients: invented
+    category: cardiac
+    date_range: [2025-09-01, 2026-03-31]

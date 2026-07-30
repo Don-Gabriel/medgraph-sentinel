@@ -134,6 +134,12 @@ class IdentityRecycling(BaseModel):
     broker_rate: float = Field(ge=0, le=1)
     reuse_min: float = Field(ge=0, le=1)
     reuse_max: float = Field(ge=0, le=1)
+    # Share of recycled-clone events that ALSO get a parallel-billed journey:
+    # a second clone of the same identity treated the SAME DAY in a DIFFERENT
+    # treatment country (colluding clinics billing one recruited identity
+    # simultaneously). This is what makes typology 5 genuinely testable —
+    # sequential reuse alone never violates a whole-day travel table.
+    parallel_share: float = Field(ge=0, le=1)
 
 
 class ShellLayering(BaseModel):
@@ -150,6 +156,32 @@ class Fraud(BaseModel):
     steering: Steering
     identity_recycling: IdentityRecycling
     shell_layering: ShellLayering
+
+
+class PlantedGhostClinics(BaseModel):
+    cells: int = Field(ge=0)          # 0 = no planted ghost cells (honest run)
+    patients_min: int = Field(ge=1)
+    patients_max: int
+    doctors_min: int = Field(ge=1)
+    doctors_max: int
+    feeder_share: float = Field(ge=0, le=1)   # share of journeys the feeder arranges
+    payout_concentration: float = Field(ge=0, le=1)  # share paid to the hub account
+
+
+class PlantedCredentialMills(BaseModel):
+    cells: int = Field(ge=0)          # 0 = no planted credential cells
+    doctors_min: int = Field(ge=2)    # cloned identities per licence number
+    doctors_max: int
+    journeys_min: int = Field(ge=1)   # journeys per clean identity
+    journeys_max: int
+    post_revocation_cells: int = Field(ge=0)  # cells whose original keeps billing
+    post_rev_journeys_min: int = Field(ge=1)
+    post_rev_journeys_max: int
+
+
+class Planted(BaseModel):
+    ghost_clinics: PlantedGhostClinics
+    credential_mills: PlantedCredentialMills
 
 
 class Config(BaseModel):
@@ -172,6 +204,7 @@ class Config(BaseModel):
     # rule mirrors it — tests/test_detection_registry.py keeps them in sync).
     travel_time_days: dict[str, dict[str, int]] | None = None
     fraud: Fraud
+    planted: Planted
 
     @model_validator(mode="after")
     def _cross_checks(self):

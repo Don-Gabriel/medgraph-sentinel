@@ -157,6 +157,13 @@ fraud:
     broker_rate: 0.02
     reuse_min: 0.2 # per-journey probability of recycling an identity
     reuse_max: 0.5
+    # Share of recycled-clone events that also get a PARALLEL-billed journey:
+    # a further clone of the same identity treated the SAME DAY in a DIFFERENT
+    # treatment country. Real-world behaviour: colluding clinics bill one
+    # recruited identity simultaneously in two corridors. Without this,
+    # sequential reuse never violates the whole-day travel table (measured at
+    # seed 42: tightest cross-country gap 6 days) and typology 5 is untestable.
+    parallel_share: 0.5
   shell_layering: # side payments routed through unowned accounts
     pair_rate: 0.5 # share of steering partnerships that layer
     shells_min: 1
@@ -164,3 +171,27 @@ fraud:
     attrition_min_pct: 5
     attrition_max_pct: 20
     recycle_prob: 0.35 # share of layered payments partially returning to the clinic
+
+# PLANTED fraud (DATA_GENERATION section 4): typologies 1 and 2 are too
+# structural to emerge reliably at this scale, so they are planted with exact
+# labels (data/ground_truth/planted.csv). Cells run through the SAME journey
+# model as honest claims (generator/plant.py calls economy.emit_journey_claims)
+# so amounts/dates don't glow statistically. Set cells: 0 for an honest run.
+planted:
+  ghost_clinics:
+    cells: 3
+    patients_min: 18 # invented one-journey patients per cell
+    patients_max: 30
+    doctors_min: 1 # thin roster is a feature, not an accident
+    doctors_max: 2
+    feeder_share: 0.94 # most-but-not-all claims arranged by the feeder broker
+    payout_concentration: 0.95 # most-but-not-all payouts into the hub account
+  credential_mills:
+    cells: 3
+    doctors_min: 3 # identities sharing one cloned licence number
+    doctors_max: 4
+    journeys_min: 6 # journeys per clean identity (1-3 claims each)
+    journeys_max: 12
+    post_revocation_cells: 1 # cells whose original doctor bills on after revocation
+    post_rev_journeys_min: 24 # ~48-60 claims: meaningfully above the honest
+    post_rev_journeys_max: 30 #   post-revocation ceiling (29 at seed 42)
