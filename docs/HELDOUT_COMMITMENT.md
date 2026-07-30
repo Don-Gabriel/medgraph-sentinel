@@ -45,6 +45,30 @@ against the committed hash and the commit dates.
 | 2026-07-30 | heldout_S4_split_ledger.yaml | `eab10c37d0be1b43b3ecc59433302055502242efdc88c0fb199a93d2469af339` |
 | 2026-07-30 | heldout_S5_confluence.yaml | `828e5d64c56d6274db5b0840249045ca8c9f551bb4797a8772cf41ec698b3d0c` |
 
+## Pre-registration (2026-07-30, before the evaluation ran)
+
+Committed and pushed BEFORE the sealed scenarios were injected or any
+held-out detection run occurred, replacing the calendar guard (the
+planned Aug 9 date) with a stronger, permanent one:
+
+1. **No detection rule, threshold, parameter, or generator setting will
+   change based on the held-out results.** The rules as of this commit
+   are final for the evaluation and for the demo.
+2. **Results are reported exactly as they land, including misses**, in
+   DECISIONS.md, PITCH.md and the README. A missed scenario is explained
+   structurally, never patched.
+3. The evaluation runs **once**, into a separate data directory; the
+   frozen demo artifacts (`data/`, ADR-031) are never touched.
+4. The scenario files are committed to `data/scenarios/heldout/`
+   immediately after the run, so anyone can re-hash them against the
+   table above and re-run the evaluation themselves.
+
+Rationale: the hash rows + git history already fix the ORDERING claim
+permanently (scenarios predate every detection query — commit `290101e`
+vs the detection tree). The Aug 9 date only ever guarded against tuning
+after seeing results; this pre-registration guards that directly and
+verifiably, and the calendar date is retired.
+
 ## What this does and does not prove
 
 **Proves ordering:** the scenarios existed before any detection query was
