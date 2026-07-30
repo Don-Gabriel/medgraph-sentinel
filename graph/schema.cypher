@@ -25,8 +25,9 @@ CREATE INDEX patient_passport  IF NOT EXISTS FOR (n:Patient)    ON (n.passport_n
 // typologies 2, 5, 6 + date-window queries
 CREATE INDEX claim_proc_date   IF NOT EXISTS FOR (n:Claim)      ON (n.procedure_date);
 CREATE INDEX claim_sub_date    IF NOT EXISTS FOR (n:Claim)      ON (n.submission_date);
-// typology 4: candidate blocking on fingerprints
-CREATE INDEX claim_fingerprint IF NOT EXISTS FOR (n:Claim)      ON (n.narrative_fingerprint);
+// (claim_fingerprint index removed with typology 4's descope — ADR-024.
+//  Every index here maps to a shipping query; re-add one line if typology 4
+//  is revived on Day 2.)
 // API alert queue filters
 CREATE INDEX alert_status      IF NOT EXISTS FOR (n:Alert)      ON (n.status);
 CREATE INDEX alert_typology    IF NOT EXISTS FOR (n:Alert)      ON (n.typology);
