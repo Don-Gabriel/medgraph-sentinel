@@ -578,3 +578,69 @@ always fresh") — freshness is precisely the failure mode: the demo needs
 *frozen* alerts matching the frozen narration cache, and recomputing what
 is already committed spends every judge's first three minutes proving
 nothing.
+
+## ADR-030 — Detection layer built and calibrated on the honest economy; measured determinism boundary (2026-07-30)
+
+**Context:** M3 pulled forward. The four shipping rules (ADR-024 scope) are
+implemented as registry entries (ADR-008) with a real runner replacing the
+no-op: idempotent per rule+version, `--dry-run`, `--rules` filter,
+`--created-at` pinning (ADR-029), deterministic alert numbering by
+(rule key, score desc, anchor id), 200-entity implicated cap (claims
+dropped first), and both `python` and `cypher` implementation kinds
+(cypher path live-smoke-tested; all four shipping rules are Python for
+explainability). All GDS calls were verified against the live 2.13.11
+install via `CALL gds.list(...)` before use.
+
+**Calibration (DATA_GENERATION §6, executed):** thresholds tuned solely on
+a seed-42 generation with every `fraud:` gate at 0.0, to zero medium+
+honest alerts per rule. Final honest counts (= documented FP rates):
+ghost_clinic 5 low · credential_laundering 62 low · kickback_ring 0 ·
+impossible_travel 6 low. Full measured record in detection/README.md.
+
+**Decisions forced by measurement, not taste:**
+
+1. **Post-revocation billing severity is volume-tiered**, not flat-high.
+   The honest economy keeps revoked doctors on rosters (27 honest
+   post-revocation billers, 1–29 claims, gaps from 18 days), so
+   DETECTION_SPEC's "starts at high" is implemented as: always emitted,
+   `high` only beyond the honest volume ceiling (ramp 30→60 claims).
+   Generator-side fix parked as OQ #14.
+2. **Travel table (OQ #5):** `travel_time_days` in generator/config.yaml,
+   mirrored in the rule YAML, unit-test-enforced sync. All corridor pairs
+   1 whole day (longest flight TR–SG ≈ 11 h ⇒ next-day treatment is
+   possible everywhere; only same-day cross-country is clearly
+   impossible — the spec's own conservative-whole-days guard).
+3. **Typology 3 per ADR-028:** concentration gate (top-clinic share ≥ 0.30
+   at ≥ 5 pair claims) + shared-infrastructure evidence (stake softened by
+   accreditation as the declared-ness proxy the spec suggests — the graph
+   carries no declared/hidden flag; clinic→broker transfers beyond the
+   commission_pct-computable expectation; shell-hop paths; shared
+   addresses; co-owned accounts) + small same-community bonus. No
+   centrality. Dev-set result: 6 alerts, all on true steering brokers
+   (precision 1.0, broker recall 6/13 — the infrastructure terms recovered
+   two sub-10-referral steerers the benchmark's concentration feature
+   alone could not see).
+4. **Louvain determinism boundary (measured):** single-threaded projection
+   + Louvain with canonical community labels is byte-stable within one
+   loaded store; across wipe-and-reloads Neo4j's id freelist reorders the
+   store and Louvain tie-breaks drift on a few borderline nodes — scores,
+   severities, IDs, edges and alert sets stayed byte-identical across two
+   independent load→detect→export cycles; only the two community *context*
+   fields moved. Acceptable because the demo artifacts come from exactly
+   one detection run (ADR-018); boundary documented in detection/README.md.
+5. **Alerts-as-data round trip proven (ADR-029):** detect → export → wipe →
+   load (alert CSVs included, 33/33 manifest counts) → re-export was
+   byte-identical (alerts.csv, rel_implicates.csv, manifest.json); seed
+   with alerts ≈ 7–9 s on the throwaway container. Dev-set evaluation
+   (new `evaluation/` — the only code allowed to read ground truth):
+   kickback precision 1.0 / recall 6/13; impossible_travel 0/5 recycled
+   groups — their tightest cross-country gaps are 6–76 days, so the dev
+   set contains NO temporally impossible recycled case and typology 5 is
+   not statistically evaluable until the held-out scenarios; typologies
+   1/2 not evaluable until planted cells land (Jul 31).
+
+**Alternatives rejected:** flat-high post-revocation severity (27 honest
+highs — calibration mandate wins); per-pair travel-day guesses above 1 day
+(nothing in the corridor set justifies them); forcing cross-reload Louvain
+stability via legacy Cypher projections (undocumented ordering guarantee,
+opaque — violates hard rule 1).

@@ -114,6 +114,22 @@ claims:
 transfers:
   commission_lag_days: 7 # clinic pays broker commission after submission
 
+# Minimum whole days of travel between treatment countries (typology 5,
+# shared config per OQ #5 — the generator does not consume it yet; the
+# impossible_travel rule mirrors it in its params and a unit test keeps the
+# two in sync). Value 1 everywhere: every corridor pair is under a 12-hour
+# flight (longest is TR-SG ~11h), so next-day treatment in another country
+# is physically possible and only SAME-DAY cross-country treatment claims
+# are clearly impossible — exactly the conservative whole-day guard
+# DETECTION_SPEC's typology-5 FP mode calls for. The matrix is symmetric
+# and per-pair so Day 2 can tighten a single corridor without code changes.
+travel_time_days:
+  IN: { TH: 1, TR: 1, AE: 1, SG: 1 }
+  TH: { IN: 1, TR: 1, AE: 1, SG: 1 }
+  TR: { IN: 1, TH: 1, AE: 1, SG: 1 }
+  AE: { IN: 1, TH: 1, TR: 1, SG: 1 }
+  SG: { IN: 1, TH: 1, TR: 1, AE: 1 }
+
 # EMERGENT fraud: incentive parameters on a small fraction of actors.
 # No entity is labeled fraudulent; patterns emerge from these local rules
 # interacting (docs/DATA_GENERATION.md section 3). Parameter draws are

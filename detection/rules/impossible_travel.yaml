@@ -1,0 +1,33 @@
+# Typology 5 — impossible travel (DETECTION_SPEC §5). Per identity group
+# (patients sharing a passport_no, or a lone patient), claims are ordered by
+# procedure_date and consecutive claims in different treatment countries are
+# checked against the minimum-travel-days table. The table lives in
+# generator/config.yaml (travel_time_days — shared config, OQ #5) and is
+# MIRRORED here; tests/test_detection_registry.py fails if the two diverge.
+# All values are 1 whole day: every corridor pair is under a 12-hour flight,
+# so only SAME-DAY cross-country treatment is clearly impossible — the
+# conservative whole-day guard the spec's date-granularity FP mode demands.
+key: impossible_travel
+name: Impossible travel
+typology: 5
+version: "1.0"
+kind: python
+impl: detection.rules.impl.impossible_travel
+params:
+  travel_time_days:
+    IN: { TH: 1, TR: 1, AE: 1, SG: 1 }
+    TH: { IN: 1, TR: 1, AE: 1, SG: 1 }
+    TR: { IN: 1, TH: 1, AE: 1, SG: 1 }
+    AE: { IN: 1, TH: 1, TR: 1, SG: 1 }
+    SG: { IN: 1, TH: 1, TR: 1, AE: 1 }
+  base_score: 42.0          # one impossible pair, single identity: an anomaly
+                            #   worth a look, but honest date artifacts exist -> low
+  extra_pair_bonus: 10.0    # per additional impossible pair (capped)
+  extra_pair_cap: 20.0
+  multi_identity_bonus: 30.0 # the pair spans DIFFERENT patient nodes sharing a
+                             #   passport — identity multiplexing, the real signal
+  multi_insurer_bonus: 10.0  # conflicting claims billed to different insurers —
+                             #   counted only WITH identity multiplexing (honest
+                             #   measurement: 6 lone return patients hit two
+                             #   insurers on same-day date artifacts at seed 42)
+severity_bands: { high: 80, medium: 50 }
