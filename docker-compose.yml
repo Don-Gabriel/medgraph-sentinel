@@ -5,8 +5,15 @@
 
 services:
   neo4j:
-    # Pinned: 5.26 LTS pairs with GDS 2.13 (ADR-004).
-    image: neo4j:5.26-community
+    # Pinned base: 5.26 LTS pairs with GDS 2.13 (ADR-004). GDS is baked
+    # into our own image at BUILD time (graph/neo4j.Dockerfile, ADR-026):
+    # the NEO4J_PLUGINS mechanism was verified working on 2026-07-30 but it
+    # downloads the jar at EVERY container creation — a hard failure at the
+    # offline venue, so it is deliberately not used here.
+    build:
+      context: ./graph
+      dockerfile: neo4j.Dockerfile
+    image: medgraph-neo4j:demo
     environment:
       # VERIFIED (neo4j.com llms-full.txt, fetched 2026-07-29): NEO4J_AUTH
       # form and the double-underscore env naming for config settings.
@@ -14,24 +21,20 @@ services:
       NEO4J_server_memory_heap_initial__size: ${NEO4J_HEAP_SIZE:-2G}
       NEO4J_server_memory_heap_max__size: ${NEO4J_HEAP_SIZE:-2G}
       NEO4J_server_memory_pagecache_size: ${NEO4J_PAGECACHE_SIZE:-1G}
-      # UNVERIFIED (OQ #2, ADR-020): the exact image tag (5.26-community —
-      # standard Docker Hub scheme, confirmed on first pull) and the
-      # NEO4J_PLUGINS install syntax could
-      # not be confirmed against reachable official docs at authoring time
-      # (neo4j.com blocks automated fetch; docs mirrors only had memory/auth
-      # examples). Best-known form below. M1 EXIT TEST MUST CONFIRM:
-      #   cypher-shell> RETURN gds.version();   -- expect 2.13.x
-      # If it fails, consult the operations manual "Docker > Plugins" page
-      # and fix this line + this comment + OQ #2 in the same commit.
-      NEO4J_PLUGINS: '["graph-data-science"]'
       # VERIFIED setting name (Neo4j GDS/Bloom docs): unrestricted procedures
-      # for GDS. The plugin installer may set this itself; explicit is safe.
+      # for GDS — required since we bypass the NEO4J_PLUGINS installer,
+      # which would otherwise set it. M1 gate: RETURN gds.version() → 2.13.x.
       NEO4J_dbms_security_procedures_unrestricted: "gds.*"
     ports:
       - "7474:7474"
       - "7687:7687"
     volumes:
       - neo4j_data:/data
+      # LOAD CSV reads server-side (ADR-025): the committed dataset must be
+      # visible in the server's import directory, where file:/// resolves.
+      # NOT :ro — the image entrypoint chowns the import dir and exits(1)
+      # on a read-only mount (observed on first M1 run). Nothing writes here.
+      - ./data/csv:/var/lib/neo4j/import
     healthcheck:
       # HTTP probe on the browser port; avoids passing credentials into the
       # healthcheck. If wget is absent in the image (M1 test will show),

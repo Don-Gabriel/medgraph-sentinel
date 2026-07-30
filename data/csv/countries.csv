@@ -1,0 +1,16 @@
+code,name,role,cost_multiplier
+AE,United Arab Emirates,treatment,0.9
+AU,Australia,origin,1.0
+BD,Bangladesh,origin,1.0
+DE,Germany,origin,1.0
+GB,United Kingdom,origin,1.0
+IN,India,treatment,0.35
+KE,Kenya,origin,1.0
+NG,Nigeria,origin,1.0
+PK,Pakistan,origin,1.0
+RU,Russia,origin,1.0
+SA,Saudi Arabia,origin,1.0
+SG,Singapore,treatment,1.1
+TH,Thailand,treatment,0.5
+TR,Turkey,treatment,0.55
+US,United States,origin,1.0

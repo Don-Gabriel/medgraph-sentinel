@@ -26,7 +26,9 @@ are the design; this file is the standing context and rules.
 ## What this is
 
 Fraud-intelligence graph over cross-border medical tourism: synthetic
-economy → Neo4j graph → six detection typologies → investigator console.
+economy → Neo4j graph → four shipping detection typologies (1, 2, 3, 5;
+typologies 4 and 6 descoped per ADR-024, kept specified as next-build) →
+investigator console.
 Built by a 5-person team for the Hazzino Technologies State-Level Mega
 Hackathon (Theni, Tamil Nadu):
 

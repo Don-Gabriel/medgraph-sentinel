@@ -1,0 +1,6 @@
+# Generated artifacts are byte-exact (ADR-006): git must never EOL-convert
+# them, or "regenerate and git diff" stops being a meaningful check and the
+# committed dataset differs from what the generator writes.
+data/** -text
+# Cypher DDL is applied byte-for-byte by the loader; keep it LF everywhere.
+*.cypher text eol=lf

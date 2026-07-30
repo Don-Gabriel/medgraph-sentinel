@@ -61,7 +61,7 @@ Conventions:
 | submission_date | date | when claim reached the insurer; ≥ procedure_date |
 | status | string | `submitted` / `approved` / `rejected` |
 | line_item_count | int | number of billed line items |
-| narrative_fingerprint | string | 16-hex-char locality-sensitive hash of the claim narrative; near-identical narratives → small Hamming distance (typology 4). Algorithm choice: see OPEN_QUESTIONS #3 |
+| narrative_fingerprint | string | 16-hex-char locality-sensitive hash (SimHash, ADR-021) of the claim narrative; near-identical narratives → small Hamming distance. **Consumed only by descoped typology 4 (ADR-024)** — ships in the data as next-build substrate; no shipping rule reads it |
 
 ### Credential
 | property | type | notes |
@@ -82,7 +82,8 @@ Conventions:
 | opened_date | date | |
 
 An account with **no `OWNED_BY` edge is a shell account** — that absence is
-data, not an error (typology 6).
+data, not an error (descoped typology 6; typology 3's shared-infrastructure
+signature still traverses these accounts).
 
 ### Device
 | property | type | notes |
@@ -194,8 +195,9 @@ CREATE INDEX patient_passport IF NOT EXISTS FOR (n:Patient)    ON (n.passport_no
 // typologies 2, 5, 6 + date-window queries
 CREATE INDEX claim_proc_date  IF NOT EXISTS FOR (n:Claim)      ON (n.procedure_date);
 CREATE INDEX claim_sub_date   IF NOT EXISTS FOR (n:Claim)      ON (n.submission_date);
-// typology 4: candidate blocking on fingerprints
-CREATE INDEX claim_fingerprint IF NOT EXISTS FOR (n:Claim)     ON (n.narrative_fingerprint);
+// (claim_fingerprint index removed with typology 4's descope — ADR-024.
+//  Every index here maps to a shipping query; re-add one line if typology 4
+//  is revived on Day 2.)
 // API alert queue filters
 CREATE INDEX alert_status     IF NOT EXISTS FOR (n:Alert)      ON (n.status);
 CREATE INDEX alert_typology   IF NOT EXISTS FOR (n:Alert)      ON (n.typology);

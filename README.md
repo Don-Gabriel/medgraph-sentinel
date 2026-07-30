@@ -21,10 +21,12 @@ finding to a human investigator in plain English.
 - **Entity graph** — ~50,000 nodes (patients, doctors, clinics, brokers,
   claims, credentials, payment accounts, devices, addresses) in Neo4j,
   spanning five real medical-tourism corridors.
-- **Six detection typologies** — ghost clinics, credential laundering,
-  kickback rings, template cloning, impossible travel, circular payments —
-  via Neo4j GDS algorithms (Louvain, PageRank, betweenness) and targeted
-  Cypher, producing scored, explainable alerts.
+- **Four detection typologies** — ghost clinics, credential laundering,
+  kickback rings, impossible travel — via Neo4j GDS algorithms (Louvain,
+  PageRank, betweenness) and targeted Cypher, producing scored, explainable
+  alerts. Two more (template cloning, circular payments) are fully
+  specified with false-positive modes as the next build
+  ([DETECTION_SPEC](docs/DETECTION_SPEC.md), ADR-024).
 - **Investigator console** — alert queue → evidence subgraph → plain-English
   narration → review workflow. Never a 50k-node hairball; always the
   drill-down.
@@ -75,7 +77,7 @@ The documentation is the design — start here:
 |---|---|
 | [PROJECT_BRIEF](docs/PROJECT_BRIEF.md) | the problem and the insight, in 90 seconds |
 | [DATA_MODEL](docs/DATA_MODEL.md) | every node, edge, constraint, index — and why |
-| [DETECTION_SPEC](docs/DETECTION_SPEC.md) | six typologies incl. their false-positive modes |
+| [DETECTION_SPEC](docs/DETECTION_SPEC.md) | the typologies (4 shipping + 2 specified next) incl. their false-positive modes |
 | [DATA_GENERATION](docs/DATA_GENERATION.md) | the synthetic economy; emergent vs planted fraud; the held-out protocol |
 | [INTERFACES](docs/INTERFACES.md) | the module contracts that let five people build in parallel |
 | [DECISIONS](docs/DECISIONS.md) | the ADR log — every choice, alternatives, rationale |

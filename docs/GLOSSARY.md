@@ -27,15 +27,18 @@ rename the code.
 - **Kickback ring** — broker steers volume to clinics paying for referrals;
   closed by hidden ownership or shared banking (typology 3).
 - **Template cloning / claim mill** — resubmitting one perfected claim
-  package across many patients (typology 4).
+  package across many patients (typology 4 — **descoped, ADR-024**; fully
+  specified as next-build).
 - **Impossible travel** — one identity treated in two countries closer in
   time than physical travel allows (typology 5).
 - **Circular payment** — money leaving a clinic and returning to its cluster
-  via intermediary accounts (typology 6).
+  via intermediary accounts (typology 6 — **descoped, ADR-024**; fully
+  specified as next-build).
 - **Shell account** — a `PaymentAccount` with no `OWNED_BY` edge; a conduit
   with no visible owner.
 - **Typology** — one named fraud pattern with a defined graph signature and
-  detection rule. We ship six.
+  detection rule. We ship four (1, 2, 3, 5) and carry two more fully
+  specified (4, 6 — ADR-024).
 
 ## Graph & detection
 

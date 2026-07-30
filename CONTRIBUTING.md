@@ -6,14 +6,51 @@ engineers who work like a team.
 
 ## Identity
 
-- Commit as **yourself**, from your own machine, with your real name and the
-  email tied to your GitHub account. No shared accounts, no committing on
-  someone else's behalf.
+- Commit as **yourself**, with your real name and the email tied to your
+  GitHub account. No shared accounts, no committing on someone else's
+  behalf. We all work on **one shared laptop** (ADR-024) — see
+  "Shared-machine identity" below for how to do this without
+  cross-attributing commits.
 - Pairing? The driver commits with a `Co-authored-by:` trailer for the
   navigator (GitHub renders both avatars).
 - `Co-authored-by:` trailers name **human teammates only** — never a tool,
   bot, or third-party email address. This history is individually evaluated;
   AI assistance is disclosed once, in the README, not attributed per-commit.
+
+## Shared-machine identity (one laptop — ADR-024)
+
+Five people commit from one machine. Git identity is **repo-local state**,
+so it must be switched at the start of your laptop slot and verified before
+every commit:
+
+1. **Start of your slot** — set the local identity (repo-local, so other
+   repos on the machine are untouched):
+
+   ```bash
+   git config user.name  "Vijayalakshmi G"
+   git config user.email "<the email tied to YOUR GitHub account>"
+   ```
+
+   Use your GitHub noreply address (`<id>+<user>@users.noreply.github.com`)
+   if you keep your email private — attribution on GitHub follows the email.
+
+2. **Before committing** — verify you are you:
+
+   ```bash
+   git config user.name && git config user.email
+   ```
+
+3. **After committing** — check the attribution stuck:
+   `git log -1 --format='%an <%ae>'`. Wrong name? Fix it **before pushing**:
+   `git commit --amend --reset-author` (after correcting the config).
+
+4. **End of your slot** — switch the config back to the next person (in
+   practice: whoever sits down next runs step 1; the sync order in
+   MILESTONES makes this routine).
+
+Never use `--author=` to commit "as" someone who isn't at the keyboard —
+the committer field still records the machine identity, and the point is
+that the named person actually did the work in their slot.
 
 ## Branches
 
@@ -58,21 +95,16 @@ contract: add min_severity filter to GET /alerts (INTERFACES §6)
   announced in the group *before* opening (see INTERFACES change protocol).
 - CI (if adopted per OQ #7) must be green before merge.
 
-## Parallel work protocol (fluid roles need this — ADR-014)
+## Parallel work protocol — RETIRED (ADR-024)
 
-1. **Claim before you start.** Post in the team group: what you're picking
-   up, which module(s), expected finish. First claim wins; no silent starts.
-   The daily sync (MILESTONES) is where tomorrow's claims get sorted.
-2. **One claim = one branch = one PR.** Finish or explicitly release the
-   claim; don't sit on three half-done branches.
-3. **Two people needing the same seam** (e.g. both sides of an API change):
-   pair on it in one branch with co-authored commits, or split strictly
-   along the contract with the contract PR merged first.
-4. **Touching a contract?** INTERFACES.md change protocol — announce first.
-   "I didn't know it changed" must never be a sentence anyone says.
-5. **Same-evening collision insurance:** rebase early, push your branch
-   daily (even unfinished — branches are cheap, lost evenings aren't), and
-   keep the claim list current.
+The claim-before-work / collision-avoidance protocol assumed five people on
+five machines. On one shared laptop there are no collisions to avoid; work
+is sequenced by the laptop slots in MILESTONES instead. **INTERFACES.md
+remains the contract** — its change protocol (announce first, `contract:`
+PR prefix, same-commit updates on both sides of the seam) still applies in
+full, because contracts are what make the modules explainable and Day-2
+extensible, not just collision insurance. Push to GitHub at the end of
+every session: the laptop is now a single point of failure.
 
 ## Red-team isolation (enforced in review — ADR-016)
 
