@@ -25,7 +25,14 @@ def _fmt_money(x) -> str:
 
 
 def write_all(w: World, out_dir: Path, seed: int, config_sha256: str,
-              ground_truth_rows: list[dict]) -> dict:
+              ground_truth_rows: list[dict],
+              planted_rows: list[dict] | None = None,
+              scenario_truth: dict[str, list[dict]] | None = None) -> dict:
+    """planted_rows -> data/ground_truth/planted.csv (DATA_GENERATION §4);
+    scenario_truth: scenario name -> rows for scenario_<name>.csv
+    (INTERFACES §3). Both share the planted.csv shape."""
+    planted_rows = planted_rows or []
+    scenario_truth = scenario_truth or {}
     csv_dir = out_dir / "csv"
     counts: dict[str, int] = {}
 
@@ -65,6 +72,9 @@ def write_all(w: World, out_dir: Path, seed: int, config_sha256: str,
          [[c["code"], c["name"], c["role"], c["cost_multiplier"]] for c in w.countries])
 
     def rel(name: str, extra: list[str], rows: list[list]):
+        # scenario overlays may add raw rows to any relationship file
+        # (INTERFACES §3 "any DATA_MODEL type"): merged before sorting
+        rows = rows + w.extra_rels.get(name, [])
         counts[name] = _write_csv(csv_dir / f"{name}.csv",
                                   ["source_id", "target_id"] + extra, sorted(rows))
 
@@ -81,7 +91,9 @@ def write_all(w: World, out_dir: Path, seed: int, config_sha256: str,
         [[c["id"], c["broker_id"], c["commission_pct"]]
          for c in w.claims if c["broker_id"]])
     rel("rel_paid_to", [], [[c["id"], c["account_id"]] for c in w.claims])
-    rel("rel_holds", [], [[c["doctor_id"], c["id"]] for c in w.credentials])
+    # scenario credentials may exist before a HOLDS edge assigns a holder
+    rel("rel_holds", [], [[c["doctor_id"], c["id"]] for c in w.credentials
+                          if c["doctor_id"]])
     rel("rel_issued_in", [], [[c["id"], c["country_code"]] for c in w.credentials])
     rel("rel_practises_at", ["since"],
         [[p["doctor_id"], p["clinic_id"], p["since"]] for p in w.practises])
@@ -100,13 +112,28 @@ def write_all(w: World, out_dir: Path, seed: int, config_sha256: str,
     _write_csv(gt_dir / "actor_params.csv", ["actor_id", "param_name", "value"],
                sorted([[r["actor_id"], r["param_name"], r["value"]]
                        for r in ground_truth_rows]))
-    _write_csv(gt_dir / "planted.csv", ["entity_id", "cell_id", "typology"], [])
+    _write_csv(gt_dir / "planted.csv", ["entity_id", "cell_id", "typology"],
+               sorted([[r["entity_id"], r["cell_id"], r["typology"]]
+                       for r in planted_rows]))
+    # scenario ground truth: one file per applied scenario (INTERFACES §3);
+    # stale scenario_*.csv from a previous run with a different scenario set
+    # are removed so the output tree is a pure function of the inputs
+    wanted = {f"scenario_{name}.csv" for name in scenario_truth}
+    if gt_dir.is_dir():
+        for old in gt_dir.glob("scenario_*.csv"):
+            if old.name not in wanted:
+                old.unlink()
+    for name, truth_rows in scenario_truth.items():
+        _write_csv(gt_dir / f"scenario_{name}.csv",
+                   ["entity_id", "cell_id", "typology"],
+                   sorted([[r["entity_id"], r["cell_id"], r["typology"]]
+                           for r in truth_rows]))
 
     manifest = {
         "generator_version": __version__,
         "seed": seed,
         "config_sha256": config_sha256,
-        "scenarios_applied": [],
+        "scenarios_applied": sorted(scenario_truth),
         "counts": counts,
     }
     with open(out_dir / "manifest.json", "w", encoding="utf-8", newline="\n") as fh:

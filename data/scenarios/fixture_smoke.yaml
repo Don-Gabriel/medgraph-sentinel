@@ -1,0 +1,67 @@
+# FIXTURE — schema smoke test, NOT a fraud test set.
+# Exercises the INTERFACES §3 overlay schema end-to-end: every actor kind,
+# country pins, edges (refs + existing country IDs), a doctor-pinned journey,
+# a patients POOL (same Patient nodes reused), and layered transfers with
+# count/attrition. Held-out scenarios live OUTSIDE the repo (ADR-027);
+# overlay tooling is developed against fixtures like this one only.
+scenario: fixture_smoke
+description: >
+  Schema smoke fixture: one clinic (country-pinned), one broker with emergent
+  incentive params, one doctor + cloned-format credential, one 8-identity
+  patient pool, journeys through all of them, and a 3-hop layered transfer
+  chain run twice.
+typology: fixture
+actors:
+  - kind: clinic
+    ref: c1
+    props: { bed_count: 0, accreditation_status: none, country: TH }
+  - kind: broker
+    ref: b1
+    props: { country: TH }
+    params: { steering_greed: 0.9, side_commission_pct: 8.0 }
+  - kind: doctor
+    ref: d1
+    props: { specialty: dental }
+  - kind: credential
+    ref: cr1
+    props:
+      license_no: "MC-TR88231"
+      issuing_body: "Medical Council of Turkey"
+      issue_date: 2016-03-12
+      status: revoked
+      revocation_date: 2025-12-15
+      country: TR
+  - kind: patients
+    ref: pool1
+    count: 8
+edges:
+  - type: OWNS_STAKE_IN
+    from: b1
+    to: c1
+    props: { pct: 40 }
+  - type: HOLDS
+    from: d1
+    to: cr1
+  - type: ISSUED_IN
+    from: cr1
+    to: TR
+journeys:
+  - count: 24
+    clinic: c1
+    broker: b1
+    doctor: d1
+    patients: pool:pool1
+    category: dental
+    date_range: [2026-01-01, 2026-06-30]
+  - count: 6
+    clinic: c1
+    broker: b1
+    patients: invented
+    category: cosmetic
+    date_range: [2026-02-01, 2026-05-31]
+transfers:
+  - path: [c1.account, shell, shell, b1.account]
+    amount_usd: 40000
+    count: 2
+    attrition_pct: 8
+    date_range: [2026-02-01, 2026-04-30]

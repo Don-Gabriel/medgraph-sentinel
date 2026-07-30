@@ -5,8 +5,9 @@ run; the economy consults them during normal decision-making. Nothing here
 stamps a fraud label on data — ground truth is the parameter record itself,
 written to data/ground_truth/ and read by evaluation ONLY.
 
-Planted cells (§4) and held-out scenario overlays (§5) are NOT implemented
-yet: planted is an M3 item; held-out tooling waits on the OQ #12 attestation.
+Planted cells (§4) live in generator/plant.py; scenario overlays (§5 tooling,
+INTERFACES §3) in generator/scenario.py. Both run strictly AFTER the emergent
+passes here so the honest+emergent base keeps its bytes (ADR-006).
 """
 from dataclasses import dataclass, field
 from datetime import date, timedelta
@@ -104,15 +105,17 @@ def assign(cfg, rng: np.random.Generator, w: World) -> FraudParams:
     return fp
 
 
-def side_payments(cfg, rng: np.random.Generator, w: World, fp: FraudParams) -> None:
+def side_payments(cfg, rng: np.random.Generator, w: World, fp: FraudParams,
+                  claims: list | None = None) -> None:
     """Materialize kickbacks for steered claims: direct or shell-layered
     transfers, with a fraction cycling back to the clinic (typology 6's
-    emergent substrate)."""
+    emergent substrate). `claims` restricts the pass to a subset (scenario
+    overlays run it over their own claims only); default is the whole world."""
     f = cfg.fraud.shell_layering
     brokers_by_id = {b["id"]: b for b in w.brokers}
     clinics_by_id = {c["id"]: c for c in w.clinics}
 
-    for claim in w.claims:
+    for claim in (claims if claims is not None else w.claims):
         broker_id = claim["steered_by"]
         if not broker_id:
             continue
@@ -153,3 +156,93 @@ def side_payments(cfg, rng: np.random.Generator, w: World, fp: FraudParams) -> N
                                     "date": d1.isoformat()})
                 w.transfers.append({"src": shell, "dst": pick(rng, clinic["account_ids"]),
                                     "amount_usd": money(back * 0.95), "date": d2.isoformat()})
+
+
+def parallel_recycling(cfg, rng: np.random.Generator, fake, w: World,
+                       fp: FraudParams) -> None:
+    """Typology-5 fix (2026-07-31 session): a deterministic fraction of
+    recycled-clone events also get a PARALLEL-billed journey — a further
+    clone of the same identity treated the SAME DAY in a DIFFERENT treatment
+    country. Rationale: colluding clinics bill one recruited identity
+    simultaneously in two corridors; sequential reuse alone never violates
+    the whole-day travel table (measured: tightest cross-country gap 6 days
+    at seed 42), so without this the impossible-travel core is untestable.
+
+    Runs strictly AFTER build_journeys + side_payments so it is purely
+    additive: base rows keep their bytes; this pass only appends new
+    patients/devices/claims/transfers. Claims go through the same journey
+    model (economy.emit_journey_claims). No labels are written — ground
+    truth stays derived (actor_params identity_recycling rows + passport
+    sharing + claim dates), exactly like sequential recycling.
+    """
+    from .economy import (CARE_DAYS, JourneyContext, _doctor_for, date_in,
+                          emit_journey_claims)
+
+    share = cfg.fraud.identity_recycling.parallel_share
+    if share <= 0 or not w.recycled_clones:
+        return
+    ctx = JourneyContext.build(cfg, w)
+    treatment_codes = [c.code for c in cfg.countries.treatment]
+    clinics_by_country = {}
+    for c in w.clinics:
+        clinics_by_country.setdefault(c["country_code"], []).append(c)
+    brokers_by_id = {b["id"]: b for b in w.brokers}
+    patients_by_id = {p["id"]: p for p in w.patients}
+    claims_by_patient: dict[str, list[dict]] = {}
+    for c in w.claims:
+        claims_by_patient.setdefault(c["patient_id"], []).append(c)
+    categories = list(cfg.category_weights)
+    cat_p = np.array([cfg.category_weights[c] for c in categories])
+    cat_p = cat_p / cat_p.sum()
+    ins_p = np.array([i["weight"] for i in w.insurers])
+    ins_p = ins_p / ins_p.sum()
+
+    for event in list(w.recycled_clones):  # snapshot: we append patients below
+        if rng.random() >= share:
+            continue
+        anchor_claims = claims_by_patient.get(event["clone_id"])
+        if not anchor_claims:
+            continue  # clone journey emitted nothing (cannot happen today)
+        anchor = anchor_claims[0]  # the journey's main claim
+        anchor_clinic = next(c for c in w.clinics if c["id"] == anchor["clinic_id"])
+        other_codes = [t for t in treatment_codes
+                       if t != anchor_clinic["country_code"] and clinics_by_country.get(t)]
+        if not other_codes:
+            continue
+        country = pick(rng, other_codes)
+        local = clinics_by_country[country]
+        lw = np.array([c["size_weight"] for c in local]); lw = lw / lw.sum()
+        clinic = pick(rng, local, lw)
+
+        src = patients_by_id[event["clone_id"]]
+        clone_id = w.seq["PAT"].take()
+        clone = {
+            "id": clone_id,
+            "full_name": fake.name(),  # new alias, same identity artifacts
+            "dob": src["dob"],
+            "gender": src["gender"],
+            "passport_no": src["passport_no"],
+            "home_country": src["home_country"],
+            "device_ids": [pick(rng, src["device_ids"])],
+        }
+        w.patients.append(clone)
+
+        category = pick(rng, categories, cat_p)
+        doctor = _doctor_for(rng, w, clinic, category)
+        procedure = pick(rng, ctx.procs_by_cat[category])
+        insurer = pick(rng, w.insurers, ins_p)
+        while insurer["id"] == anchor["insurer_id"]:  # parallel bill hits another insurer
+            insurer = pick(rng, w.insurers, ins_p)
+        broker = brokers_by_id[event["broker_id"]]
+        commission = money(rng.uniform(cfg.brokers.commission_min_pct,
+                                       cfg.brokers.commission_max_pct))
+        care_lo, care_hi = CARE_DAYS[category]
+        days_in_care = int(rng.integers(care_lo, care_hi + 1))
+        proc_date = date.fromisoformat(anchor["procedure_date"])  # SAME DAY - the core
+        emit_journey_claims(cfg, rng, w, ctx, patient=clone, clinic=clinic,
+                            doctor=doctor, procedure=procedure, category=category,
+                            insurer=insurer, broker=broker, commission=commission,
+                            account_id=pick(rng, clinic["account_ids"]),
+                            proc_date=proc_date, days_in_care=days_in_care,
+                            device_id=clone["device_ids"][0],
+                            over=fp.overbilling.get(clinic["id"]), steered=False)
