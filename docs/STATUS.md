@@ -1,64 +1,76 @@
 # STATUS — snapshot, not a log
 
-**Updated:** 2026-07-30 (re-plan + M1 session, J Don Gabriel) · **Days to
-Day 1 (Aug 12): 13**
+**Updated:** 2026-07-30 (solo-transition + detection session, J Don
+Gabriel) · **Days to Day 1 (Aug 12): 13**
 
-## Current milestone: ✅ M1 PASSED (Jul 30) → M2 opens Jul 31
+## Standing context (changed 2026-07-30 — read ADR-027)
 
-M1 exit test, all green on this machine (floor profile 2G/1G):
-- `docker compose up -d` from clean → **all services healthy in 48 s**
-- `RETURN gds.version()` → **2.13.11** (OQ #2 closed, ADR-026)
-- Seed: loader 15.3 s, **all 31 counts match manifest** (51,144 nodes /
-  193,694 rels); detection runner no-op OK
-- `/api/v1/health` → `ok`, neo4j true, narration-cache match true
-- Browser console renders live stats (after a CORS fix found by this test)
-- GDS on the real graph: Louvain 2.4 s · PageRank 0.23 s · exact
-  betweenness 122.5 s · projections 14–16 MiB · no OOM (OQ #11 closed)
+- **SOLO.** No other member contributes. One person builds, documents,
+  pitches, and runs Day 2. MILESTONES rewritten (~93–100 scheduled hours);
+  anchored dates hold: detection freeze **Aug 6**, integration freeze
+  **Aug 8**, dress rehearsal **Aug 10**.
+- **Held-out protocol is temporal separation (ADR-027):** five scenarios
+  authored + SHA-256-committed 2026-07-30 (commit `290101e`) BEFORE any
+  detection query existed. Files live OUTSIDE the repo
+  (`C:\WorkSpace\Private\medgraph-heldout\`) — **do not open/edit/delete
+  until the one-shot Aug 9 evaluation.** Claim = ordering, not
+  independence; exact pitch wording in DATA_GENERATION §5.
+- Typologies 4 and 6 remain descoped (ADR-024). We ship 1, 2, 3, 5.
 
-## Standing context (changed 2026-07-30 — read ADR-024)
+## DONE (this session, 2026-07-30 — branch claude/solo-implementer-transition-768b06)
 
-- **One shared laptop; J Don Gabriel implements nearly everything.**
-  Capacity ~110–130 h total. MILESTONES fully rewritten; anchored dates
-  hold (freezes Aug 6/8, rehearsal Aug 10).
-- **Typologies 4 and 6 descoped** (cut ladder executed). We ship 1, 2, 3, 5.
-  `narrative_fingerprint` ships but is consumed by no shipping rule.
-- Non-code deliverables reassigned (DEFENCE_AREAS): Pavithra held-out +
-  demo + screenshots · Vijayalakshmi PITCH + GLOSSARY · Mary DEMO_RUNBOOK +
-  cold-start execution · Poonkundran DAY2_PLAYBOOK + fresh-clone
-  verification. Everyone commits under their own identity (CONTRIBUTING
-  "Shared-machine identity").
-
-## DONE (this session)
-
-- Re-plan docs committed (ADR-024): MILESTONES, DEFENCE_AREAS,
-  CONTRIBUTING, DETECTION_SPEC descopes + propagation
-- Seed-42 dataset committed (ADR-005): 51,144 nodes / 193,694 rels, 7.6 MB
-- Loader per INTERFACES §4: LOAD CSV in batched transactions, wipe-and-load,
-  manifest validation with loud diff (ADR-025 benchmark: LOAD CSV 15.3 s vs
-  admin-import 3.8 s — LOAD CSV chosen; OQ #1 closed)
-- `medgraph-neo4j:demo` image with GDS 2.13.11 baked at build time
-  (ADR-026 — NEO4J_PLUGINS downloads at every container start; unusable
-  offline). DEMO_RUNBOOK tarball commands updated
-- API CORS middleware (console origin :5173 → API :8000)
-- Docker Desktop fix on the lead machine: `EnableDockerAI` off in
-  settings-store.json — the bundled Model Runner crashes the backend on
-  this machine (apostrophe in the Windows profile path breaks its unix
-  socket). If Docker won't start, check that flag first
+- **PR #3 merged:** replan branch (M1 passed, loader, seed-42 dataset,
+  GDS-baked image) is on main.
+- **Team scaffolding stripped (ADR-027):** DEFENCE_AREAS → solo jury drill
+  sheet; CONTRIBUTING solo; MILESTONES one-person hours incl. the returned
+  ~24 h of pitch/demo/rehearsal work; DAY2_PLAYBOOK solo protocol
+  (hard timers, rehearse-not-improvise); README/LICENSE/OQ propagated.
+- **Held-out scenarios authored + hash-committed** before any detection
+  query (overlay schema extended first — `contract:` commit; INTERFACES §3
+  now expresses credential/identity scenarios).
+- **ADR-028 (measured):** typology 3 drops centrality — exact betweenness
+  131.6 s at 51k nodes AND worst steering discriminator (P@13 0.077 vs
+  0.385 for top-clinic concentration); 8/13 steering brokers sit below
+  median volume, invisible to topology scores. Sampled betweenness
+  (samplingSize 2048: 94% top-50 agreement, 5% cost) is the documented
+  fallback. Evidence: detection/benchmarks/typology3_centrality.md.
+- **ADR-029 (proven):** alerts are committed data — detection/export.py →
+  alerts.csv + rel_implicates.csv + manifest counts; loader loads them
+  (optional stems, prefix-routed IMPLICATES); compose `seed` runs loader
+  only. Round trip verified: detect → export → wipe-load (33/33 counts,
+  7.2 s seed with alerts) → re-export **byte-identical**.
+- **Detection layer real (ADR-030, M3 pulled forward):** registry runner
+  (--rules/--dry-run/--created-at, idempotent per rule+version,
+  deterministic ALT numbering, 200-entity cap) + four rules + shared
+  travel_time_days config (OQ #4/#5 closed). Calibrated on the honest
+  economy (fraud gates zeroed): **zero medium+ honest alerts per rule.**
+- **Dev-set evaluation** (evaluation/ is the only ground-truth reader), 68
+  alerts total: kickback precision 1.0, broker recall 6/13 (misses are the
+  sub-median-volume steerers); impossible_travel 0/5 emergent recycled
+  groups — **seed 42 contains zero temporally impossible recycled cases**
+  (tightest cross-country gap 6 days), so the rule cannot catch them by
+  construction; typologies 1/2 not evaluable until planted cells land.
+- Tests 22 passed; dataset regenerated to sync manifest config_sha256
+  (CSV bytes unchanged).
 
 ## BLOCKED
 
-- **OQ #12 attestation (Pavithra)** — still unrecorded under ADR-016;
-  blocks scenario-overlay tooling design and the PITCH claim branch
+- (nothing hard-blocked; OQ #13 backup laptop and OQ #14 revoked-biller
+  generator behavior are owner decisions, not blockers)
 
 ## NEXT 3 (priority order — MILESTONES Jul 31)
 
-1. Scenario overlay schema (INTERFACES §3) + planted-cell support in the
-   generator — must exist before the Aug 6 freeze (Jul 31, ~8 h)
-2. API alert endpoints against fixture alerts (Aug 1)
-3. Console alert queue + Cytoscape drill-down on fixtures (Aug 2; M2 exit)
+1. **Generator: scenario-overlay support (INTERFACES §3 incl. extensions)
+   + planted cells for typologies 1/2 + recycling calibration** — planted
+   cells must include tight-window recycled identities or typology 5 stays
+   untestable (this session's measured finding); decide OQ #14 in the same
+   pass; regenerate dev dataset + re-run dev evaluation (~8 h)
+2. API alert endpoints against the real 68 alerts (Aug 1)
+3. Console queue + Cytoscape drill-down (Aug 2; M2 exit)
 
 ## Decisions awaiting a human
 
-- OQ #12: Pavithra's attestation — record under ADR-016 at the next sync
-- Four GitHub handles in README.md
-- OQ #7: adopt minimal CI? (team decision; costs ~1 h of the new budget)
+- OQ #13: does a backup laptop exist? (affects DEMO_RUNBOOK drills)
+- OQ #14: should the honest generator wind down revoked-doctor billing?
+  (regenerates dataset; decide with Jul 31 planted-cell work)
+- OQ #7: adopt minimal CI? (solo decision, ~1 h)
