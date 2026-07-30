@@ -31,6 +31,9 @@ _CONV = {
     "int": "toInteger(row.{c})",
     "float": "toFloat(row.{c})",
     "date": "CASE row.{c} WHEN '' THEN null ELSE date(row.{c}) END",
+    "datetime": "CASE row.{c} WHEN '' THEN null ELSE datetime(row.{c}) END",
+    # rawstr: keep empty strings as-is (Alert.note/summary_params default "")
+    "rawstr": "row.{c}",
 }
 
 # file stem -> (label, key column, {column: type})  — DATA_MODEL.md node tables
@@ -88,13 +91,39 @@ RELS: dict[str, tuple[str, str, str, dict[str, str]]] = {
 
 _KEY = {"Country": "code"}  # node label -> id property (default "id")
 
+# ---- Alert artifacts (ADR-029): written by `python -m detection.export`
+# after the one-time build-phase detection run, committed like any other
+# data, loaded here so compose-up never computes detection. OPTIONAL: a
+# dataset regenerated before detection has run simply omits them from the
+# manifest and these stems are skipped.
+OPTIONAL_NODES: dict[str, tuple[str, str, dict[str, str]]] = {
+    "alerts": ("Alert", "id",
+               {"typology": "str", "rule_version": "str", "score": "float",
+                "severity": "str", "status": "str", "note": "rawstr",
+                "summary_params": "rawstr", "created_at": "datetime"}),
+}
+OPTIONAL_RELS: dict[str, tuple[str, str, str, dict[str, str]]] = {
+    # target is ANY entity node: rows are routed to an indexed per-label
+    # MATCH by ID prefix (same trick as OWNED_BY, generalized).
+    "rel_implicates": ("IMPLICATES", "Alert", "*", {"role": "str"}),
+}
+
+# ID prefix -> label, for prefix-routed multi-label targets. Country is
+# deliberately absent: no shipping rule implicates a Country node, and an
+# unrouted row surfaces as a count mismatch rather than a silent skip.
+PREFIX_LABEL: dict[str, str] = {
+    "PAT_": "Patient", "DOC_": "Doctor", "CLI_": "Clinic", "BRK_": "Broker",
+    "CLM_": "Claim", "CRD_": "Credential", "ACC_": "PaymentAccount",
+    "DEV_": "Device", "ADR_": "Address", "PRC_": "Procedure", "INS_": "Insurer",
+}
+
 
 def _props_cypher(cols: dict[str, str]) -> str:
     return ", ".join(f"{c}: {_CONV[t].format(c=c)}" for c, t in cols.items())
 
 
 def node_query(stem: str) -> str:
-    label, key, cols = NODES[stem]
+    label, key, cols = {**NODES, **OPTIONAL_NODES}[stem]
     props = f"{key}: row.{key}"
     if cols:
         props += ", " + _props_cypher(cols)
@@ -106,16 +135,22 @@ def node_query(stem: str) -> str:
 
 
 def rel_queries(stem: str) -> list[str]:
-    rtype, src, dst, cols = RELS[stem]
+    rtype, src, dst, cols = {**RELS, **OPTIONAL_RELS}[stem]
     props = f" {{{_props_cypher(cols)}}}" if cols else ""
-    targets = dst.split("|")
+    # "*" = any entity label (IMPLICATES); "A|B" = explicit multi-label
+    if dst == "*":
+        targets = list(PREFIX_LABEL.values())
+    else:
+        targets = dst.split("|")
+    label_prefix = {label: pfx for pfx, label in PREFIX_LABEL.items()}
     queries = []
     for target in targets:
         # multi-label targets: route rows by ID prefix so each MATCH is indexed
         prefix_filter = ""
         if len(targets) > 1:
-            prefix = {"Clinic": "CLI_", "Broker": "BRK_"}[target]
-            prefix_filter = f"WITH row WHERE row.target_id STARTS WITH '{prefix}' "
+            prefix_filter = (
+                f"WITH row WHERE row.target_id STARTS WITH '{label_prefix[target]}' "
+            )
         queries.append(
             f"LOAD CSV WITH HEADERS FROM 'file:///{stem}.csv' AS row "
             f"{prefix_filter}"
@@ -172,12 +207,14 @@ def wipe(session) -> None:
 
 
 def load_all(session, manifest_counts: dict[str, int]) -> None:
-    for stem in NODES:
+    node_stems = list(NODES) + [s for s in OPTIONAL_NODES if s in manifest_counts]
+    rel_stems = list(RELS) + [s for s in OPTIONAL_RELS if s in manifest_counts]
+    for stem in node_stems:
         t0 = time.monotonic()
         session.run(node_query(stem)).consume()
         print(f"loader: nodes  {stem:<18} {manifest_counts.get(stem, '?'):>7} rows "
               f"{time.monotonic() - t0:6.1f}s")
-    for stem in RELS:
+    for stem in rel_stems:
         t0 = time.monotonic()
         for q in rel_queries(stem):
             session.run(q).consume()
@@ -185,12 +222,16 @@ def load_all(session, manifest_counts: dict[str, int]) -> None:
               f"{time.monotonic() - t0:6.1f}s")
 
 
-def loaded_counts(session) -> dict[str, int]:
+def loaded_counts(session, expected: dict[str, int]) -> dict[str, int]:
     counts: dict[str, int] = {}
-    for stem, (label, _key, _cols) in NODES.items():
+    node_items = list(NODES.items()) + [
+        (s, v) for s, v in OPTIONAL_NODES.items() if s in expected]
+    rel_items = list(RELS.items()) + [
+        (s, v) for s, v in OPTIONAL_RELS.items() if s in expected]
+    for stem, (label, _key, _cols) in node_items:
         rec = session.run(f"MATCH (n:{label}) RETURN count(n) AS n").single()
         counts[stem] = rec["n"]
-    for stem, (rtype, _s, _d, _cols) in RELS.items():
+    for stem, (rtype, _s, _d, _cols) in rel_items:
         rec = session.run(f"MATCH ()-[r:{rtype}]->() RETURN count(r) AS n").single()
         counts[stem] = rec["n"]
     return counts
@@ -215,8 +256,9 @@ def main() -> int:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     expected: dict[str, int] = manifest["counts"]
 
+    known = set(NODES) | set(RELS) | set(OPTIONAL_NODES) | set(OPTIONAL_RELS)
     missing = [s for s in list(NODES) + list(RELS) if s not in expected]
-    unknown = [s for s in expected if s not in NODES and s not in RELS]
+    unknown = [s for s in expected if s not in known]
     if missing or unknown:
         print(f"loader: manifest/loader table mismatch — missing={missing} "
               f"unknown={unknown}", file=sys.stderr)
@@ -233,7 +275,7 @@ def main() -> int:
             wipe(session)
             print(f"loader: wiped existing graph in {time.monotonic() - t0:.1f}s")
             load_all(session, expected)
-            actual = loaded_counts(session)
+            actual = loaded_counts(session, expected)
     finally:
         driver.close()
 

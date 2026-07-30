@@ -113,6 +113,14 @@ All have `source_id,target_id` first, then edge properties in the order shown
 `counts` has one entry per CSV file (basename without extension). No
 timestamp field, by design.
 
+*Two files in `data/csv/` are NOT generator output:* `alerts.csv` and
+`rel_implicates.csv` are written by the detection export (§5, ADR-029)
+during the demo build; the export adds their counts to the manifest and
+the loader loads them like any other file when the manifest lists them.
+Regenerating the dataset rewrites the manifest without those entries —
+which is correct: alerts for the old graph are meaningless against a new
+one, and the ADR-018 chain re-runs from the top.
+
 ### `data/ground_truth/` (committed; read by evaluation ONLY)
 
 - `actor_params.csv`: `actor_id, param_name, value` — emergent-fraud
@@ -210,6 +218,20 @@ contract above doesn't change either way.
 ## 5. Detection runner contract
 
 `python -m detection.run [--rules ghost_clinic,circular_payment] [--dry-run]`
+
+**Detection is a build-phase step, never a boot step (ADR-029).** The
+compose `seed` service does NOT run detection; it loads committed alert
+CSVs like any other data (§4). Workflow:
+
+- Development / Day 2: run `python -m detection.run` on demand against the
+  loaded graph.
+- Demo build (ADR-018 chain): after the one-time detection run,
+  `python -m detection.export` writes `data/csv/alerts.csv` (Alert node
+  columns: id, typology, rule_version, score, severity, status, note,
+  summary_params, created_at) and `data/csv/rel_implicates.csv`
+  (source_id, target_id, role), sorted by id (byte-stable re-export), and
+  adds `alerts` / `rel_implicates` counts to `data/manifest.json`. These
+  files are committed; the loader loads them when the manifest lists them.
 
 - Reads rule registry: `detection/rules/<rule_key>.yaml`:
 
@@ -353,14 +375,16 @@ Generic node inspector for drill-down side panel: `{"id", "type", "label",
   than serving a wrong narration; wholesale staleness is caught loudly by
   the `/health` startup check above.
 
-**One-way demo build chain (ADR-018).** The cache is keyed by alert ID, and
-alert IDs are assigned per detection run — any regeneration or detection
-re-run after the cache is built silently orphans every entry. Therefore the
-demo artifacts are built strictly in this order, and only in this order:
+**One-way demo build chain (ADR-018, amended by ADR-029).** The cache is
+keyed by alert ID, and alert IDs are assigned per detection run — any
+regeneration or detection re-run after the cache is built silently orphans
+every entry. Therefore the demo artifacts are built strictly in this order,
+and only in this order:
 
 ```
-freeze dataset → run loader → run detection → build narration cache
-             → commit (dataset + alerts + cache together) → NO regeneration
+freeze dataset → run loader → run detection → export alert CSVs (§5)
+             → build narration cache
+             → commit (dataset + alert CSVs + cache together) → NO regeneration
 ```
 
 If regeneration ever becomes unavoidable after the chain has run, the
@@ -377,10 +401,13 @@ base with GDS 2.13 baked in at build time — ADR-004/ADR-026), `seed`
 (one-shot loader, §4), `api`, `frontend`.
 `docker compose up` from a fresh clone with a filled `.env` must reach a
 browsable console at `http://localhost:5173` in ≤ 3 minutes *after images are
-pulled* (ADR-005). Detection + narration are run via documented one-liners,
-and the repo ships with alerts already computed? **No** — alerts derive from
-the loaded graph at seed time: the `seed` service runs loader **then**
-detection runner, so a fresh clone shows alerts without extra commands.
+pulled* (ADR-005). **The repo ships with alerts already computed
+(ADR-029):** detection ran once at demo-build time, its Alert nodes and
+IMPLICATES edges were exported to committed CSVs (§5), and the `seed`
+service runs the loader **only** — a fresh clone shows alerts because they
+are data, and every judge's clone pays load cost, never detection cost.
+Detection and narration remain runnable on demand via documented
+one-liners for development and Day 2.
 
 ---
 

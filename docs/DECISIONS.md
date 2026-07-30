@@ -489,6 +489,38 @@ jury reads the repo); dropping the held-out evaluation entirely (rejected —
 temporal separation is weaker than person-separation but still kills the
 "tuned after the fact" accusation, and it is cheap).
 
----
+## ADR-029 — Alerts are committed data; compose-up never runs detection (2026-07-30)
 
-*Append new ADRs below. Number sequentially. Date every entry.*
+**Context:** the compose `seed` service ran `loader && detection.run`,
+meaning every fresh clone (every judge) would pay full detection cost at
+boot — and a detection re-run at boot re-assigns alert IDs, which is
+exactly the regeneration the ADR-018 one-way chain forbids once the
+narration cache exists. Centrality-based rules make boot-time detection
+strictly worse as data grows (ADR-028).
+
+**Decision:** detection runs **once**, at demo-build time, on the build
+machine. `python -m detection.export` then writes the resulting `Alert`
+nodes and `IMPLICATES` edges to `data/csv/alerts.csv` and
+`data/csv/rel_implicates.csv` (sorted by id — byte-stable re-export) and
+adds their counts to `data/manifest.json`. The loader treats them as
+**optional stems**: loaded and count-validated when the manifest lists
+them, skipped when it doesn't (a freshly regenerated dataset has no alert
+entries until the chain reaches the detect+export step). `IMPLICATES`
+targets any entity label, so the loader routes rows to indexed per-label
+MATCHes by ID prefix (generalizing the OWNED_BY two-pass trick).
+`docker compose up` therefore loads a graph that already contains alerts;
+detection stays runnable on demand (`python -m detection.run`) for
+development and Day 2.
+
+**Consequences:** (a) judge clones boot in load time (~15 s seed) at any
+detection cost; (b) `down -v` re-seeds graph *and* alerts
+deterministically; (c) the ADR-018 chain gains an explicit export step:
+freeze → load → detect → **export** → narrate → commit as one unit;
+(d) `Alert.created_at` is pinned by the build-phase run (runner flag), so
+re-exporting an unchanged graph is byte-identical.
+
+**Alternative rejected:** keeping detection in the seed path ("alerts are
+always fresh") — freshness is precisely the failure mode: the demo needs
+*frozen* alerts matching the frozen narration cache, and recomputing what
+is already committed spends every judge's first three minutes proving
+nothing.

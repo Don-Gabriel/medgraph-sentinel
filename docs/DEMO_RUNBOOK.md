@@ -17,9 +17,14 @@ template text mid-demo without an error. So the demo artifacts are built
 strictly one way (scheduled Aug 7, MILESTONES):
 
 ```
-freeze dataset → run loader → run detection → build narration cache
-             → commit (dataset + alerts + cache together) → NO regeneration
+freeze dataset → run loader → run detection → export alert CSVs (ADR-029)
+             → build narration cache
+             → commit (dataset + alert CSVs + cache together) → NO regeneration
 ```
+
+Alert CSVs are committed data (ADR-029): compose-up only *loads* them —
+no judge's clone ever runs detection, and `docker compose down -v && up`
+re-seeds graph **and alerts** deterministically from the committed files.
 
 Rules:
 

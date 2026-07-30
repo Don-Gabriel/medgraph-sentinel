@@ -3,7 +3,9 @@ cover the full INTERFACES §2 file set, and validation must fail loudly."""
 import json
 from pathlib import Path
 
-from loader.load import NODES, RELS, diff_counts, node_query, rel_queries, split_statements
+from loader.load import (NODES, OPTIONAL_NODES, OPTIONAL_RELS, PREFIX_LABEL,
+                         RELS, diff_counts, node_query, rel_queries,
+                         split_statements)
 
 DATA = Path(__file__).parent.parent / "data"
 SCHEMA = Path(__file__).parent.parent / "graph" / "schema.cypher"
@@ -22,7 +24,11 @@ def test_real_schema_splits_into_only_create_statements():
 
 def test_table_covers_manifest_exactly():
     manifest = json.loads((DATA / "manifest.json").read_text(encoding="utf-8"))
-    assert set(manifest["counts"]) == set(NODES) | set(RELS)
+    counts = set(manifest["counts"])
+    mandatory = set(NODES) | set(RELS)
+    optional = set(OPTIONAL_NODES) | set(OPTIONAL_RELS)
+    # every mandatory stem present; nothing outside mandatory + optional
+    assert mandatory <= counts <= mandatory | optional
 
 
 def test_node_query_shapes():
@@ -45,6 +51,22 @@ def test_rel_query_shapes():
     assert len(qs) == 2
     assert any("STARTS WITH 'CLI_'" in q and "(b:Clinic" in q for q in qs)
     assert any("STARTS WITH 'BRK_'" in q and "(b:Broker" in q for q in qs)
+
+
+def test_alert_stem_queries():
+    # Alert nodes: datetime conversion + rawstr keeps "" (note default "")
+    q = node_query("alerts")
+    assert "CREATE (:Alert" in q
+    assert "created_at: CASE row.created_at WHEN '' THEN null ELSE datetime(row.created_at) END" in q
+    assert "note: row.note" in q  # rawstr — no null coercion
+    # IMPLICATES fans out to one indexed MATCH per entity label by ID prefix
+    qs = rel_queries("rel_implicates")
+    assert len(qs) == len(PREFIX_LABEL)
+    assert all("MATCH (a:Alert {id: row.source_id})" in q for q in qs)
+    assert any("STARTS WITH 'ACC_'" in q and "(b:PaymentAccount" in q for q in qs)
+    assert any("STARTS WITH 'CLM_'" in q and "(b:Claim" in q for q in qs)
+    assert all("role: CASE row.role WHEN '' THEN null ELSE row.role END" in q
+               for q in qs)
 
 
 def test_diff_counts_reports_all_mismatches():
