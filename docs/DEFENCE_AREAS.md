@@ -1,174 +1,264 @@
-# Defence Areas — Jury Q&A Assignments
+# Jury Prep — Every Question, One Answerer
 
-**This is not module ownership — and as of the 2026-07-30 re-plan
-(ADR-024), it is explicitly not authorship either.** One person
-(J Don Gabriel) is writing nearly all the code on the one shared laptop.
-**Four of us will defend code we did not write.** That is normal in real
-engineering teams and the jury may probe exactly this; the defence is
-genuine understanding, rehearsed aloud — never pretended authorship. If
-asked "did you write this?", the answer is the honest one: "Don drove the
-implementation; this area is mine to know, and I can walk you through it."
+**Solo as of 2026-07-30 (ADR-027).** There is no deflection target: every
+question lands on J Don Gabriel. This file is the drill sheet — each
+question I must be able to answer **cold, out loud, no notes, no laptop**,
+grouped by area, with the answer in compressed form or a pointer to where
+the full answer lives. Rehearsal protocol at the bottom.
 
-## Deliverables each person owns in git (ADR-024 reassignment)
-
-Everyone commits **their own work under their own git identity** from the
-shared laptop (CONTRIBUTING "Shared-machine identity") in daily laptop
-slots (MILESTONES). This is real work product, not decoration:
-
-| person | owns and commits |
-|---|---|
-| J Don Gabriel | nearly all implementation (generator, loader, detection, api, frontend, ops) |
-| Pavithra R | held-out scenarios (off-repo until Aug 9 — ADR-016), demo rehearsal + demo driving, README/PITCH screenshots + screenshot fallback deck |
-| Vijayalakshmi G | PITCH.md (v2 with real click path, claim branch), GLOSSARY.md |
-| Mary Vivitha M | DEMO_RUNBOOK.md upkeep, **cold-start test execution** (ADR-019, Aug 10) and its recorded results |
-| Poonkundran R | DAY2_PLAYBOOK.md upkeep, **fresh-clone verification** (Aug 8, clean Docker state) and its recorded results |
-
-## Defending code you did not write
-
-Per area: what must be explainable **cold — out loud, no notes, no
-laptop — regardless of who typed it**. Rehearsal protocol (MILESTONES):
-**round 1 Aug 9 evening** (each person teaches their area to the room; every
-stumble is a doc fix that same evening), **round 2 Aug 10** after the dress
-rehearsal, **question roulette Aug 11** (any question below, any person,
-timed). A person who cannot explain an item aloud by Aug 10 does not get
-that question deflected to Don on Day 1 — they get more rehearsal.
+Format per question: **Q** → the answer skeleton (the 3–5 things that must
+come out of my mouth) → pointer.
 
 ---
 
-## Vijayalakshmi G — data generation & the synthetic economy
+## Area 1 — The problem & the product
 
-Primary docs: DATA_GENERATION.md, generator config. Also owns: PITCH.md,
-GLOSSARY.md.
+**Q: What does this actually do, in one minute?**
+Cross-border medical tourism = five record-keepers, none sees the whole
+chain; organised fraud engineers every record to look fine alone; the fraud
+is only visible in relationships. We build the graph (patients, doctors,
+clinics, brokers, claims, accounts, devices), run four typology rules +
+GDS algorithms over it, and surface scored, explainable alerts in an
+investigator console. → PROJECT_BRIEF.
 
-**Must be explainable regardless of authorship:**
-- The layered fraud design: honest economy → emergent (incentive
-  parameters) → planted cells → held-out overlays; where ground truth comes
-  from and why no `is_fraud` flag exists anywhere.
-- Why thresholds are calibrated on the honest economy only (circularity
-  defense), and the honest limits of the whole protocol.
-- Determinism: seed 42, byte-identical regeneration, why the dataset is
-  committed (ADR-005/006).
-- What the population table says and why it was corrected (ADR-021).
-- Why `narrative_fingerprint` still ships although typology 4 is descoped
-  (ADR-024: substrate for next-build; one sentence).
+**Q: Who buys this?**
+Insurers/reinsurers (losing the money), TPAs (see cross-insurer flows —
+the wedge), accreditation bodies, national health authorities. →
+PROJECT_BRIEF "Who would buy this".
 
-1. *"Didn't you just detect the fraud you planted?"* — the layered answer,
-   ending with the claim branch OQ #12 resolved to, limits stated unprompted.
-2. *"How do you know your synthetic economy is realistic?"* — gravity-model
-   corridors, Zipf sizes, lognormal pricing, honest noise containing weak
-   versions of every fraud signal.
-3. *"Why is the dataset committed instead of generated fresh?"* — ADR-005/006.
-4. *"What does 'emergent' fraud actually mean here?"* — incentive parameters
-   on actors; fraud from decision rules; ground truth derived, never written
-   into the data.
-5. *"How would this work with real data?"* — it wouldn't directly: entity
-   resolution, consortium sharing, privacy law; the generator exists because
-   real data is unobtainable.
+**Q: Where would real data come from?**
+Honest answer: the technology is the easy half. TPAs and reinsurers already
+aggregate multi-insurer flows; accreditor consortium second; privacy law
+forces hashed identifiers — shared-endpoint signals survive hashing better
+than content-based signals. → PITCH Q4.
 
-## Poonkundran R — graph schema, Cypher, and why Neo4j
+**Q: Why is nobody doing this already?**
+Per-claim scoring is the incumbent; cross-org graph needs data sharing
+(legal, not technical, blocker) — which is why the prototype is synthetic
+and says so.
 
-Primary docs: DATA_MODEL.md, graph/schema.cypher, loader. Also owns:
-DAY2_PLAYBOOK.md, fresh-clone verification.
+## Area 2 — Data generation & the synthetic economy
 
-**Must be explainable regardless of authorship:**
-- The claim-centric star, drawn from memory on a whiteboard.
-- Every constraint and index, each mapped to the named query that needs it —
-  and why passport/licence are deliberately NOT unique.
-- The loader contract end-to-end: wait for Bolt → schema → wipe → load →
-  manifest validation → fail loudly; wipe-and-load vs incremental, and why.
-- The OQ #1 benchmark result: LOAD CSV vs neo4j-admin import numbers, which
-  won and why (ADR-025).
-- What breaks at 10M nodes (DATA_MODEL design notes).
+**Q: Didn't you just find what you planted?** *(the big one)*
+Layered: (1) honest economy simulated first, tuned to look right with weak
+versions of every fraud signal; (2) emergent fraud = incentive parameters
+on ~5% of actors, fraud emerges from decision rules — ground truth derived,
+never labeled; (3) thresholds calibrated on honest actors only; (4)
+held-out scenarios: hash-committed 2026-07-30 **before any detection query
+existed**, evaluated once against frozen rules. Then the exact claim
+wording — ordering, not independence — verbatim from DATA_GENERATION §5.
+Never stronger.
 
-1. *"Why Neo4j over PostgreSQL?"* — relational-not-transactional fraud;
-   traversals + community detection vs recursive CTEs; ADR-001.
-2. *"Why these constraints and indexes?"* — each maps to a named query.
-3. *"What breaks at 10 million nodes?"* — sampled betweenness, batch windows,
-   Community Edition limits bite first.
-4. *"Walk me through the model for one claim."* — the star, from memory.
-5. *"How does data get in, and how fast?"* — loader contract + the measured
-   load time and benchmark numbers (ADR-025).
+**Q: How do you know the synthetic economy is realistic?**
+Gravity-model corridors over real countries/cost levels, Zipf clinic/broker
+sizes, lognormal pricing, 1–3 claims per journey, honest noise mandatory:
+family device sharing, shared registered offices, declared broker stakes,
+~3% honest revocations. Limits stated: it's plausible, not validated
+against real claim distributions — real data is unobtainable, which is the
+market gap itself. → DATA_GENERATION §2.
 
-## Mary Vivitha M — detection typologies & graph algorithms
+**Q: What does "emergent" mean here, concretely?**
+`overbilling_propensity`, `steering_greed`, `identity_recycling`,
+`shell_layering` — parameters, not labels; e.g. a greedy broker meets a
+paying clinic and a kickback ring *emerges*. `actor_params.csv` records
+parameters; an evaluation script derives affected entities; detection code
+has no path to that directory. → DATA_GENERATION §3.
 
-Primary docs: DETECTION_SPEC.md, detection rules. Also owns:
-DEMO_RUNBOOK.md, cold-start test execution.
+**Q: Why is the dataset committed rather than generated at boot?**
+Determinism (same graph every clone, demo script can name entities), boot
+time (3-minute budget is load time), demo stability, and the held-out story
+(evaluation regenerates separately). → ADR-005/006.
 
-**Must be explainable regardless of authorship:**
-- All four shipping typologies: behaviour → signature → features → score,
-  each in under two minutes; ghost clinic in full depth.
-- The descope story as an asset: which two were cut, why those two, and
-  that they remain fully specified as next-build (ADR-024) — say it
-  before the jury finds it.
-- What Louvain, PageRank, and betweenness each contribute, in plain words.
-- Every rule's documented FP modes and the multi-feature score mitigation.
-- The rule registry: why a seventh typology is YAML + a query, no API or
-  frontend change (this doubles as the Day-2 answer).
+**Q: Seed and reproducibility?**
+One `numpy.random.Generator`, seed 42, config hash in the manifest, no
+timestamps in artifacts; byte-identical regeneration is tested. → ADR-006/021.
 
-1. *"Explain one typology end to end."* — ghost clinic by default; be ready
-   to switch to any of the four.
-2. *"Why Louvain? What does betweenness give you that degree doesn't?"* —
-   communities without labels; brokers bridging communities; PageRank ranks
-   referral influence.
-3. *"What's your false-positive story?"* — documented FP modes per rule,
-   thresholds calibrated on honest actors.
-4. *"Why only four typologies?"* — capacity honesty: cut ladder pre-agreed
-   (ADR-017), executed under the one-laptop constraint (ADR-024); two more
-   are fully specified with FP modes — that's the roadmap, not a gap.
-5. *"How would you add a seventh typology right now?"* — registry entry +
-   query; live answer on Day 2 if asked.
+## Area 3 — Graph schema & why Neo4j
 
-## J Don Gabriel — API design, narration, and deployment
+**Q: Why Neo4j over PostgreSQL?**
+The signals are traversals and community structure — multi-hop
+variable-length paths and Louvain are what SQL is worst at; Cypher patterns
+read aloud to a jury; GDS is the most mature algorithm library. Community
+limits (single DB, no RBAC) named honestly. → ADR-001.
 
-Primary docs: INTERFACES.md §5–9, api/, docker-compose, DECISIONS.md.
-Also: nearly all implementation (and first responder for any deep
-implementation question another area cannot field).
+**Q: Walk me through the model for one claim.** *(whiteboard, from memory)*
+Claim is the hub: FOR_PATIENT, AT_CLINIC, PERFORMED_BY, FOR_PROCEDURE,
+BILLED_TO, ARRANGED_BY (commission), PAID_TO. Periphery: doctor HOLDS
+credential ISSUED_IN country; clinic LOCATED_AT address IN_COUNTRY; broker
+OPERATES_FROM; accounts OWNED_BY / TRANSFERRED; patient USED_DEVICE /
+RESIDES_IN. Star keeps typology traversals 1–2 hops. → DATA_MODEL.
 
-**Must be explainable regardless of authorship:** (he wrote it — his burden
-is breadth, plus backing up the other four without taking over their
-answers.)
+**Q: Why are passport and licence numbers NOT unique?**
+A uniqueness constraint would make the fraud unrepresentable — shared
+passports/licences ARE the typology 5/2 signals. Deliberate, indexed,
+non-unique. → DATA_MODEL design notes.
 
-1. *"Walk me through the architecture."* — generator → committed CSVs →
-   seed (load + detect) → Neo4j → FastAPI → console; the why of each arrow.
-2. *"What exactly does the LLM do, and what happens offline?"* — one cached
-   call per alert, committed cache, template fallback, 5 s timeout.
-3. *"Why is the API read-mostly?"* — precomputed alerts; PATCH is the only
-   write; demo safety + Day-2 lever.
-4. *"How does a judge run this?"* — clone, .env, compose up, measured boot
-   time; what's pinned and why.
-5. *"What would production need?"* — auth/RBAC, consortium ingestion, entity
-   resolution, incremental detection.
+**Q: Name an index and the query that needs it.**
+`cred_license_no` → typology 2 licence-sharing lookup; `patient_passport`
+→ typology 5; claim date indexes → typology 5 date windows + API;
+alert_status/typology → console queue filters. Every index maps to a
+shipping query (fingerprint index removed with the typology-4 descope). →
+DATA_MODEL.
 
-## Pavithra R — the investigator console & the demo itself
+**Q: What breaks at 10M nodes?**
+Indexes and targeted queries hold; exact betweenness O(n·m) does not — we
+hit this at 51k nodes already (122 s) and re-architected: measured numbers
+and the sampling/degree answer live in ADR-028. Batch feature extraction
+moves to scheduled pipelines; Community Edition's single-DB/no-RBAC bites
+before the algorithms do. → DATA_MODEL notes + ADR-028.
 
-Primary docs: INTERFACES.md §6–7, frontend/, PITCH.md, DEMO_RUNBOOK.md.
-Also owns: held-out scenarios (ADR-016 isolation until Aug 9), demo
-rehearsal, screenshots + fallback deck.
+**Q: How does data get in, and how fast?**
+Loader: wait for Bolt → schema DDL → wipe → LOAD CSV batched 5k rows/tx →
+manifest count validation, fail loudly. Measured 15.3 s full load; admin
+import measured 3.8 s but needs an offline DB — wrong architecture for a
+seed service. → INTERFACES §4, ADR-025.
 
-**⛔ Until the held-out results are committed (Aug 9) she does not read
-DETECTION_SPEC.md or `detection/` — her rehearsal of the demo click path
-uses the console only, and her typology vocabulary comes from GLOSSARY.md,
-which stays spec-safe.**
+## Area 4 — Detection typologies & algorithms
 
-**Must be explainable regardless of authorship:**
-- The demo click path from muscle memory, including every rehearsed
-  recovery (RUNBOOK failure drills) and the screenshot-deck fallback.
-- Why alert-then-drill-down, never the full graph (ADR-009); the 200-node
-  server-side cap.
-- How the console stays typology-agnostic (self-describing alerts,
-  data-driven styling).
-- The held-out protocol from the author's side: what she authored from,
-  what she never saw, what the hashes prove, what the claim does NOT prove.
+**Q: Explain one typology end to end.** *(default: ghost clinic)*
+Behaviour: paper clinic + cooperating broker bills for procedures never
+performed. Signature: claim volume vs. tiny physical footprint, inflow
+dominance (one feeder broker), payout concentration (one account), few
+doctors, one-journey patients. Approach: Cypher feature extraction →
+weighted 0–100 score; Louvain community as ring context. FP modes: honest
+new day clinic with exclusive referral partner; single corporate account;
+registered-office sharing — multi-feature score keeps single hits below
+medium. → DETECTION_SPEC §1. *(Be ready to do the same for 2, 3, 5.)*
 
-1. *"Why don't you show the whole graph?"* — investigators triage alerts,
-   not hairballs; ADR-009; the cap.
-2. *"Why Cytoscape.js?"* — small interactive subgraphs are its sweet spot;
-   trade-offs per ADR-007.
-3. *"What does an investigator actually do in this tool?"* — queue →
-   evidence → narration → status/note; drive it from muscle memory.
-4. *"How does the console handle a brand-new typology?"* — it doesn't need
-   to know; alerts are self-describing.
-5. *"You wrote the held-out scenarios — how, and why you?"* — authored
-   off-repo from schema docs only, without reading the detection spec
-   (ADR-016, OQ #12 attestation); hash-committed before evaluation; state
-   the protocol's limits unprompted.
+**Q: What do Louvain / PageRank / betweenness each buy you?**
+Louvain: unsupervised communities — fraud cells are dense clusters of
+broker+clinics+accounts; no labels needed. PageRank: influence ranking in
+the referral flow. Betweenness: bridges between communities — but exact
+betweenness is the scaling trap; ADR-028 records what we measured and what
+we ship instead. Plain-words definitions in GLOSSARY.
+
+**Q: What's your false-positive story?**
+Every rule documents FP modes in the spec *before* implementation;
+thresholds calibrated on the honest economy (FP-rate driven, not
+label-recovery driven); the demo includes dismissing a documented FP live.
+→ DETECTION_SPEC per-rule FP sections, DATA_GENERATION §6.
+
+**Q: Why only four typologies?**
+Capacity honesty: pre-agreed cut ladder (ADR-017), executed when capacity
+collapsed (ADR-024→027). Typologies 4 and 6 stay fully specified with FP
+modes — that's a roadmap with receipts, not a gap. Say it before they find it.
+
+**Q: How would you add a seventh typology right now?**
+Registry entry: YAML metadata + Cypher/Python impl; runner writes Alert
+nodes + IMPLICATES edges; API and console need zero changes (alerts are
+self-describing). This is the rehearsed Day-2 answer. → ADR-008.
+
+**Q: Where does detection underperform? What did you miss?**
+Read the dev-set numbers per typology and the held-out misses from the
+evaluation — including which scenario legs no rule fired on. Numbers live
+in DECISIONS (post-evaluation ADR) and the PITCH slide. Underperformance is
+reported, not tuned away.
+
+## Area 5 — API, narration & deployment
+
+**Q: Walk me through the architecture.**
+Generator (dev-time, seeded) → committed CSVs → compose `seed` loads a
+graph that already contains precomputed alerts (ADR-018/029) → FastAPI
+reads/updates alerts → React+Cytoscape console renders evidence subgraphs.
+Detection runs on demand in development, never at compose-up. → INTERFACES.
+
+**Q: What exactly does the LLM do, and what happens offline?**
+One cached Claude call per top alert at build time; cache committed;
+request time is cache → deterministic template fallback; live path off by
+default, 5 s timeout. `/health` startup check makes a stale cache fail
+loudly, never silently. → ADR-010/018.
+
+**Q: Why is the API read-mostly?**
+Alerts are precomputed batch output; PATCH status/note is the only write —
+demo safety and investigator workflow; a new rule needs no API change. →
+ADR-008.
+
+**Q: How does a judge run this?**
+Clone → `.env` (password + memory profile) → `docker compose up` →
+console ≤ 3 min after images. GDS is baked into our own image at build time
+because the stock plugin path downloads at container start — unusable
+offline. → ADR-026, DEMO_RUNBOOK.
+
+**Q: What would production need?**
+Consortium data sharing + legal framework, entity resolution on messy
+identifiers, Enterprise RBAC/clustering, incremental (streaming) detection
+instead of batch, and real-data calibration. "I know where the prototype
+ends." → PROJECT_BRIEF.
+
+## Area 6 — Console & demo
+
+**Q: Why don't you show the whole graph?**
+50k nodes is noise; investigators triage a queue, then drill into a ≤ 200
+node evidence subgraph (server-capped, trimmed by relevance). → ADR-009,
+INTERFACES §6.
+
+**Q: Why Cytoscape.js?**
+Small interactive evidence subgraphs are its sweet spot; D3 is
+lower-level for the same result; sigma targets huge graphs we deliberately
+never render. → ADR-007.
+
+**Q: What does an investigator do in this tool?**
+Queue (filter by typology/severity/status) → alert → evidence subgraph +
+implicated entities + summary numbers → narration → mark
+reviewed/dismissed with a note. Drive it from muscle memory.
+
+**Q: How does the console handle a brand-new typology?**
+It doesn't need to know — alerts are self-describing (typology key, score,
+summary_params, IMPLICATES roles); styling is data-driven.
+
+## Area 7 — Process, protocol & the solo build
+
+**Q: You built this alone? Really?**
+Yes — originally a five-person plan; the team fell through (ADRs 024, 027
+record the collapse honestly). The repo shows the replanning in public:
+cut ladder executed, docs rewritten, every date held. One person, ~13 build
+days, every module explainable because I wrote every line.
+
+**Q: How much did AI write?**
+AI-assisted throughout — disclosed in the README, per repo policy, not
+per-commit. The bar that matters here: I can explain any line aloud,
+unaided, and the hard rules forbid shipping anything I can't. Ask me about
+any module — that's the test that counts.
+
+**Q: What do the freezes protect?**
+Detection freeze (Aug 6): rules can't chase the held-out set. Integration
+freeze (Aug 8): demo stability; bug fixes and docs only. Dress rehearsal
+(Aug 10): cold-start proof on the actual demo laptop. → MILESTONES.
+
+**Q: Explain the held-out protocol and its limits.** *(know this cold)*
+Authored five scenarios 2026-07-30 before any detection query existed;
+stored off-repo; SHA-256 committed in a dedicated commit; not reopened
+until the one-shot Aug 9 evaluation against rules frozen Aug 6. Proves
+ordering (git history), NOT independence (one brain conceived both). The
+exact pitch wording is in DATA_GENERATION §5 — deliver it verbatim, limits
+unprompted.
+
+**Q: Why no CI / why this branch workflow / why PRs solo?**
+Small answers, honest: PRs batch reviewable diffs and mark milestones;
+Conventional Commits keep the log scannable; CI decision recorded in
+OPEN_QUESTIONS (#7) with its trade-off. The history is the work sample.
+
+**Q: What's your single biggest technical risk and what did you do about it?**
+Offline venue: images carried as a docker-save tarball with GDS baked in
+(ADR-019/026), committed narration cache with loud staleness check
+(ADR-018), screenshot deck + recording as rehearsed fallback modes
+(DEMO_RUNBOOK). Second: exact betweenness at scale — measured, re-architected,
+ADR-028.
+
+---
+
+## Rehearsal protocol (solo — this replaces four teammates asking me things)
+
+- **Aug 9 evening — round 1:** answer every question above out loud,
+  recorded on the phone, no notes. Listen back at 1.5×; every stumble
+  becomes a doc fix or a re-drill card that same evening.
+- **Aug 10 — round 2:** after the dress rehearsal, re-run only the cards
+  that stumbled, plus all of Area 4 (detection is the most probed area).
+- **Aug 11 — roulette:** shuffle this file's questions (any order, timer at
+  90 s per answer), full pass. Anything still failing gets written onto a
+  one-page crib that lives in the pitch notes — better an honest glance
+  than a wrong answer.
+- During the pitch Q&A there is no deflection and no "my teammate knows
+  that" — the fallback for a genuinely unknown answer is the honest one:
+  state what is known, state what isn't, point at where the repo documents
+  it.
