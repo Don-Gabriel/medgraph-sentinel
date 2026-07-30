@@ -32,8 +32,8 @@ Anchored and immovable: detection freeze **Aug 6**, integration freeze
 | Jul 31 Fri | **console day 1** (~8 h) | Design pass first (frontend-design skill — the console must read as designed, not default-bootstrap); alert queue: risk-sorted, severity colour-coded, typology/status filters, counts at a glance; app shell + data layer against the live API. |
 | Aug 1 Sat | **console day 2 — the hero view** (~8 h) | Cytoscape subgraph drill-down: implicated nodes visually distinct, force-directed layout, hover detail, click-to-expand one hop, never the full graph; evidence panel (rule, triggering features, specific values from summary_params). |
 | Aug 2 Sun | **console day 3 + M2 exit** (~8 h) | Status/note controls wired to PATCH; polish; **visual verification at 1440/768 px minimum**; screenshot batch 1; CI decision (OQ #7). **Exit test: queue → drill-down → evidence → status change, on the frozen dataset, end-to-end.** |
-| Aug 3 Mon | **narration** (~7 h) | Builder: one Claude call per alert, cache to disk, committed; ADR-018 count-mismatch guard implemented AND tested; template fallback verified per typology. If no API key yet: everything but the live calls, fallback declared the shipping mode until the key arrives. |
-| Aug 4 Tue | **EARLY COLD-START — discovery run** (~7 h) | Full DEMO_RUNBOOK acceptance test, six days early: compose build → docker save tarball → remove local images → **network adapter disabled** → docker load → clean compose up → alert queue with narrations (cached if key arrived, else fallback — recorded as such). Report exactly what failed. |
+| Aug 3 Mon | **contingency + pitch v3** (~6 h) | *(Narration landed Jul 30 — ADR-032 pre-generated cache, zero API calls; this slot converts to what the owner directed: rehearsal and contingency, not scope.)* Fix anything bleeding; PITCH v3 against the real console; first full pass of the DEFENCE_AREAS question bank aloud. |
+| Aug 4 Tue | **EARLY COLD-START — discovery run** (~5 h, mostly owner-physical) | Bundle + COLD_START.md already prepared Jul 30. Owner runs the physical sequence: copy to USB → **network adapter disabled** → restore → clean compose up → 81 alerts with pre-generated narrations. Report exactly what failed. |
 | Aug 5 Wed | **fix + drill** (~7 h) | Cold-start fix list burn-down; **Day-2 drill #1** (Shape A: Accreditor end-to-end, timed, target 90 min); PITCH v3 against the real console click path. |
 | Aug 6 Thu | **DETECTION FREEZE** (~6 h) | Dedicated freeze commit + ADR (a formality — no detection change since Jul 30, and that is the point; say so in the ADR). Timed pitch ×2. Rehearsal cards from stumbles. |
 | Aug 7 Fri | **demo assets** (~6 h) | Screenshot deck (all click-path beats) + full demo screen recording; USB sticks v1 per RUNBOOK manifest; **Day-2 drill #2** (Shape C: ×10 scale run, timed, numbers recorded). |
@@ -66,8 +66,8 @@ fallback, typologies 1/2/3/5, aloud rehearsals, at least one Day-2 drill.
   (regenerate → load → detect → export → narration cache rebuild → recommit
   as one unit) and eats a rehearsal day. After Aug 8 it is a demo-blocker
   emergency, nothing less.
-- **An API key arriving after Aug 9** — fallback narrations become the
-  shipped mode, and the pitch says so honestly (it is one sentence).
+- ~~An API key arriving late~~ — moot (ADR-032): narration is committed
+  pre-generated data; there is no key and nothing to wait for.
 
 ## Standing cadence (solo)
 

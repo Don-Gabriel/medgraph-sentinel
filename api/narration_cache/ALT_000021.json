@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000021",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "03b6b06cf2b0d981590409c3bd240ed617b1f1997d9d8478313ed7815c1e8e99",
+  "text": "Credential CRD_000105 for Dr. Zachary Bautista was issued in Singapore; his 16 claims are all in Thailand and Turkey. This is the jurisdiction-shopping shape at its weakest: two claim countries, no claims at home, nothing else attached. The honest cross-border roster explains it, and the score reflects that. It is surfaced so that a wider spread or a revocation later cannot hide behind familiarity. Next step: passive \u2014 revisit only if this credential appears in a future alert."
+}

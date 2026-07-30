@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000010",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "184f0200f4598d44ac70d7658c3cf66717ac9b2b549c7d19ab515b99c7038760",
+  "text": "Licence MC-TR70722 appears on credentials held by two doctors, Dr. Heather Hester and Dr. Carrie Lozano, both recorded with the Medical Council of Turkey and both actively billing. Two-holder collisions on one number do occur honestly in this data \u2014 issuing-country number formats collide \u2014 which is exactly why this scores low rather than high. The same-council concentration keeps it from being dismissed outright: a within-registry duplicate is likelier to be one record cloned than two coincidentally identical numbers. There is no billing anomaly on either identity to corroborate laundering. Next step: a registry lookup on MC-TR70722; if both records are genuinely issued, dismiss as a format collision."
+}

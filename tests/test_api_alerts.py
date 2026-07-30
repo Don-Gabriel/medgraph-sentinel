@@ -257,7 +257,10 @@ def test_patch_404_unknown_id(api):
 
 # ---- narration: cache-first, deterministic fallback ----
 
-def test_narration_fallback_per_typology(api):
+def test_narration_fallback_per_typology(api, tmp_path, monkeypatch):
+    # isolate from the committed cache (81 real entries since ADR-032) —
+    # this test exercises the TEMPLATE path, so it needs an empty cache dir
+    monkeypatch.setattr(narration, "CACHE_DIR", tmp_path)
     cases = {
         "ALT_000001": ["Elysium Care Clinic", "132 claims", "0 beds",
                        "94%", "97%", "ghost-clinic"],

@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000002",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "2a9f9ad71d4094e6c2f44db2043ecbf07fdba1f2be89c9b7aa4bf6d49df8a842",
+  "text": "Credential CRD_002236 was revoked on 2025-10-21, and its holder billed the first post-revocation claim just 23 days later \u2014 followed by 57 claims in total after the revocation date. Individually, a rostered doctor with a lapsed credential is common in this economy; what moves this to the top of the queue is the volume: 57 claims is roughly double the highest post-revocation count any ordinarily-rostered revoked doctor reaches here, and it continued at full pace rather than winding down. The recency matters too \u2014 this is not an old administrative tail, the revocation is current. An alternative reading is that the doctor holds a second valid credential the graph has under a different identity, which the shared-licence checks did not surface. Next step: confirm with the issuing body whether any parallel authorisation exists, and hold the 57 claims for manual review in the meantime."
+}

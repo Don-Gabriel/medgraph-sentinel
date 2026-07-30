@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000006",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "2e060963d31d827bf58bc3ecb24179799956ea2d797fef22cc3182c03f124c93",
+  "text": "Dr. Randy Campbell billed 8 claims after credential CRD_000103 was revoked on 2025-12-22, the first only 18 days after revocation. The volume is modest and the window short, which is why this scores low: clinics in this economy routinely keep a revoked doctor rostered for a few weeks while paperwork catches up, and 8 claims sits inside that honest range. What keeps it on the queue at all is the recency \u2014 the revocation is current, so the billing is happening now, not in an old tail. The likely explanation is administrative lag rather than laundering. Next step: a single confirmation from the rostering clinic that this doctor has been stood down closes it either way."
+}

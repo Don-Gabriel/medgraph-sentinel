@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000011",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "55da4ce63eb37e50bc8828c998080b9eae06700b86912cd961a8cb84d44f6194",
+  "text": "Licence MC-SG28838 is held on two credentials by Dr. Curtis Brady and Dr. Angela Allen, both with the Medical Council of Singapore, both actively billing. Two holders is within the honest collision range for this economy, so the alert is informational rather than accusatory. Neither doctor shows corroborating signals \u2014 no post-revocation billing, no unusual claim routing. The honest explanation, a duplicated registry record, fits. Next step: registry verification; close unless a third identity or a billing anomaly appears."
+}

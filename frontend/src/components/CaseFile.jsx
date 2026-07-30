@@ -47,7 +47,9 @@ export function EvidenceValues({ detail }) {
 }
 
 const NARRATION_SOURCES = {
-  "claude-cached": { label: "cached AI narration", cls: "border-tracer/60 text-tracer" },
+  // ADR-032: cached narrations are written by a Claude session at BUILD
+  // time and committed — the label must never imply live generation.
+  "claude-cached": { label: "pre-generated AI narration", cls: "border-tracer/60 text-tracer" },
   "claude-live": { label: "live AI narration", cls: "border-tracer/60 text-tracer" },
   fallback: { label: "deterministic fallback", cls: "border-paper-dim/50 text-paper-mut" },
 };

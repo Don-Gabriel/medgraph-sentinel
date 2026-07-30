@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000005",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "a34d66e2c8a4fc34852134b3a6e629b56a5a812852ae3c5125737a81825ac382",
+  "text": "Licence MC-SG67481 appears on three credentials held by Dr. Sharon Perez, Dr. Kathleen Walker and Dr. Karen Jones, all recorded with the Medical Council of Singapore, with all three identities actively billing. Three practising identities on one licence number is beyond the two-holder collisions the honest economy produces, and Singapore's registry is small enough that an accidental triple duplication is implausible. The pattern is consistent with one genuine credential being cloned to stand up additional billable identities. The honest alternative \u2014 a shared group-practice registration misrecorded as individual licences \u2014 exists in some jurisdictions and should be ruled out first. Next step: verify with the Singapore Medical Council whether MC-SG67481 was ever validly associated with more than one practitioner."
+}

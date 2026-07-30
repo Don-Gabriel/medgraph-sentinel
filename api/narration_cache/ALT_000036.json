@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000036",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "d7118e9fa36e5bc87446a1387f409daf532659879e67f034a4ef2a3123e196be",
+  "text": "Credential CRD_001701 for Dr. Emily Castro was issued in Thailand, while her 10 claims all occurred in the UAE and Turkey. This matches the honest expatriate-practice pattern at low volume. No corroborating anomaly appears. Next step: passive monitoring only."
+}

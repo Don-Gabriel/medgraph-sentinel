@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000004",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "57bc429e9bff34437ae77f9e516379a67b9781440bdac289a033eb017e20235c",
+  "text": "Licence MC-TR51893 backs three credentials held by three different doctors \u2014 Dr. Diana Huerta, Dr. Eric Rodriguez and Dr. Amber Watson \u2014 all recorded with the Medical Council of Turkey, and all three actively billing. One number serving three practising identities in the same jurisdiction exceeds anything the honest data produces, where duplicate numbers cap out at two holders. The within-country concentration weakens the innocent-collision reading: a registry typo repeated across three separate records at the same council is hard to sustain. It remains possible that two of the records are stale aliases of one physical person, which the console's entity view cannot distinguish from three real people. Next step: request the council's issuance record for MC-TR51893 and reconcile the three identities against it."
+}

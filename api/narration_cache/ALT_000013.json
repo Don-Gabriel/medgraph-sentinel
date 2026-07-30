@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000013",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "7e54d80a7efb53fa5958e9fb48173f9ea7df6df605e6c35298ed071985471a88",
+  "text": "Licence MC-TR34956 appears on credentials held by Dr. Melissa Bates and Dr. Steve Elliott, both recorded with the Medical Council of Turkey and actively billing. A two-holder shared number is common enough in this data to be honest noise, and no other signal attaches to either doctor. The alert exists to make the collision visible, not to assert misconduct. The likely explanation is registry duplication. Next step: verify the number with the issuing council; close if both issuances are genuine."
+}

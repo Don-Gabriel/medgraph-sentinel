@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000060",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "11dd0bc4d6af1a0649522b2ecc96a7636358aa372617873d06cdc08d9480ec70",
+  "text": "Dr. Eileen Williamson billed 5 claims after credential CRD_002140 was revoked on 2021-02-27, starting 1,717 days later. Small volume, old revocation, no corroboration. Next step: none standalone."
+}

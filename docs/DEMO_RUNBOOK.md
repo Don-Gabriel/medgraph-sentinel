@@ -175,11 +175,12 @@ compose up -d` re-seeds deterministically in ~3 min — only viable before
 the slot, so the boot-sequence click-through exists precisely to catch
 this early.
 
-**Docker itself broken on demo laptop:** if a backup laptop exists
-(OQ #13 — unconfirmed since the team collapse), it takes over with the
-same loaded images; the USB tarball restores images anywhere Docker runs.
-Final fallback either way: screenshot deck + screen recording — the pitch
-survives with zero live software.
+**Docker itself broken on demo laptop:** there is no backup machine
+(ADR-033 — single-PC event, owner decision). Recovery order: USB tarball
+restore on this machine (Docker reinstall if needed and time allows) →
+screenshot deck + screen recording — the pitch survives with zero live
+software. The deck and recording are therefore not optional niceties;
+they are the entire hardware-failure story.
 
 **Escalation rule:** any fix that hasn't worked in 30 seconds → screenshot
 deck, no second attempts on stage. The deck is a rehearsed first-class mode,

@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000071",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "eefd40fd72fd3a9b54da4f13a35d31159919acffc5999ee8af89c4f14de33b5b",
+  "text": "Mary Thompson's own claims put her in Turkey and India on the same day, 2025-09-23 \u2014 a single identity, no shared passport, one insurer. The date collision is real, but with dates-not-times data and no identity multiplexing this is far more likely a booking or discharge-date artifact than fraud, which is why it scores low. The economy genuinely produces a handful of these same-day artifacts among honest return patients. Next step: a look at the two claims' paperwork (CLM_0003477, CLM_0021410) to see which date is administrative; dismiss on confirmation."
+}
