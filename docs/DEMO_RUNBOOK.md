@@ -40,17 +40,20 @@ Rules:
 `docker compose up` pulling Neo4j or building the API/frontend images at the
 venue is our single largest offline risk — bigger than the Claude API, which
 the committed cache already covers. So images are built at home and carried
-as files. (Exact image names/tags are fixed when `docker-compose.yml` is
-written; the compose file must pin them so the commands below are
-copy-pasteable — placeholder names used here.)
+as files. (Image names are pinned in `docker-compose.yml` — the three
+`*:demo` tags below are the real ones, so these commands are
+copy-pasteable as-is.)
 
 **Export (on a machine that has built everything, by Aug 9):**
 
 ```bash
-docker compose build                 # builds medgraph-api, medgraph-frontend
-docker compose pull neo4j            # pulls pinned neo4j:5.26-community
+# builds medgraph-api, medgraph-frontend AND medgraph-neo4j (GDS is baked
+# into our own neo4j image at build time — ADR-026; a plain pull of
+# neo4j:5.26-community would NOT contain GDS and would try to download it
+# at the venue)
+docker compose build
 docker save -o medgraph-images.tar \
-  neo4j:5.26-community medgraph-api:demo medgraph-frontend:demo
+  medgraph-neo4j:demo medgraph-api:demo medgraph-frontend:demo
 git bundle create medgraph.bundle --all   # full repo incl. dataset + caches
 ```
 

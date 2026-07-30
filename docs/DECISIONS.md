@@ -378,6 +378,67 @@ implementations (rejected: five solid beat six shaky was already ADR-017's
 logic — four solid beats six shaky harder); moving a freeze (rejected: the
 freezes protect the held-out protocol and the demo, which are the pitch).
 
+## ADR-025 — Loader mechanism: LOAD CSV over neo4j-admin import (2026-07-30, resolves OQ #1)
+
+**Context:** INTERFACES §4 left the bulk-load mechanism to a benchmark on
+the real dataset (51,144 nodes / 193,694 relationships, seed 42).
+
+**Measured on the lead machine (Docker Desktop/WSL2, 2G heap / 1G pagecache
+floor profile), full scale, both mechanisms loading identical data:**
+
+| mechanism | time | notes |
+|---|---|---|
+| `LOAD CSV` (batched `CALL (row) {...} IN TRANSACTIONS OF 5000`) | **15.3 s** (schema + wipe + load + count validation) | runs against the live server; per-file breakdown in the seed log |
+| `neo4j-admin database import full` | **3.8 s** import (7.5 s container wall), peak 547.7 MiB | requires a non-existent/empty database — cannot run against the live server the seed service waits for |
+
+**Decision: LOAD CSV.** Both are far inside the 2-minute seed budget; the
+12-second saving from admin import would cost the compose architecture —
+admin import must run with the database offline, which inverts the
+"neo4j healthy → seed loads" orchestration and complicates re-seeding.
+Wipe-and-load semantics stay exactly as contracted. Details that made it
+work: CSVs are mounted read-write into the server's import dir (the image
+entrypoint chowns it — a `:ro` mount kills the container); statements are
+comment-stripped before splitting on `;` (a semicolon inside a `//` comment
+was executed as Cypher on the first run); the modern `CALL (row) {...}`
+scope syntax replaces the 5.26-deprecated `CALL { WITH row ...}` form.
+
+## ADR-026 — GDS baked into our own image; NEO4J_PLUGINS rejected for offline demo (2026-07-30, closes OQ #2 and OQ #11)
+
+**Context:** ADR-020 flagged the `NEO4J_PLUGINS: '["graph-data-science"]'`
+line UNVERIFIED. The M1 run verified it is **syntactically correct and
+functional** — and revealed it **downloads the GDS jar from
+graphdatascience.ninja at every container creation** (observed live: the
+resolver fetched versions.json and pulled
+`neo4j-graph-data-science-2.13.11.jar`, ~1 min on tonight's network, and
+the neo4j healthcheck window expired mid-download). That mechanism can
+never work at the offline venue: ADR-019's tarball carries images, and the
+plugin was not *in* the image.
+
+**Decision:** build our own pinned image `medgraph-neo4j:demo`
+(`graph/neo4j.Dockerfile`): `FROM neo4j:5.26-community` + the exact jar the
+official resolver selected (GDS **2.13.11**) downloaded at **build** time
+into `/var/lib/neo4j/plugins/`. `NEO4J_PLUGINS` is not used;
+`NEO4J_dbms_security_procedures_unrestricted=gds.*` stays explicit (the
+installer would otherwise have set it). The docker-save tarball now carries
+GDS by construction. INTERFACES §9 and DEMO_RUNBOOK updated to the three
+`*:demo` image names.
+
+**M1 gate results (fresh volume, floor profile 2G heap / 1G pagecache):**
+- `RETURN gds.version()` → **2.13.11** ✓ (OQ #2 closed)
+- `docker compose up -d` → all services healthy in **48 s** (≤ 3 min ✓)
+- Louvain (`gds.louvain.stats`, undirected claim-participation projection,
+  34,078 nodes / 189,972 rels): **2.4 s** compute, 747 communities,
+  modularity 0.597
+- PageRank (`gds.pageRank.stats`, natural orientation): **0.23 s**, 20
+  iterations (default cap; convergence tuning is rule work, M3)
+- Betweenness (`gds.betweenness.stats`, exact): **122.5 s** compute — the
+  expensive one, exactly as DATA_MODEL's scale notes predict; at our scale
+  it fits a batch detection run, and sampling is the ready fallback if M3
+  finds it too slow in the seed path
+- Memory: projections 14–16 MiB each; container peak ~3.3 GiB total under
+  the floor profile, no OOM ⇒ **OQ #11 resolved: default profiles
+  suffice; no explicit projection sizing needed at this scale.**
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*

@@ -347,8 +347,9 @@ Shape C has the same rule for scale tests).
 
 ## 9. Docker compose contract
 
-Services: `neo4j` (pinned `neo4j:5.26-community` + GDS 2.13 plugin — see
-DECISIONS ADR-004), `seed` (one-shot loader, §4), `api`, `frontend`.
+Services: `neo4j` (our `medgraph-neo4j:demo`: pinned `neo4j:5.26-community`
+base with GDS 2.13 baked in at build time — ADR-004/ADR-026), `seed`
+(one-shot loader, §4), `api`, `frontend`.
 `docker compose up` from a fresh clone with a filled `.env` must reach a
 browsable console at `http://localhost:5173` in ≤ 3 minutes *after images are
 pulled* (ADR-005). Detection + narration are run via documented one-liners,
