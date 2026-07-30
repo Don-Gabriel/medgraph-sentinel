@@ -115,8 +115,8 @@ async def validation_error_as_detail_string(request, exc) -> JSONResponse:
 @app.get("/api/v1/health")
 def health() -> dict:
     neo4j_up = _query_one("RETURN 1 AS ok") is not None
-    alerts = _alert_count()
     cache = narration_cache_status()
+    alerts = cache["alerts"]  # same id-set query — one source of truth
     degraded = not neo4j_up or not cache["match"]
     return {
         "status": "degraded" if degraded else "ok",

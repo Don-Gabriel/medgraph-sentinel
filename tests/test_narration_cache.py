@@ -58,6 +58,25 @@ def test_unreachable_graph_fails(monkeypatch, tmp_path):
     assert s["match"] is False and s["alerts"] == 0
 
 
+def test_health_endpoint_reports_completeness(monkeypatch, tmp_path):
+    # endpoint-level regression test: health() must survive the ADR-032
+    # helper rename and report ok/degraded off the id-set check
+    from fastapi.testclient import TestClient
+    monkeypatch.setattr(narration, "CACHE_DIR", tmp_path)
+    monkeypatch.setattr(api_main, "_query_one", lambda c: {"ok": 1})
+    monkeypatch.setattr(api_main, "_alert_ids", lambda: {"ALT_000001"})
+    client = TestClient(api_main.app)
+
+    body = client.get("/api/v1/health").json()
+    assert body["status"] == "degraded" and body["narration_cache"]["missing"] == 1
+
+    _write_cache(tmp_path, ["ALT_000001"])
+    body = client.get("/api/v1/health").json()
+    assert body["status"] == "ok" and body["alert_count"] == 1
+    assert body["narration_cache"] == {"alerts": 1, "cached": 1,
+                                       "match": True, "missing": 0}
+
+
 def test_compose_prompt_deterministic_and_templated():
     p1, p2 = compose_prompt(ALERT), compose_prompt(ALERT)
     assert p1 == p2  # prompt_sha256 relies on byte stability
