@@ -1,0 +1,48 @@
+# HELD-OUT SCENARIO — do not commit to the repo until after the one-shot
+# evaluation. Authored 2026-07-30 by J Don Gabriel (solo implementer), before
+# any detection query existed in the repository. Sources consulted while
+# authoring: PROJECT_BRIEF.md, DATA_MODEL.md, INTERFACES.md §3, GLOSSARY.md.
+# DETECTION_SPEC.md was not opened during the authoring session. The author
+# is the same person who will write the detection rules — this file proves
+# ordering (hash-committed before rules existed), not independence.
+scenario: heldout_S4_split_ledger
+description: >
+  Tight-window identity reuse across two treatment countries WITHOUT device
+  reuse. A pool of 8 patient identities is billed at an Indian clinic and a
+  Turkish clinic inside the SAME six-week window (per-identity gaps of days,
+  some overlapping), each side arranged by a DIFFERENT broker. This inverts
+  the emergent parameterization: emergent recycling is one broker reusing
+  identities across insurers with shared devices; here the identity
+  collision across countries is the ONLY link — different brokers, no
+  shared devices, no shared payout accounts. A rule anchored on device
+  sharing or a common broker should miss it; a passport/date rule should
+  catch it.
+actors:
+  - kind: patients
+    ref: pool1
+    count: 8
+  - kind: clinic
+    ref: c_in
+    props: {bed_count: 60, accreditation_status: accredited, country: IN}
+  - kind: clinic
+    ref: c_tr
+    props: {bed_count: 35, accreditation_status: accredited, country: TR}
+  - kind: broker
+    ref: b_in
+    props: {country: IN}
+  - kind: broker
+    ref: b_tr
+    props: {country: TR}
+journeys:
+  - count: 8
+    clinic: c_in
+    broker: b_in
+    patients: pool:pool1
+    category: oncology
+    date_range: [2026-01-05, 2026-02-20]
+  - count: 8
+    clinic: c_tr
+    broker: b_tr
+    patients: pool:pool1
+    category: cardiac
+    date_range: [2026-01-05, 2026-02-20]

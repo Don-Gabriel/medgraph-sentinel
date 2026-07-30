@@ -83,13 +83,25 @@ per stick:**
       `api/narration_cache/`)
 - [ ] A plain full clone of the repo (belt for the bundle's braces —
       usable without any git knowledge under stress)
-- [ ] `screenshot-deck/` (the fallback deck, exported Aug 10)
-- [ ] `demo-recording.mp4` (screen recording, Aug 10)
+- [ ] `screenshot-deck/` — **7 PNGs, 1920×1080, committed in the repo**
+      (`01_queue`, `02_queue_filtered_ghost_clinic`,
+      `03_ghost_alert_subgraph`, `04_ghost_alert_narration`,
+      `05_alert_marked_reviewed`, `06_impossible_travel_alert`,
+      `07_queue_dismissed_low`). They ride inside the bundle/clone; copy
+      them loose onto the stick as well, so the deck opens with zero
+      tooling if Docker is dead.
+- [ ] `demo-recording.webm` — **committed in the repo**, silent 1920×1080
+      screen capture of the full click path (queue → ghost alert →
+      2-hop expand → narration → reviewed → impossible travel → queue).
+      Plays in any browser and in VLC; no codec install, no network.
 - [ ] `RESTORE.txt` — the restore commands above, verbatim
 
-The dataset and narration cache ride *inside* the bundle/clone because they
-are committed (ADR-005/010); they are listed separately here so their
-presence is verified explicitly, not assumed.
+The dataset, narration cache, screenshot deck and demo recording all ride
+*inside* the bundle/clone because they are committed (ADR-005/010/032);
+they are listed separately here so their presence is verified explicitly,
+not assumed. The deck and recording are the entire hardware-failure story
+(see the drills below) — being committed means they cannot be forgotten
+during the export, only during the copy-loose step.
 
 ## Cold-start acceptance test (ADR-019 — the test that counts)
 
@@ -130,9 +142,10 @@ step 9 recorded in the timing table below. Repeat once with USB stick #2
 - [ ] Both USB sticks match the manifest above (item-by-item check).
 - [ ] Narration cache committed; `/health` shows `narration_cache.match:
       true`; spot-check 3 alerts show `source: claude-cached`.
-- [ ] Screenshot deck exported (every demo beat, full-res) — on both laptops
-      and both USBs.
-- [ ] Screen-recorded full demo run (Aug 10) on both laptops.
+- [ ] Screenshot deck (`screenshot-deck/`, 7 full-res beats) present in the
+      clone **and** copied loose onto both USBs.
+- [ ] `demo-recording.webm` present in the clone **and** copied loose onto
+      both USBs; play it once end-to-end from the stick to prove it opens.
 - [ ] HDMI *and* USB-C→HDMI adapters; chargers; a mouse.
 - [ ] Browser profile prepared: console pinned tab, 125% zoom checked on a
       TV/projector, notifications off, night-light off.

@@ -1,0 +1,92 @@
+# HELD-OUT SCENARIO — do not commit to the repo until after the one-shot
+# evaluation. Authored 2026-07-30 by J Don Gabriel (solo implementer), before
+# any detection query existed in the repository. Sources consulted while
+# authoring: PROJECT_BRIEF.md, DATA_MODEL.md, INTERFACES.md §3, GLOSSARY.md.
+# DETECTION_SPEC.md was not opened during the authoring session. The author
+# is the same person who will write the detection rules — this file proves
+# ordering (hash-committed before rules existed), not independence.
+scenario: heldout_S2_license_shadow
+description: >
+  Two-identity credential laundering at low volume (planted cells use wider
+  3-4 identity clone fans). One licence number appears on credentials held
+  by two doctor identities in two issuing jurisdictions (TR and AE). The TR
+  credential is revoked mid-window and its holder keeps billing at low
+  volume afterwards — but that same doctor also HOLDS a second, VALID SG
+  credential, so "billing after revocation" is legitimately arguable. The
+  ambiguity is the test: a rule that only checks "any active credential?"
+  misses it; a rule that flags any revocation over-fires.
+actors:
+  - kind: clinic
+    ref: c1
+    props: {bed_count: 40, accreditation_status: accredited, country: TR}
+  - kind: clinic
+    ref: c2
+    props: {bed_count: 12, accreditation_status: provisional, country: AE}
+  - kind: doctor
+    ref: d1
+    props: {specialty: orthopaedic}
+  - kind: doctor
+    ref: d2
+    props: {specialty: orthopaedic}
+  - kind: credential
+    ref: cr1
+    props: {license_no: "MC-TR-88231",
+            issuing_body: "Medical Council of Turkey",
+            issue_date: 2016-03-12, status: revoked,
+            revocation_date: 2025-12-15}
+  - kind: credential
+    ref: cr2
+    props: {license_no: "MC-TR-88231",
+            issuing_body: "Medical Council of the Emirates",
+            issue_date: 2019-08-02, status: active}
+  - kind: credential
+    ref: cr3
+    props: {license_no: "MC-SG-30417",
+            issuing_body: "Singapore Medical Council",
+            issue_date: 2021-01-20, status: active}
+edges:
+  - type: HOLDS
+    from: d1
+    to: cr1
+  - type: HOLDS
+    from: d1
+    to: cr3
+  - type: HOLDS
+    from: d2
+    to: cr2
+  - type: ISSUED_IN
+    from: cr1
+    to: TR
+  - type: ISSUED_IN
+    from: cr2
+    to: AE
+  - type: ISSUED_IN
+    from: cr3
+    to: SG
+  - type: PRACTISES_AT
+    from: d1
+    to: c1
+    props: {since: 2022-05-01}
+  - type: PRACTISES_AT
+    from: d2
+    to: c2
+    props: {since: 2023-02-14}
+journeys:
+  - count: 18
+    clinic: c1
+    doctor: d1
+    patients: invented
+    category: orthopaedic
+    date_range: [2025-08-01, 2025-12-10]   # pre-revocation
+  - count: 12
+    clinic: c1
+    doctor: d1
+    patients: invented
+    category: orthopaedic
+    date_range: [2025-12-20, 2026-04-30]   # post-revocation billing
+  - count: 15
+    clinic: c2
+    doctor: d2
+    patients: invented
+    category: orthopaedic
+    date_range: [2025-09-01, 2026-05-01]

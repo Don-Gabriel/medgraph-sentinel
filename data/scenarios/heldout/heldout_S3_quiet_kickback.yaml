@@ -1,0 +1,58 @@
+# HELD-OUT SCENARIO — do not commit to the repo until after the one-shot
+# evaluation. Authored 2026-07-30 by J Don Gabriel (solo implementer), before
+# any detection query existed in the repository. Sources consulted while
+# authoring: PROJECT_BRIEF.md, DATA_MODEL.md, INTERFACES.md §3, GLOSSARY.md.
+# DETECTION_SPEC.md was not opened during the authoring session. The author
+# is the same person who will write the detection rules — this file proves
+# ordering (hash-committed before rules existed), not independence.
+scenario: heldout_S3_quiet_kickback
+description: >
+  Low-and-slow kickback arrangement. One broker steers moderate volume to
+  TWO clinics; every individual magnitude is kept inside the plausible
+  honest band: commissions left to the journey model's normal range, a
+  single MINORITY stake (12%, one clinic only — emergent hidden stakes run
+  10-40% with steering), and small near-uniform side payments (~9.8k/9.6k
+  USD, sixteen of them) routed through two shell hops with 5% attrition.
+  The signature is the REGULARITY and the closed loop
+  (clinic -> shells -> steering broker, monthly cadence), not any one
+  magnitude. A rule keyed on large stakes, fat commissions, or big
+  transfers should under-fire here.
+actors:
+  - kind: broker
+    ref: b1
+    props: {country: TH}
+  - kind: clinic
+    ref: c1
+    props: {bed_count: 30, accreditation_status: accredited, country: TH}
+  - kind: clinic
+    ref: c2
+    props: {bed_count: 8, accreditation_status: provisional, country: TH}
+edges:
+  - type: OWNS_STAKE_IN
+    from: b1
+    to: c1
+    props: {pct: 12}
+journeys:
+  - count: 70
+    clinic: c1
+    broker: b1
+    patients: invented
+    category: cardiac
+    date_range: [2025-08-01, 2026-04-30]
+  - count: 45
+    clinic: c2
+    broker: b1
+    patients: invented
+    category: fertility
+    date_range: [2025-09-01, 2026-04-30]
+transfers:
+  - path: [c1.account, shell, shell, b1.account]
+    amount_usd: 9800
+    count: 9
+    attrition_pct: 5
+    date_range: [2025-09-01, 2026-04-30]
+  - path: [c2.account, shell, shell, b1.account]
+    amount_usd: 9600
+    count: 7
+    attrition_pct: 5
+    date_range: [2025-10-01, 2026-04-30]

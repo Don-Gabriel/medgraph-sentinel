@@ -1,0 +1,39 @@
+# HELD-OUT SCENARIO — do not commit to the repo until after the one-shot
+# evaluation. Authored 2026-07-30 by J Don Gabriel (solo implementer), before
+# any detection query existed in the repository. Sources consulted while
+# authoring: PROJECT_BRIEF.md, DATA_MODEL.md, INTERFACES.md §3, GLOSSARY.md.
+# DETECTION_SPEC.md was not opened during the authoring session. The author
+# is the same person who will write the detection rules — this file proves
+# ordering (hash-committed before rules existed), not independence.
+scenario: heldout_S1_ghost_satellite
+description: >
+  Accredited "satellite" ghost clinic. Unlike the planted paper-shell shape
+  (bed_count 0, accreditation none, ONE dedicated feeder), this clinic wears
+  an institutional veneer — accredited, 25 beds — and bills at moderate,
+  spread-out volume through TWO feeder brokers with an uneven split, across
+  two procedure categories over eight months. All patients are invented
+  single-journey identities. Tests whether ghost detection keys on the
+  veneer features or on the structural claim-fan/patient-pool signals.
+actors:
+  - kind: clinic
+    ref: c1
+    props: {bed_count: 25, accreditation_status: accredited, country: IN}
+  - kind: broker
+    ref: b1
+    props: {country: IN}
+  - kind: broker
+    ref: b2
+    props: {country: AE}
+journeys:
+  - count: 80
+    clinic: c1
+    broker: b1
+    patients: invented
+    category: dental
+    date_range: [2025-09-01, 2026-04-30]
+  - count: 60
+    clinic: c1
+    broker: b2
+    patients: invented
+    category: cosmetic
+    date_range: [2025-10-15, 2026-05-10]

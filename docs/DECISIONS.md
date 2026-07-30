@@ -749,6 +749,82 @@ bundle remain mandatory (they also protect against disk failure of the
 project itself). The demo laptop identity question (OQ #9) is resolved by
 the same fact.
 
+## ADR-034 — Held-out one-shot run under pre-registration; results recorded verbatim (2026-07-30)
+
+**Protocol executed:** pre-registration committed and pushed first
+(`c02ed40`, 22:34 IST: no rule/threshold/parameter/generator changes based
+on results; misses reported as they land) → sealed file hashes re-verified
+against the 290101e commitment (all five match) → scenarios injected via
+`--scenario` into a separate data dir (53,576 nodes / 204,079 rels, loader
+16.8 s) → frozen rules run **once** (8.5 s, 97 alerts) → scored by
+`evaluation/heldout.py` (written before the run; blind name→typology map)
+→ scenario files committed to `data/scenarios/heldout/` (hashes re-match).
+
+**Stability proof:** 97 total alerts − 16 touching scenario entities =
+exactly the 81 dev alerts — injection perturbed nothing upstream.
+
+**Results — exact counts (5 scenarios · 8 legs expected · **5 detected** ·
+**3 missed** · **2 distinct root causes**; 5 of 5 scenarios raised at
+least one alert). The three missed legs are S2 credential, S5 credential,
+S5 travel — the first two share one root cause.**
+
+| scenario | expected | outcome |
+|---|---|---|
+| S1 ghost_satellite | ghost_clinic | caught low 42.7 (veneer suppressed footprint, as probed) + kickback/credential cross-hits |
+| S2 license_shadow | credential_laundering | **MISSED** — the rule's same-body-or-country guard nulls a cross-jurisdiction licence share, and its other-active-credential guard nulls the revoked biller. Both guards are individually justified; composed, they leave a gap |
+| S3 quiet_kickback | kickback_ring | caught medium 54.6 + low 40.8 (both pairs); clinics drew ghost mediums 66.9/65.8 |
+| S4 split_ledger | impossible_travel | caught low 42.0 (same-day pair fired; severity floor because every escalation signal was deliberately absent) |
+| S5 confluence | all four | ghost medium 56.9/52.4 + kickback low 45.2/44.7 caught; **credential and travel legs MISSED** — same credential guard-composition gap as S2, and the travel rule does not flag the scenario's 2–26 day gaps because they are physically feasible |
+
+Every scenario was touched by at least one rule (5/5) — cross-typology
+redundancy is real — but the three missed legs are systematic, not noise:
+**FP guards compose into blind spots** (credential) and **conservatism
+excludes feasible-but-suspicious** (travel). Both fixes specified as
+next-build; neither applied (pre-registration). Precision is not scored on
+the held-out world (it adds only fraudulent structure — pre-declared in
+the scorer); precision remains the dev-set property (ADR-031). Pitch
+wording + prepared miss answers: PITCH.md. The Aug 9 calendar slot is
+retired; freezes Aug 6/8 stand as formalities protecting the demo.
+
+## ADR-035 — Projector review of the console; four fixes and a click-path reorder (2026-07-30)
+
+**Context:** the console worked but had never been assessed as a *demo
+surface* — a hostile viewer, three metres from a washed-out projector.
+
+**Findings, honestly:**
+
+1. **Severity was legible but not scannable.** Score colour alone carried
+   it; the queue read as a uniform list rather than a hot-to-cold zone.
+2. **The subgraph was functional, not striking, above ~100 nodes.** The
+   ghost-clinic view renders 117 nodes; every non-implicated Patient and
+   Doctor was labelled, so thirty irrelevant names competed with the four
+   that carry the story. The 19-node impossible-travel view, by contrast,
+   is genuinely striking — two ember-haloed identities, two conflicting
+   claims, two countries, readable at a glance.
+3. **The evidence panel dumped fields.** It opened with raw keys and
+   snake_case enum values (`shared_license`, `post_revocation_billing`).
+4. Node/edge weights were tuned for a laptop, not a projector.
+
+**Fixes applied (surgical, not a redesign):** severity edge-bars plus a
+tinted row background for high/medium and tighter right-hand columns;
+heavier edges, larger minimum nodes, thicker ember halos and larger
+always-on implicated labels; a value dictionary rendering enums as
+English plus a composed opening sentence stating what fired ("5 of 6
+ghost-clinic indicators fired strongly: too few doctors for the claim
+volume; no physical footprint; …"); and the dense-label threshold lowered
+from 150 to 60 nodes so dense views keep only implicated labels while
+small views keep their useful context.
+
+**Click-path reorder (the highest-leverage change, zero code):** the demo
+now **opens with `impossible_travel`** and goes deep on `ghost_clinic`
+second. The travel alert lands in one sentence and one glance; the ghost
+alert needs narration to decode. Leading with the legible one buys
+attention for the complex one. PITCH.md carries the final path.
+
+**Not done, deliberately:** no redesign, no new views, no colour-system
+change. The palette discipline (heat ramp for severity, teal reserved for
+interaction, drama reserved for implicated nodes) is unchanged.
+
 ---
 
 *Append new ADRs below. Number sequentially. Date every entry.*

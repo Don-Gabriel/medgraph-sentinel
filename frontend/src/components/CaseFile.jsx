@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { formatValue, labelize } from "../lib/format";
+import { formatValue, labelize, summarizeEvidence } from "../lib/format";
 import { typeStyle } from "../lib/graphStyle";
 
 // The left column of the alert view: the case file. Section eyebrows are
@@ -14,11 +14,13 @@ export function SectionLabel({ children }) {
   );
 }
 
-/** Why this alert fired: rule + version, then summary_params as labelled
- *  evidence values (formatted per key shape — see lib/format.js). */
+/** Why this alert fired: rule + version, one composed plain-English
+ *  sentence stating what fired, then summary_params as labelled evidence
+ *  values (formatted per key shape — see lib/format.js). */
 export function EvidenceValues({ detail }) {
   const params = detail.summary_params ?? {};
   const entries = Object.entries(params);
+  const fired = summarizeEvidence(detail.typology, params);
   return (
     <section className="border-t border-ink-700 px-5 py-4">
       <div className="flex items-baseline justify-between">
@@ -27,6 +29,9 @@ export function EvidenceValues({ detail }) {
           rule {detail.typology} v{detail.rule_version}
         </span>
       </div>
+      {fired && (
+        <p className="mt-2.5 text-[13px] leading-snug text-paper">{fired}</p>
+      )}
       <dl className="mt-3 space-y-1.5">
         {entries.map(([k, v]) => (
           <div key={k} className="flex items-baseline justify-between gap-4">
