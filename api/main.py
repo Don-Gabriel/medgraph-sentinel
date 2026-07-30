@@ -11,6 +11,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from neo4j import GraphDatabase
 
 log = logging.getLogger("medgraph.api")
@@ -78,6 +79,13 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="MedGraph Sentinel API", lifespan=lifespan)
+
+# The console (:5173) is a different origin than the API (:8000); without
+# CORS the browser blocks every fetch (found at the M1 browser check).
+# Wide-open is deliberate: localhost demo tool, no auth by design (ADR-011).
+app.add_middleware(
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
+)
 
 
 @app.get("/api/v1/health")
