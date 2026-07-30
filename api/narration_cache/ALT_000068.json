@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000068",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "c69bb12a8a572226e141f63a936a81e89531b16a00b077258746823170d946f9",
+  "text": "One passport backs the patient identities Olivia Jarvis and Holly Montes, and the claims record shows the same passport undergoing treatment in India and the UAE on the same day, 2025-09-20, billed to two different insurers. One person cannot be on two operating tables in two countries on the same date; with the whole-day travel table this project uses, same-day cross-country treatment is the one configuration that is flatly impossible rather than merely improbable. The multiplexing matters as much as the dates: two identities, one passport, two insurers is the recruit-once-bill-twice shape. A passport transcription error is the honest alternative, but it would have to coincide exactly with the cross-insurer split to look like this. Next step: request the underlying admission records for claims CLM_0020890 and CLM_0021626 \u2014 one of them documents a patient who was not there."
+}

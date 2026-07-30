@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000055",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "2a9719bda1b06486ba1eefb85be2027b24231eba9fb053129557523e94a38395",
+  "text": "Dr. John Smith has 2 claims dated after credential CRD_001644 was revoked on 2020-07-05, five years later. Floor-of-family volume, no co-signals. Next step: none."
+}

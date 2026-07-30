@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000044",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "8d7e2b63e549a399ab0a2a59b58a5e3f8817a1c033d9938d01843abaf3d2f77c",
+  "text": "Dr. Kelly White billed 29 claims after credential CRD_000260 was revoked on 2023-06-12, starting 770 days later. Twenty-nine claims is the top of the honest post-revocation range, and the two-year gap weakens the paperwork-lag reading, making this the most borderline of the low-severity revocation alerts. Still, no corroborating signal attaches, and volume alone does not clear the escalation ramp. Next step: this one is worth the registry call ahead of the others in its band."
+}

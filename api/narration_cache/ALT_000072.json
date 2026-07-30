@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000072",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "d7d9292e5c8d8887de684455eb07b709d0c72368f6a11ae2769fe6f988c639bd",
+  "text": "Brandon Bonilla's claims place him in the UAE and India on 2025-08-17, the same day, across two insurers \u2014 but on a single identity with no passport sharing. Without multiplexing, the likeliest explanation is a date-entry artifact (submission or discharge recorded as procedure date). The cross-insurer detail keeps it a notch above pure noise. Next step: verify the true procedure dates on CLM_0007670 and CLM_0020653; escalate only if both are confirmed same-day."
+}

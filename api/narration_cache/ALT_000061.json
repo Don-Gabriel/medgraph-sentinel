@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000061",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "3d55169c442179986d3f7c8998f4e7b05711fade12bba328c6fca7defbe3dd2e",
+  "text": "Dr. Shannon Perez has 2 claims after credential CRD_002215 was revoked on 2019-07-15, over six years later. Family-floor volume; completeness alert. Next step: none."
+}

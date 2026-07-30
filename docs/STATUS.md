@@ -50,18 +50,27 @@ cache (Aug 3) is chain stage 2 — nothing regenerates between.
   update. Visually verified at 1440/768; 0 console errors; fonts
   bundled offline (@fontsource); build 614 kB.
 
+- **Narration COMPLETE (ADR-032, pulled forward from Aug 3):** all 81
+  alerts carry committed pre-generated narrations (assistant session,
+  canonical prompt template, prompt_sha256 pinned, zero API calls ever);
+  UI tags them "pre-generated AI narration"; `/health` now checks cache
+  completeness by alert-id set (`missing` surfaced, tested). **The
+  ADR-018 chain is fully committed: dataset + alerts + narration cache.**
+- **Cold-start prepared (ADR-033 single machine):** offline bundle built
+  and staged; docs/COLD_START.md is the hand-run venue script; only the
+  owner-physical steps remain (USB walk, network adapter, Aug 4–5 run).
+
 ## NEXT (priority order)
-2. Narration builder + cache (Aug 3) — **needs ANTHROPIC_API_KEY from
-   the owner**; fallback templates are the shipping mode until then.
-3. Early cold-start rehearsal (Aug 4–5) per DEMO_RUNBOOK two-run
-   structure.
+
+1. Owner-physical: EARLY COLD-START (Aug 4–5) per docs/COLD_START.md.
+2. Aug 3: contingency + PITCH v3 + first full aloud pass of the
+   DEFENCE_AREAS bank.
+3. Freezes Aug 6/8, held-out one-shot Aug 9, rehearsals Aug 9–11 —
+   unchanged.
 
 ## Decisions awaiting a human
 
-- **ANTHROPIC_API_KEY** into `.env` (enables real cached narrations;
-  ~81 calls, trivial cost).
-- OQ #13: does a backup laptop exist? (affects DEMO_RUNBOOK drills)
-- OQ #14 note: planted cred_1 includes a 57-claim post-revocation biller,
-  so the "starts at high" ramp is now exercised by planted truth; the
-  generator behaviour question (wind down revoked-doctor billing) is
-  MOOT for this build — the dataset is frozen with it in.
+- (none) — API key moot (ADR-032); backup laptop resolved (ADR-033:
+  single machine, owner-owned contingency); OQ #14 moot for this build
+  (dataset frozen with the planted post-revocation biller exercising
+  the ramp).

@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000047",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "42e002c6dcaf512061a1be1e1debd2e0f7f3457a0585bce7f13813569af27207",
+  "text": "Dr. Anthony Kelly has 11 claims dated after credential CRD_000444 was revoked on 2019-07-08, starting 2,304 days later. The pattern matches the economy's honest stale-roster tail: old revocation, low-to-moderate volume, no corroboration. Next step: registry check; close on a reinstated answer."
+}

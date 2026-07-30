@@ -32,23 +32,42 @@ def _query_one(cypher: str) -> dict | None:
         return None
 
 
-def _alert_count() -> int | None:
-    row = _query_one("MATCH (a:Alert) RETURN count(a) AS n")
-    return row["n"] if row else None
+def _query_all(cypher: str) -> list[dict] | None:
+    """Run a multi-row read query; None on any failure (degrade, don't raise)."""
+    try:
+        with get_driver().session() as session:
+            return [dict(r) for r in session.run(cypher)]
+    except Exception as exc:
+        log.warning("neo4j query failed: %s", exc)
+        return None
 
 
-def _cached_narration_count() -> int:
+def _alert_ids() -> set[str] | None:
+    rows = _query_all("MATCH (a:Alert) RETURN a.id AS id")
+    return {r["id"] for r in rows} if rows is not None else None
+
+
+def _cached_narration_ids() -> set[str]:
     if not narration.CACHE_DIR.is_dir():
-        return 0
-    return sum(1 for p in narration.CACHE_DIR.glob("*.json"))
+        return set()
+    return {p.stem for p in narration.CACHE_DIR.glob("ALT_*.json")}
 
 
 def narration_cache_status() -> dict:
-    """ADR-018 guard: cached narration count must match alert count."""
-    alerts = _alert_count()
-    cached = _cached_narration_count()
-    match = alerts is not None and alerts == cached
-    return {"alerts": alerts if alerts is not None else 0, "cached": cached, "match": match}
+    """ADR-018 guard, tightened per ADR-032: COMPLETENESS, not just counts.
+    Every alert id in the graph must have its own cache file — equal counts
+    with mismatched ids (e.g. cache from a different detection run) must
+    still fail loudly, because per-entry fallback would mask it mid-demo."""
+    alert_ids = _alert_ids()
+    cached_ids = _cached_narration_ids()
+    missing = sorted(alert_ids - cached_ids) if alert_ids is not None else []
+    match = alert_ids is not None and not missing
+    return {
+        "alerts": len(alert_ids) if alert_ids is not None else 0,
+        "cached": len(cached_ids),
+        "match": match,
+        "missing": len(missing),
+    }
 
 
 @asynccontextmanager

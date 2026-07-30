@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000079",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "2f7d760e7fc846cbd5f456e2748bf8e7c9a92ef93349efb2fa68593b9856fec1",
+  "text": "Broker Eric Maynard and Johnson Medical Centre show a small but oddly-plumbed relationship: only 7 pair claims, yet a 17.1 percent stake, transfers matching expected commission, and 3,247 dollars routed through seven distinct shell-account paths \u2014 accounts with no visible owner \u2014 between the clinic's and broker's banking. Shell hops on a relationship this small are disproportionate: legitimate commission flows in this economy go direct. The accredited clinic and matching commission totals keep the score low, but the plumbing is the detail that should not exist. Next step: identify the owners of shell accounts ACC_001587 through ACC_001593; ownership resolution either normalises or breaks this alert."
+}

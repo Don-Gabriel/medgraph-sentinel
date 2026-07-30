@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000009",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "1ece6f9f2fd38ebbb943f90824cd476f4338f547dea16603df6a76f15f71f333",
+  "text": "Dr. Frank Hernandez billed 14 claims after credential CRD_002094 was revoked on 2025-02-25, with the first post-revocation claim 141 days later. The gap of nearly five months makes simple paperwork lag less persuasive than in the other low-severity cases, but the volume remains inside the honest range, so the score stays low. Nothing else about this doctor's graph neighbourhood \u2014 no shared licence, no unusual routing \u2014 corroborates escalation. A plausible innocent reading is seasonal rostering that resumed without a credential re-check. Next step: registry confirmation of current status; escalate only if billing continues past it."
+}

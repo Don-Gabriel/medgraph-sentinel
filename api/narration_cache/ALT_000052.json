@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000052",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "27bcd06ce33620f506aff814f66f4f0013ebef1a6a7f6c7281216139a162ee57",
+  "text": "Dr. Danielle Brown billed 4 claims after credential CRD_001321 was revoked on 2023-05-16, starting 888 days later. Small volume, no co-signals \u2014 completeness alert. Next step: none unless recurrence."
+}

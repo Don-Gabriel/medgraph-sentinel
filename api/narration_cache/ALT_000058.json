@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000058",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "5d3698f0f56b936e4c954b0fe8f8bf4b0f127d2eaf236849b15604e13512893c",
+  "text": "Dr. Kyle Wood billed 5 claims after credential CRD_001805 was revoked on 2011-08-27, nearly fourteen years earlier. Obsolete-record territory; surfaced for completeness. Next step: none."
+}

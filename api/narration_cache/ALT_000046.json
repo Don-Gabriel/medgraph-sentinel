@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000046",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "55ae81da0834f694234b8c254dafea4733f6adabbff418d2eed3c8bf9a0c16b9",
+  "text": "Dr. Caleb Brown billed 3 claims after credential CRD_000336 was revoked on 2018-05-16, beginning over seven years later. Three claims at this distance reads as an administrative artifact more than a scheme. Surfaced for completeness. Next step: none unless billing recurs."
+}

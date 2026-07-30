@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000001",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "965f19281c024063a9a1ad6b3eed6611cdca4665fd92b461ded0895836a0f0c2",
+  "text": "Licence number MC-IN69455 appears on four separate credentials held by four different practising doctors \u2014 Dr. Lisa Gaines, Dr. Justin Watson, Dr. Susan Olson and Dr. Margaret Lee \u2014 all recorded against the Medical Council of India, and all four are actively billing. A licence is issued to one person; four billing identities behind one number is the credential-laundering signature, not a paperwork quirk. Honest duplicate-number collisions do occur in this data, but they involve two holders and stop there; four active holders on one number sits well outside that pattern. The alternative explanation is registry data-entry duplication propagated across four records, which would be unusual but is checkable. Next step: ask the Medical Council of India which holder the licence was actually issued to, and treat billing from the other three identities as unverified until it answers."
+}

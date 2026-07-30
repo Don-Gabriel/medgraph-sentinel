@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000030",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "4d1adcf8724467694a9e77429f3f74ac096f21527ccb37f092e177652f3cd9e8",
+  "text": "Credential CRD_001082 was issued in Turkey, while its holder billed 39 claims entirely in India and Singapore. Two treatment countries is within the honest range even at this volume, so the alert stays low. No other signal is attached to the credential or its holder. Established corridor practice is the plausible explanation. Next step: passive, unless the credential recurs elsewhere in the queue."
+}

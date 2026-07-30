@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000019",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "78933562c1aca4b4e98dbd10cae60445df2ce1a80301049d53a8fe92745afb75",
+  "text": "Credential CRD_000027 for Dr. John Holt was issued in India, yet all of the doctor's 5 claims were performed in Thailand and Turkey, with none in the issuing jurisdiction. Practising outside the issuing country is routine in medical tourism, which is why this scores low; the pattern becomes meaningful only when the spread widens or other signals attach. Five claims across two countries is comfortably inside the honest cross-border rosters this economy contains. The likely explanation is ordinary regional practice under mutual-recognition arrangements. Next step: none unless this doctor appears in another alert; then verify recognition of the Indian licence in both treatment countries."
+}

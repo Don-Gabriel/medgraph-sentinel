@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000050",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "432de1d3a587501f95da8cd12cd8b1f59072c79a32fa8e600d265a6f026ac65b",
+  "text": "Dr. Hector Owens billed 2 claims after credential CRD_001187 was revoked on 2021-08-02, over four years later. Two claims is the floor of this family; the alert exists for completeness. Next step: none."
+}

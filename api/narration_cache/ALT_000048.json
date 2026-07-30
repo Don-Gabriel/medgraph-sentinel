@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000048",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "ba9d85f8fcff199f31859226c27f18c4612aa3e0bd9cf2cb11e65269a7da8ef2",
+  "text": "Dr. Kenneth Vargas billed 10 claims after credential CRD_000672 was revoked on 2009-07-31 \u2014 nearly sixteen years earlier. At this distance the likeliest explanation is that the credential record is simply obsolete and a later authorisation exists outside the graph. The rule surfaces it because absence of evidence is not evidence of authorisation. Next step: one registry lookup would close it permanently."
+}

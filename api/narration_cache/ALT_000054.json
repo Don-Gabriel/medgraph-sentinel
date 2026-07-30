@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000054",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "05422fd9965a2c31477e1b54158171ecfd71ba056c24b7ec7c0044a89f69087a",
+  "text": "Dr. Chloe Freeman billed 2 claims after credential CRD_001479 was revoked on 2013-10-28, more than twelve years earlier. The obsolete-record explanation dominates at this distance. Next step: none."
+}

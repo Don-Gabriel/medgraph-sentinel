@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000020",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "bddaf92b8b378c15837f8e78bb38e96c79ae6df2cc484ec5b7b3f85cbada517f",
+  "text": "Credential CRD_000057 for Dr. Rebecca Hanson was issued in the UAE, while her 12 claims sit entirely in India and Turkey. Cross-jurisdiction practice on its own is legal and common here, so the alert is low severity. Two treatment countries is within the honest range; three or more never occurs honestly in this data and would escalate. Ordinary corridor practice is the likely explanation. Next step: only if corroborated elsewhere \u2014 check whether the UAE issuance is recognised where the claims occurred."
+}

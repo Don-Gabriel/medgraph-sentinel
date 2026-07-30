@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000045",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "ce925bcf6a8949703d051c258d69cc6b999c8f73794edfd62cebbf0697f36ffc",
+  "text": "Dr. Nicole Glass has 14 claims after credential CRD_000317 was revoked on 2018-06-20, the first 2,570 days later. Old revocation, moderate volume, no co-signals \u2014 the stale-roster shape. Low severity is correct. Next step: registry status check when convenient."
+}

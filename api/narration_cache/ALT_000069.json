@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000069",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "1aa5255966e8073e22ff838c2cd407027a9cede28795ab295a44cb47fae06425",
+  "text": "A single passport is shared by six patient identities including Sandra Payne and Kristin James, and two of its claims put the same document in India and Thailand on the same day, 2025-10-14, across two insurers. The same-day cross-country pair is physically impossible; six identities on one passport turns an anomaly into a pattern of deliberate identity reuse. Insurer fragmentation is the tell \u2014 the reuse only pays if no single insurer sees the whole picture, which is exactly what this graph exists to reconstruct. The alternative explanation, a family sharing a mis-entered document number, collapses against six distinct identities with independent claim histories. Next step: pull admission records for CLM_0003527 and CLM_0021623 and open a case on the full six-identity cluster, not just the colliding pair."
+}

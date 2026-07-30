@@ -32,8 +32,7 @@ Single source of truth: `.env` (never committed) documented by `.env.example`.
 | `NEO4J_HEAP_SIZE` | neo4j container | `2G` (8 GB profile) / `4G` (16 GB+ profile) |
 | `NEO4J_PAGECACHE_SIZE` | neo4j container | `1G` / `2G` per profile |
 | `GENERATOR_SEED` | generator | default `42`; committed dataset is generated with 42 |
-| `ANTHROPIC_API_KEY` | narration builder only | optional; absent ⇒ builder skips API calls, fallback text serves |
-| `ANTHROPIC_MODEL` | narration builder | default `claude-opus-5` |
+| ~~`ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL`~~ | — | **retired (ADR-032):** narration is pre-generated committed data; no API calls exist anywhere |
 | `API_PORT`, `FRONTEND_PORT` | compose | defaults 8000 / 5173 |
 | `VITE_API_BASE_URL` | frontend build | default `http://localhost:8000` |
 
@@ -357,24 +356,28 @@ Generic node inspector for drill-down side panel: `{"id", "type", "label",
   endpoint returns — full-graph rendering is out of scope (ADR-009).
 - Report export: out of scope (Q6).
 
-## 8. Narration builder contract
+## 8. Narration builder contract *(amended 2026-07-30, ADR-032 — zero API calls)*
 
-`python -m narration.build [--top 40]` (module lives in `api/narration/`):
+`python -m api.narration.build --export-inputs out.jsonl | --import-texts a.json ...`
 
-- Selects top-N alerts by score, composes a prompt from the alert +
-  implicated entities + summary_params (NO ground-truth data), calls the
-  Claude API once per alert (`ANTHROPIC_MODEL`, default `claude-opus-5`,
-  official `anthropic` Python SDK), writes
+- **No API calls exist, build-time or runtime.** The builder composes the
+  canonical prompt per alert (`compose_prompt`: alert + summary_params +
+  implicated entities, NO ground-truth data); a Claude **assistant working
+  session** writes every narration from those prompts (uniform template:
+  pattern + numbers → why the combination → honest alternative → next
+  step); `--import-texts` refuses partial coverage and writes
   `api/narration_cache/<alert_id>.json`:
-  `{"alert_id", "text", "model", "prompt_sha256"}`.
-- **The cache directory is committed** — the venue demo must work from a
-  fresh clone with no network and no API key.
-- Also generates the deterministic fallback template text per typology
-  (pure function of summary_params, no API) — used at request time for any
-  cache miss.
-- A stale cache entry (prompt_sha256 mismatch) falls back to template rather
-  than serving a wrong narration; wholesale staleness is caught loudly by
-  the `/health` startup check above.
+  `{"alert_id", "text", "model", "prompt_sha256"}` with the honest model
+  tag `claude-fable-5 (assistant session, pre-generated)`.
+- **The cache directory is committed** — the venue demo works from a fresh
+  clone with no network; the UI labels these "pre-generated AI narration",
+  never implying live generation.
+- The deterministic fallback template per typology (pure function of
+  summary_params) is unchanged and serves any cache miss.
+- `/health` checks cache completeness **by alert-id set** (ADR-032): a
+  same-size cache from a different detection run fails loudly with a
+  `missing` count; per-entry `prompt_sha256` still pins what each text was
+  written from.
 
 **One-way demo build chain (ADR-018, amended by ADR-029).** The cache is
 keyed by alert ID, and alert IDs are assigned per detection run — any
