@@ -223,7 +223,10 @@ that file must stay byte-for-byte in sync with this document.
   new Day-2 rule needs zero API/frontend changes to surface its alerts (see
   DECISIONS ADR-008).
 - **What breaks at 10M nodes:** these indexes and queries hold; exact
-  betweenness centrality (O(n·m)) does not — you'd switch to sampled
-  betweenness, and batch feature extraction would move to scheduled GDS
-  pipelines. Louvain and the targeted queries scale fine. Neo4j Community's
+  betweenness centrality (O(n·m)) does not — measured 131.6 s at 51k nodes,
+  which is why the shipped rules use no global centrality at all (ADR-028:
+  it was also the *worst* discriminator; sampled betweenness at
+  samplingSize 2048 is the documented fallback, 94% top-50 agreement at 5%
+  cost). Batch feature extraction would move to scheduled GDS pipelines.
+  Louvain and the targeted queries scale fine. Neo4j Community's
   single-database, no-RBAC limits bite before the algorithms do.

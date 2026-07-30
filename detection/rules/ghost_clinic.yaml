@@ -1,0 +1,32 @@
+# Typology 1 — ghost clinic (DETECTION_SPEC §1). Multi-feature weighted
+# score per clinic; a single strong feature can NEVER reach medium (the
+# documented FP modes: new day clinics, single corporate accounts, honest
+# registered-office sharing). Thresholds calibrated on the honest economy
+# 2026-07-30 (seed 42, fraud gates zeroed) — see detection/README.md.
+key: ghost_clinic
+name: Ghost clinic
+typology: 1
+version: "1.0"
+kind: python
+impl: detection.rules.impl.ghost_clinic
+params:
+  min_claims: 25            # below this volume a paper clinic is not worth an alert
+  young_years: 3.0          # registration younger than this reads as "no history"
+  claims_per_bed_ref: 60    # claims per bed (beds floored at 1) that saturates footprint
+  inflow_share: 0.80        # spec: one broker arranges ~80%+ of the clinic's claims
+  payout_share: 0.90        # spec: ~90%+ of payouts into one account
+  claims_per_doctor_ref: 60 # claims per distinct doctor that saturates
+  single_visit_baseline: 0.93 # honest share of exclusive one-journey patients (measured)
+  address_entities_ref: 4   # co-located clinics+brokers that saturate address sharing
+  weights: # sum 1.0 — feature points out of 100
+    footprint: 0.25
+    inflow: 0.25
+    payout: 0.15
+    doctors: 0.15
+    address: 0.10
+    single_visit: 0.10
+  strong_cut: 0.75          # feature >= this counts as a "strong hit"
+  min_strong_features: 2    # fewer strong hits -> score capped below medium
+  emit_min_score: 32.0      # honest economy scores 25-40 (13 clinics, all low);
+                            #   this floor keeps the honest tail to a handful
+severity_bands: { high: 80, medium: 50 }

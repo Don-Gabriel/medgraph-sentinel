@@ -17,9 +17,14 @@ template text mid-demo without an error. So the demo artifacts are built
 strictly one way (scheduled Aug 7, MILESTONES):
 
 ```
-freeze dataset → run loader → run detection → build narration cache
-             → commit (dataset + alerts + cache together) → NO regeneration
+freeze dataset → run loader → run detection → export alert CSVs (ADR-029)
+             → build narration cache
+             → commit (dataset + alert CSVs + cache together) → NO regeneration
 ```
+
+Alert CSVs are committed data (ADR-029): compose-up only *loads* them —
+no judge's clone ever runs detection, and `docker compose down -v && up`
+re-seeds graph **and alerts** deterministically from the committed files.
 
 Rules:
 
@@ -145,31 +150,33 @@ step 9 recorded in the timing table below. Repeat once with USB stick #2
    caches, confirms alerts + cached narrations). Leave it on the queue.
 5. Do not touch it again until the pitch.
 
-## Failure drills (each rehearsed with a named first responder)
+## Failure drills (solo — every drill is mine; each rehearsed Aug 10)
 
 **Wifi absent / captive portal nonsense** — no action; nothing needs
 network. This is a pitch line, not a failure.
 
-**Projector fails / no signal (Pavithra):** swap adapter (10 s), swap HDMI
-port (10 s). If dead in 30 s: present from the laptop screen, jury gathered —
-Pavithra narrates larger, Don angles the screen. Decided in advance so nobody
-debates it live.
+**Projector fails / no signal:** swap adapter (10 s), swap HDMI port
+(10 s). If dead in 30 s: present from the laptop screen, jury gathered
+closer. Decided in advance so it isn't debated live.
 
-**Console hangs / white screen (Don Gabriel):** hard refresh (cached SPA —
-usually enough). If dead in 15 s: Pavithra switches to the screenshot deck
-mid-sentence (rehearsed handoff), Don restarts the frontend container in the
-background; return to live only at a beat boundary (never mid-beat).
+**Console hangs / white screen:** hard refresh (cached SPA — usually
+enough). If dead in 15 s: switch to the screenshot deck mid-sentence — solo
+this must be one rehearsed keystroke (deck open on a second desktop the
+whole time), because there is no second person to cover the gap — and
+restart the frontend container only at a beat boundary (never mid-beat).
 
-**API/Neo4j container down (Don Gabriel):** `docker compose restart api` /
-`docker compose up -d` (~60–90 s under the screenshot deck's cover). If the
-Neo4j data volume is corrupted: `docker compose down -v && docker compose up
--d` re-seeds deterministically in ~3 min — only viable before the slot, so
-the boot-sequence click-through exists precisely to catch this early.
+**API/Neo4j container down:** `docker compose restart api` /
+`docker compose up -d` (~60–90 s, narrated over the screenshot deck). If
+the Neo4j data volume is corrupted: `docker compose down -v && docker
+compose up -d` re-seeds deterministically in ~3 min — only viable before
+the slot, so the boot-sequence click-through exists precisely to catch
+this early.
 
-**Docker itself broken on demo laptop (whole team):** backup laptop (same
-loaded images, same rehearsal) takes over; the USB tarball restores images
-anywhere Docker runs. If both laptops fail: screenshot deck + screen
-recording — the pitch survives with zero live software.
+**Docker itself broken on demo laptop:** if a backup laptop exists
+(OQ #13 — unconfirmed since the team collapse), it takes over with the
+same loaded images; the USB tarball restores images anywhere Docker runs.
+Final fallback either way: screenshot deck + screen recording — the pitch
+survives with zero live software.
 
 **Escalation rule:** any fix that hasn't worked in 30 seconds → screenshot
 deck, no second attempts on stage. The deck is a rehearsed first-class mode,

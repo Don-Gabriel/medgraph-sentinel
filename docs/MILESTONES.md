@@ -1,96 +1,99 @@
-# Milestones — 13 Days, One Implementer
+# Milestones — 13 Days, One Person, ~95–110 Hours
 
-Re-planned **2026-07-30 (ADR-024)**: all five members now share **one
-laptop**, with J Don Gabriel driving nearly all implementation. Capacity is
-**~110–130 total hours** (Don ~85–95 h of build time; the other four ~30–40 h
-combined of docs, rehearsal, and verification work in scheduled laptop
-slots) — not the ~475 person-hours the previous plan assumed. The ADR-017
-cut ladder has been **executed, not held in reserve**: typologies 4
-(template cloning) and 6 (circular payment) are descoped (see
-DETECTION_SPEC header); we ship typologies **1, 2, 3, 5**.
+Re-planned **2026-07-30 (ADR-027)**: J Don Gabriel builds, documents,
+pitches, and runs Day 2 **alone**. No other contributor exists. The
+~25–30 h of non-code deliverables previously assigned to four other people
+(pitch, glossary, runbook execution, screenshots, fresh-clone verification,
+Day-2 rehearsal) are **scheduled below as real hours**, not assumed
+background work.
 
-Anchored to the calendar and immovable: pitch **Aug 12**, live sprint
-**Aug 13**, detection freeze **Aug 6**, integration freeze **Aug 8**, dress
-rehearsal **Aug 10**. Overruns are absorbed by the cut ladder at the bottom
-of this file — never by moving a freeze or shrinking a rehearsal.
+Anchored and immovable: detection freeze **Aug 6**, integration freeze
+**Aug 8**, dress rehearsal **Aug 10**, pitch **Aug 12**, sprint **Aug 13**.
+Overruns are absorbed by the cut ladder — never by moving a freeze,
+shrinking the rehearsal, or assuming 14-hour days.
 
-## One-laptop working model
+## Does it fit? — the honest answer first
 
-- Don implements on the laptop most of each day.
-- Each non-code contributor gets a **daily 30–60 min laptop slot** (evening,
-  around the sync) to write and commit **their own work under their own git
-  identity** — see CONTRIBUTING "Shared-machine identity". Git history must
-  show five people doing real work, because it does.
-- Rehearsal, question drilling, and scenario authoring (Pavithra, off-repo)
-  happen away from the laptop and cost no build hours.
+**Yes, at ~93–100 scheduled hours — but only because of three things,
+and with zero slack:**
 
-## Schedule
+1. Typologies 4 and 6 are already cut (ADR-024) — the ladder's first two
+   rungs are spent.
+2. The detection layer, centrality decision, and alert-precompute pipeline
+   land **Jul 30** (AI-assisted build session), days ahead of the old M3
+   window. If that work had landed on the old Aug 4–6 dates, this plan
+   would NOT fit one person and cuts 3–6 would fire today.
+3. Rehearsal and demo-prep hours are protected as scheduled work below.
+   They are the pitch; they cannot be "found later."
+
+Average load: **7–8 h/day** with two 9-hour days (Aug 1, Aug 2 — the
+API+console block). That is sustainable for two weeks; 14-hour days are
+not planned and not assumed anywhere. **One lost day (illness, laptop,
+rabbit hole) fires cut 3 immediately; two lost days fire cuts 4–6.**
+
+## Schedule (hours are budgets, not aspirations)
 
 | date | day | target |
 |---|---|---|
-| Jul 30 Thu | **M1: walking skeleton** | Loader per INTERFACES §4 (wipe-and-load, manifest validation); OQ #1 benchmark decided by measurement; seed-42 dataset committed (ADR-005); **M1 exit test end-to-end: fresh compose up → `gds.version()` 2.13.x (closes OQ #2) → seed → `/health` → browser counts → Louvain/PageRank/betweenness run on the real graph** (~7 h Don) |
-| Jul 31 Fri | **M2 opens** | Scenario overlay schema (INTERFACES §3) + planted-cell support in the generator — must exist **before** the freeze or the held-out protocol dies (~8 h Don). Slots: Vijayalakshmi starts PITCH v2 rework; Poonkundran reads loader/schema for defence |
-| Aug 1 Sat | M2 | API alert endpoints against fixture alerts: list/detail/subgraph/narration-fallback/PATCH/entities (~10 h Don). Slot: Mary drafts DEMO_RUNBOOK updates |
-| Aug 2 Sun | **M2 exit** | Console: alert queue + Cytoscape drill-down + evidence panel + status/note controls, on fixtures (~10 h Don). **Exit test: real dataset loads; console browses fixture alerts end-to-end.** Slot: Poonkundran drafts DAY2_PLAYBOOK updates |
-| Aug 3 Mon | **M3 opens** | Fraud layers: planted cells for typologies 1/2/3/5 + device-recycling volume calibration (ADR-022 watch item); regenerate dev dataset (~9 h Don). Slot: Vijayalakshmi GLOSSARY pass |
-| Aug 4 Tue | M3 | Rules v1: **typology 2 (credential laundering)** + **typology 5 (impossible travel)** incl. the travel-time table (OQ #5) (~9 h Don) |
-| Aug 5 Wed | M3 | Rules v1: **typology 1 (ghost clinic + Louvain context)** + **typology 3 (kickback ring + GDS centrality)**; calibration on the honest economy begins (OQ #4) (~10 h Don) |
-| Aug 6 Thu | **DETECTION FREEZE** | Calibration finished; thresholds documented per rule; spec + queries frozen in a dedicated commit + ADR. **Exit test: compose up → real alerts for all four typologies → drill-down → template narration.** Red-team window opens: Pavithra authors held-out scenarios off-repo (hash → HELDOUT_COMMITMENT) (~8 h Don) |
-| Aug 7 Fri | demo build | **ADR-018 chain, in order: freeze dataset → load → detect → build narration cache → commit as one unit.** Statuses/notes polish; stats header (~8 h Don). Slots: Vijayalakshmi PITCH v2 with real click path; Mary RUNBOOK against the real demo |
-| Aug 8 Sat | **INTEGRATION FREEZE (evening)** | Main is demo-grade. **Poonkundran executes the fresh-clone verification** (clone → .env → compose up → console, on this laptop from a clean Docker state) and commits the result to the RUNBOOK. After tonight: bug fixes and docs only (~8 h Don) |
-| Aug 9 Sun | **held-out evaluation** | Regenerate with Pavithra's overlays into a separate data dir, run frozen rules **once**, record precision/recall incl. misses (DECISIONS + PITCH); commit scenario files; results slide; resolve the PITCH claim branch. **Aloud-rehearsal round 1 (evening): each member explains their defence area to the room, out loud, no notes — Don answers gaps, docs get fixed where answers failed** (~6 h Don + all, off-laptop) |
-| Aug 10 Mon | **dress rehearsal** | Full offline DEMO_RUNBOOK on the demo laptop — **Mary executes the cold-start test (ADR-019: adapter off, images from USB tarball, cached narrations)**. Pavithra drives the demo and exports the screenshot deck. Timed pitch + failure drills; ranked fix list. **Aloud-rehearsal round 2.** Day-2 drill #1 (Poonkundran runs the playbook) |
-| Aug 11 Tue | **final prep** | Fix-list burn-down (demo blockers only); pitch ×3 timed with DEFENCE_AREAS **question roulette** (any question to any person); both USB sticks finalized; **repo public in the evening**; Day-2 drill #2 |
-| Aug 12 Wed | **Day 1** | Laptop pre-booted (compose already up). 10-minute pitch per PITCH.md |
-| Aug 13 Thu | **Day 2** | Surprise-constraint sprint per DAY2_PLAYBOOK.md |
+| Jul 30 Thu | **solo re-plan + detection architecture** (~9 h) | Team scaffolding stripped from all docs; **held-out scenarios authored + hash-committed BEFORE any detection query** (ADR-027 — done in this order deliberately); centrality decision measured + ADR-028; alert-precompute pipeline (ADR-029); detection rules v1 for typologies 1/2/3/5, calibrated on the honest economy, dev-set evaluation recorded. Explain-aloud review pass over everything landed. |
+| Jul 31 Fri | **generator: overlays + planted cells** (~8 h) | Scenario overlay support per INTERFACES §3 (incl. the 2026-07-30 extensions) — **must exist before Aug 9 or the held-out evaluation dies**; planted cells for typologies 1/2; typology-5 recycling volume calibration (ADR-022 watch item); travel-time table finalized (OQ #5); regenerate dev dataset; re-run detection + eval, record deltas. |
+| Aug 1 Sat | **API** (~9 h) | All INTERFACES §6 endpoints against real alerts: health (incl. narration-cache check), stats, list/detail/subgraph (cap + trim), narration (cache→fallback), PATCH, entities. Tests per endpoint. |
+| Aug 2 Sun | **console — M2 exit** (~9 h) | Alert queue (filters) + Cytoscape drill-down + evidence panel + status/note controls. **Exit test: real dataset, real alerts, browse end-to-end.** |
+| Aug 3 Mon | **console polish + narration builder** (~8 h) | Stats header; styling by type/role; narration builder + deterministic template fallback per typology; score normalization documented per rule (OQ #4). |
+| Aug 4 Tue | **calibration + pitch v2** (~8 h: 5.5 code + 2.5 docs) | Honest-economy FP-rate review per rule; verify each documented FP mode actually appears and scores below `medium`; **PITCH v2 with the real click path (2 h); GLOSSARY pass (0.5 h)**. |
+| Aug 5 Wed | **buffer + chain dry-run** (~8 h: incl. 1 h runbook) | Finish anything bleeding; dry-run the full ADR-018 chain on dev data (rehearses Aug 7); **DEMO_RUNBOOK update pass (1 h)**. If this buffer is consumed by earlier slippage, cut 3 has already fired. |
+| Aug 6 Thu | **DETECTION FREEZE** (~7 h) | Calibration finished; thresholds documented per rule YAML; spec + queries frozen in a dedicated commit + ADR. **Exit test: compose up → real alerts for all four typologies → drill-down → template narration.** After tonight: no detection-query changes. |
+| Aug 7 Fri | **demo build — ADR-018 chain** (~8 h: incl. 1 h screenshots) | In order, as one unit: freeze dataset → load → detect → **export alert CSVs (ADR-029)** → build narration cache (needs `ANTHROPIC_API_KEY`; if unavailable, fallback templates are the shipped mode — decide today, don't burn tomorrow) → commit together. **First screenshot batch (1 h).** |
+| Aug 8 Sat | **INTEGRATION FREEZE (evening)** (~7 h: 4 code + 3 verification) | Main is demo-grade by evening. **Fresh-clone verification, executed personally from a clean Docker state, results committed to the RUNBOOK (2 h). USB tarball + git bundle built (1 h).** After tonight: bug fixes and docs only. |
+| Aug 9 Sun | **HELD-OUT EVALUATION + rehearsal 1** (~7 h: 4 eval + 3 rehearsal) | Regenerate with the five overlays into a separate data dir; run frozen rules **once**; record precision/recall **including misses** (DECISIONS + PITCH + results slide); commit scenario files to `data/scenarios/heldout/`. **Evening: rehearsal round 1 — every DEFENCE_AREAS question answered aloud, recorded, stumbles fixed same evening (2–3 h).** |
+| Aug 10 Mon | **DRESS REHEARSAL** (~7 h, mostly non-code) | Full offline DEMO_RUNBOOK on the demo laptop: **cold-start test executed personally (ADR-019: adapter off, images from USB, cached narrations, all ten steps)**; screenshot deck exported; full demo screen-recorded; timed pitch ×1 + failure drills; **Day-2 drill #1 (Shape A, timed)**; rehearsal round 2 on stumble cards. |
+| Aug 11 Tue | **final prep** (~6 h, non-code) | Fix-list burn-down (demo blockers only); pitch ×3 timed; **question roulette (90 s/answer, full DEFENCE_AREAS pass)**; both USB sticks finalized per RUNBOOK manifest; **repo public in the evening**; **Day-2 drill #2 (Shape C, timed) — first thing cut if the day runs hot**. |
+| Aug 12 Wed | **Day 1** | Laptop pre-booted (compose already up, click path warmed). 10-minute pitch per PITCH.md. |
+| Aug 13 Thu | **Day 2** | Surprise-constraint sprint per DAY2_PLAYBOOK.md (solo protocol). |
 
-## Does it fit?
+Total: **~93 h scheduled** (≈ 69 h build/code + ≈ 24 h pitch/demo/rehearsal
+work), inside the 95–110 h envelope with ~10 h of implicit contingency
+spread across the buffers. There is no second buffer behind Aug 5.
 
-**Yes, at the top of the range — and with zero slack.** The schedule above
-sums to ~90 h for Don and ~35 h for the other four ≈ **125 h**, inside
-110–130 only because typologies 4 and 6 are already out and M3 packs four
-rules into three days. Honest risks: the two 10-hour days (Aug 2, Aug 5) and
-the Aug 6 calibration finishing on freeze day itself. **Any slip triggers
-the next cut immediately** — never a moved freeze, never a shortened
-rehearsal.
+## Cut ladder (extended for solo — fire in order, immediately, no debate)
 
-## Cut ladder (ADR-017 executed steps 1–2; ADR-024)
+1. ~~Typology 4, template cloning~~ — **CUT 2026-07-30** (ADR-024).
+2. ~~Typology 6, circular payment~~ — **CUT 2026-07-30** (ADR-024).
+3. **Console conveniences** — filter combinations, stats-header detail
+   (~3–4 h back).
+4. **Subgraph `hops=2`** — ship fixed `hops=1` (~2–3 h back; `contract:`
+   PR per INTERFACES §6).
+5. **Opportunistic live-narration path** — committed cache + template only
+   (~2 h back).
+6. ~~Typology 3 centrality enrichment~~ — **RETIRED 2026-07-30 (ADR-028):
+   the centrality term was measured out on evidence (worst discriminator,
+   only expensive signal), not cut under duress. The rung's hours never
+   existed to reclaim.**
+7. **Day-2 drill #2** — keep drill #1 (~2 h back).
+8. **Screenshot deck scope** — shrink to the seven click-path beats only
+   (~1 h back).
 
-1. ~~Typology 4, template cloning~~ — **CUT 2026-07-30** (highest algorithmic
-   risk, most calibration time).
-2. ~~Typology 6, circular payment~~ — **CUT 2026-07-30** (bounded work, least
-   demo-critical).
-3. **Console conveniences** — filter combinations, stats-header detail. First
-   to go if M2/M3 slips (~3–4 h back).
-4. **Subgraph `hops=2`** — ship fixed `hops=1`; skip the 2-hop expansion +
-   trim logic (~2–3 h back). *Contract change: needs the INTERFACES §6
-   protocol (`contract:` PR).*
-5. **Opportunistic live-narration path** — ship committed cache + template
-   fallback only (~2 h back). The demo never needed the live path.
-6. **Typology 3 centrality enrichment** — ship mutual concentration + shared
-   infrastructure + Louvain; drop the PageRank/betweenness percentile term
-   (~3–4 h back). Last resort: it weakens the algorithmic-differentiator
-   story, so it goes only if the alternative is missing the freeze.
-
-Never cut: freezes, dress rehearsal, cold-start test, held-out evaluation,
-narration fallback, typologies 1–3 and 5, the aloud rehearsals.
+Never cut: the freezes, the dress rehearsal + cold-start test, the
+held-out evaluation, the narration fallback, typologies 1/2/3/5, at least
+one full aloud rehearsal, and at least one Day-2 drill.
 
 ## What this schedule cannot absorb
 
-- **The laptop dying.** It is now a single point of failure for five
-  people's hackathon. Mitigation: push to GitHub at every stop-point (at
-  minimum end of each session), and the Aug 8 USB git-bundle also serves as
-  a workable checkout.
-- **Either weekend collapsing** — Aug 1–2 carries the whole API+console
-  build; Aug 8–9 carries the freeze and the evaluation.
-- **A second capacity loss** (illness, laptop contention, generator
-  rabbit-hole) — fires cut 3 immediately, then 4–6 in order.
+- **The laptop dying.** Sole machine, sole person. Push to GitHub at every
+  stop-point; the Aug 8 USB bundle is a workable checkout from any machine.
+- **An illness day.** Fires cut 3 the same day, cuts 4–6 the second day.
+- **The Aug 1–2 weekend collapsing** — it carries the whole API + console
+  build, solo. Nothing else fits there.
+- **A narration-cache rabbit hole on Aug 7** — the committed fallback
+  templates are an acceptable shipped mode; decide by end of Aug 7, never
+  spend Aug 8 on it.
 - **Late contract churn** — INTERFACES changes after Aug 5 need a genuinely
   blocking reason.
 
-## Standing cadence
+## Standing cadence (solo)
 
-Daily 15-minute evening sync at the laptop: what landed, tomorrow's plan,
-blockers — then the non-code laptop slots in sequence. Aloud-rehearsal
-rounds Aug 9 and Aug 10 evenings, question roulette Aug 11 (see
-DEFENCE_AREAS "Defending code you did not write").
+End of every working session: STATUS.md updated in the final commit, work
+pushed. End of every day: tomorrow's first task written down (decision
+fatigue is the solo failure mode — never boot the laptop without knowing
+the first hour's work). Rehearsals are calendar events, not intentions:
+Aug 9 evening, Aug 10 evening, Aug 11.

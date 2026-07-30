@@ -166,6 +166,11 @@ class Config(BaseModel):
     brokers: Brokers
     claims: Claims
     transfers: Transfers
+    # Shared with detection typology 5 (OQ #5): minimum whole travel days
+    # between treatment countries. Optional so pre-existing configs stay
+    # valid; the generator itself does not consume it (the impossible_travel
+    # rule mirrors it — tests/test_detection_registry.py keeps them in sync).
+    travel_time_days: dict[str, dict[str, int]] | None = None
     fraud: Fraud
 
     @model_validator(mode="after")
@@ -180,6 +185,15 @@ class Config(BaseModel):
         for origin, row in self.gravity.items():
             if set(row) != treatments:
                 raise ValueError(f"gravity[{origin}] must cover all treatment countries")
+        if self.travel_time_days is not None:
+            if set(self.travel_time_days) != treatments:
+                raise ValueError("travel_time_days rows must match treatment countries")
+            for code, row in self.travel_time_days.items():
+                if set(row) != treatments - {code}:
+                    raise ValueError(
+                        f"travel_time_days[{code}] must cover every OTHER treatment country")
+                if any(v < 1 for v in row.values()):
+                    raise ValueError("travel_time_days entries must be >= 1 whole day")
         return self
 
 

@@ -129,13 +129,20 @@ is why per-claim review never flags it.
   broker dominating a tiny clinic is normal one way, suspicious both ways).
 - Shared infrastructure: `OWNS_STAKE_IN`, common `OWNED_BY` accounts,
   `TRANSFERRED` flows broker↔clinic accounts, shared addresses.
-- Dense Louvain communities of broker+clinics+accounts; PageRank/betweenness
-  on the referral projection identifies hub brokers bridging communities.
+- Dense Louvain communities of broker+clinics+accounts provide ring context.
+- *(Amended 2026-07-30, ADR-028: PageRank/betweenness hub-ranking was
+  benchmarked against emergent ground truth and dropped — steering is a
+  concentration pattern, not a bridging one; global centrality ranked the
+  true steering brokers WORSE than a one-line concentration share, at up to
+  10⁶× the compute. Measurements:
+  `detection/benchmarks/typology3_centrality.md`.)*
 
-**Approach.** GDS: Louvain for candidate communities, PageRank + betweenness
-centrality to rank broker centrality; Cypher to test concentration and shared
-infrastructure inside candidate communities. Score combines concentration,
-infrastructure overlap, and centrality percentile.
+**Approach.** Cypher concentration features per broker–clinic pair
+(top-clinic share and both mutual-concentration directions) gate the
+candidates; shared-infrastructure evidence (stake, common accounts,
+transfers, shared address) and Louvain community context complete the
+score. Score combines concentration, infrastructure overlap, and community
+density — no global centrality term (ADR-028).
 
 **Inputs.** `ARRANGED_BY`, `AT_CLINIC`, `OWNS_STAKE_IN`, `OWNED_BY`,
 `TRANSFERRED`, addresses; GDS projections.

@@ -1,0 +1,43 @@
+# Typology 3 — kickback ring (DETECTION_SPEC §3 as amended by ADR-028: NO
+# global centrality term — steering is a concentration pattern, and the
+# top-clinic-share feature alone measured precision@13 = 0.385 vs 0.077 for
+# betweenness; detection/benchmarks/typology3_centrality.md). Concentration
+# gates candidate broker-clinic pairs; shared infrastructure (stakes,
+# excess money flow, shell paths, addresses, common accounts) completes the
+# score — it is the only route to low-volume steering brokers. Louvain
+# community is attached as ring context. Calibrated on the honest economy
+# 2026-07-30: honest exclusive partnerships and declared stakes must stay
+# below medium (FP modes in the spec).
+key: kickback_ring
+name: Kickback ring
+typology: 3
+version: "1.0"
+kind: python
+impl: detection.rules.impl.kickback_ring
+params:
+  min_pair_claims: 5        # below this a "pair" is statistical noise
+  broker_share_gate: 0.30   # benchmark: true steerers held 0.31-0.84 top-clinic share
+  broker_share_ref: 0.85    # share that saturates the broker-side feature
+  clinic_share_lo: 0.15     # clinic-side inflow share where the feature starts
+  clinic_share_ref: 0.60    # share that saturates the clinic-side feature
+  volume_ref: 60            # pair claims that saturate the volume factor
+  concentration_max: 50.0   # points available from concentration
+  # infrastructure evidence (capped at infrastructure_max in total)
+  infrastructure_max: 50.0
+  stake_max: 20.0           # OWNS_STAKE_IN broker->clinic
+  stake_ref_pct: 30.0       # stake percentage that saturates
+  stake_softening: { accredited: 0.4, provisional: 0.7, none: 1.0 }
+    # spec FP mode: declared in-house facilitation arms — the graph carries
+    # no declared/hidden flag on the edge, so accreditation_status is the
+    # declaredness proxy the spec itself suggests
+  excess_max: 14.0          # clinic->broker transfers beyond declared commission
+  excess_lo: 0.02           # excess as a share of pair billing where it starts
+  excess_ref: 0.07          #   (side commissions are drawn 5-10% in the economy)
+  shell_max: 12.0           # money routed broker<-...<-clinic via unowned accounts
+  shell_paths_ref: 3        # shell paths that saturate
+  shared_address_pts: 8.0
+  common_account_pts: 8.0
+  community_bonus: 4.0      # same small Louvain community = ring context only
+  community_size_max: 250   # "small" community bound for the bonus
+  emit_min_score: 25.0
+severity_bands: { high: 80, medium: 50 }

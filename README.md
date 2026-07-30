@@ -79,23 +79,19 @@ The documentation is the design — start here:
 | [DATA_MODEL](docs/DATA_MODEL.md) | every node, edge, constraint, index — and why |
 | [DETECTION_SPEC](docs/DETECTION_SPEC.md) | the typologies (4 shipping + 2 specified next) incl. their false-positive modes |
 | [DATA_GENERATION](docs/DATA_GENERATION.md) | the synthetic economy; emergent vs planted fraud; the held-out protocol |
-| [INTERFACES](docs/INTERFACES.md) | the module contracts that let five people build in parallel |
+| [INTERFACES](docs/INTERFACES.md) | the module contracts that keep the seams explainable and Day-2 extensible |
 | [DECISIONS](docs/DECISIONS.md) | the ADR log — every choice, alternatives, rationale |
 
 ## Team
 
 Hazzino Technologies State-Level Mega Hackathon 2026 — Theni, Tamil Nadu.
 
-| | |
-|---|---|
-| J Don Gabriel (lead) | [@Don-Gabriel](https://github.com/Don-Gabriel) |
-| Vijayalakshmi G | `<handle-tbd>` |
-| Mary Vivitha M | `<handle-tbd>` |
-| Poonkundran R | `<handle-tbd>` |
-| Pavithra R | `<handle-tbd>` |
-
-Roles are deliberately fluid — everyone builds everywhere; see
-[docs/DEFENCE_AREAS.md](docs/DEFENCE_AREAS.md) for who answers what.
+Built solo by **J Don Gabriel**
+([@Don-Gabriel](https://github.com/Don-Gabriel)) — originally planned as a
+five-person team; the re-planning is on the record in
+[docs/DECISIONS.md](docs/DECISIONS.md) (ADR-024, ADR-027). Every module is
+explainable by the one person you can point at; the question drill sheet is
+[docs/DEFENCE_AREAS.md](docs/DEFENCE_AREAS.md).
 
 ## How this was built
 

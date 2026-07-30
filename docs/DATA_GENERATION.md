@@ -118,84 +118,80 @@ vs. emergent. Precision/recall is reported per layer.
 
 ## 5. HELD-OUT scenarios (the circularity defense)
 
-Red-team member: **Pavithra R** (subject to the attestation below).
-Amended 2026-07-29 (ADR-016) to tighten isolation.
+**Rewritten 2026-07-30 (ADR-027): the project is now built by one person
+(J Don Gabriel). Person-separation — a red-team member who never read the
+detection spec — is no longer possible. The protocol below replaces it with
+TEMPORAL separation, which one person can still execute and git can still
+prove.** The earlier person-separation protocol (ADR-012/016, the Pavithra
+attestation branches) is retired; its history stays in DECISIONS.md.
 
-### Isolation rule (in force from 2026-07-29)
+### The temporal-separation protocol (executed 2026-07-30)
 
-- The red-team member must **not read `docs/DETECTION_SPEC.md`** — nor the
-  rule implementations under `detection/` once they exist — at any point
-  before the held-out evaluation has been run and its precision/recall
-  results committed. At that moment the restriction lifts entirely.
-- Scenarios are authored from **PROJECT_BRIEF.md, DATA_MODEL.md, and
-  INTERFACES.md only** — the domain, the schema, and the scenario-overlay
-  format. She gets no detection logic, thresholds, or typology signatures.
-- The restriction covers one document (and its implementations), **not her
-  participation**: frontend, console, demo, and pitch work continue
-  throughout. Enforcement mechanics live in CONTRIBUTING.md.
+1. **Scenarios first.** On 2026-07-30 — before a single detection query,
+   rule file, or threshold existed anywhere in this repository — the
+   implementer authored five held-out fraud scenarios as generator overlay
+   files (schema INTERFACES §3), consulting only PROJECT_BRIEF.md,
+   DATA_MODEL.md, INTERFACES.md, and GLOSSARY.md during the authoring
+   session. DETECTION_SPEC.md was not opened during that session.
+2. **Stored outside the repository** (`C:\WorkSpace\Private\medgraph-heldout\`
+   on the build machine), so no later commit can quietly revise them.
+3. **Hash-committed the same day:** SHA-256 of each file's exact bytes went
+   into `docs/HELDOUT_COMMITMENT.md` in its own commit, before any detection
+   work started. Any later edit to a scenario file changes its hash and
+   voids the commitment.
+4. **Not reopened until evaluation.** The files stay closed while detection
+   is built (M3), calibrated on the honest economy only (§6), and frozen
+   (Aug 6, dedicated commit).
+5. **Evaluated once** (planned Aug 9): regenerate with the overlays (same
+   base seed) into a separate data dir, run the frozen rules **once**,
+   commit precision/recall — including misses — to DECISIONS.md and
+   PITCH.md. Only then are the scenario files themselves committed to
+   `data/scenarios/heldout/`, where anyone can re-hash them.
 
-### Timeline
+### What this proves — and what it does not. Do not overclaim.
 
-1. From 2026-07-29: reading restriction in force.
-2. Detection freeze (planned 2026-08-06): DETECTION_SPEC + rules frozen in a
-   dedicated commit. From here the red-team member also does no detection
-   work of any kind, and the scenario authoring window opens — **outside
-   this repo**, as overlay files (schema INTERFACES.md §3).
-3. Before evaluation: only `SHA-256(scenario file)` is committed to
-   `docs/HELDOUT_COMMITMENT.md`, with the date.
-4. Evaluation (planned 2026-08-09): regenerate with the overlays (same base
-   seed), run the frozen rules **once**, commit results — including misses —
-   to DECISIONS.md and PITCH.md. Then the scenario files are committed.
+**It proves ordering, not independence.** Git history proves: the scenarios
+existed (hash + commit date) before any detection query was written; the
+rules were frozen before the scenarios were reopened; the scenarios were
+evaluated once and not iterated against; the rules were not re-tuned after
+seeing held-out results. That kills the specific accusation "you tuned your
+rules until they found your test set, or wrote your test set to match your
+rules — after the fact."
 
-### Has Pavithra already read DETECTION_SPEC.md?
+**It cannot prove the two sides were independently conceived — the same
+person conceived both.** The scenario author designed the data model, wrote
+DETECTION_SPEC's typology descriptions in the planning phase, and later
+wrote the rules. No git mechanism can separate what one brain knew. We do
+not pretend otherwise, anywhere, ever.
 
-**Unknown as of 2026-07-29 — and unverifiable from the repository.**
-DETECTION_SPEC.md has been in the shared repo since 2026-07-28. Git proves
-what was committed when; it cannot prove who has read what. An earlier draft
-of this section *assumed* the scenario author would have read the spec and
-pre-emptively downgraded the claim — that assumption is withdrawn (ADR-016).
-In its place, the protocol starts with a recorded **attestation (OQ #12)**:
-at the first team sync after this commit, Pavithra states whether she has
-read DETECTION_SPEC.md, and the answer is recorded in DECISIONS.md.
+Also still true (unchanged from the original protocol): this is not
+real-world generalization (everything is synthetic), and it is not the
+generator-realism defense (that's §2 honest noise + distribution checks).
 
-- **She attests she has not read it** → the **strong claim** is available:
-  held-out scenarios independently conceived, authored without access to the
-  detection logic. Pitch uses the strong language (PITCH.md branch A).
-- **She has read it** → the strong claim is gone *for her*. Strongest honest
-  alternative: reassign the red-team role to **Vijayalakshmi G**, contingent
-  on the same attestation. She is the best-placed substitute — she knows the
-  generator and overlay schema more deeply than anyone (more realistic
-  scenarios) and her defence area (data generation) does not require the
-  detection spec. What she gives up: all detection-rule building, review,
-  and threshold-calibration work until 2026-08-09. (Mary Vivitha M is
-  excluded as a candidate: detection is her defence area and her build
-  assignment — she must read the spec.)
-- **No member can attest non-reading** → we own the weaker claim honestly:
-  robustness to *unseen parameterizations and structures of known
-  typologies*, stated exactly that way in the pitch (PITCH.md branch B). We
-  do not manufacture independence that does not exist.
+### The exact pitch wording (use this, not something stronger)
 
-An accidental exposure after attestation (spec content pasted into a channel
-the red-team member reads, a review request on a detection PR) does not end
-the protocol — it downgrades the claim to branch B and is recorded in
-DECISIONS.md. Honesty about a leak beats silence about one.
+> "I built this alone, so I can't offer you author independence — the same
+> person wrote the fraud scenarios and the detection rules. What I can
+> offer is provable ordering. On July 30th, before a single detection query
+> existed in this repository, I wrote five held-out fraud scenarios, stored
+> them outside the repo, and committed their SHA-256 hashes — you can read
+> that commit in the history. The rules were written afterwards, calibrated
+> only on the honest economy, frozen on August 6th, and run against those
+> scenarios exactly once, on August 9th. So the history proves the test set
+> wasn't written to match the rules and the rules weren't tuned against the
+> test set. What it cannot prove is that one brain didn't unconsciously
+> author detectable scenarios — it's a discipline claim, not an
+> independence claim. Here are the results, including what we missed."
 
-### What the protocol proves (strong branch)
+### Session discipline (replaces the red-team reading rule)
 
-The scenarios were conceived without access to the detection logic, existed
-before evaluation (hash + git dates), the rules were frozen before the
-scenarios were hashed, and neither side was tuned against the other. Git
-history is the evidence; we can walk a judge through the commits.
-
-### What it does NOT prove — do not overclaim, in either branch
-
-- Not real-world generalization: everything here is synthetic.
-- Not generator realism: that defense is separate — honest-noise design (§2)
-  and distribution sanity checks.
-- Not full independence: the red-team member is one person on the same team,
-  and both sides share DATA_MODEL and INTERFACES (the schema itself hints at
-  what *could* be detected, even with the spec unread). It is a good-faith
-  firewall under hackathon constraints, and we say exactly that.
+Between 2026-07-30 and the evaluation: do not open, paste, or summarize the
+held-out files in any working session, including AI-assisted sessions — a
+session that has the scenarios in context while writing detection code
+destroys the ordering claim's spirit even though the hashes still hold.
+Scenario-overlay *tooling* in the generator is built against the INTERFACES
+§3 schema and the committed example scenarios in `data/scenarios/` (non-
+held-out fixtures), never against the held-out files themselves.
 
 ## 6. Threshold discipline
 

@@ -14,11 +14,12 @@
 4. Check `docs/OPEN_QUESTIONS.md` before assuming any answer.
 5. Append significant choices to `docs/DECISIONS.md` as they happen.
 6. Update `docs/STATUS.md` before ending — same commit as your work.
-7. **⛔ HARD STOP — red-team sessions: if this session is with the
-   designated red-team member (currently Pavithra R — ADR-016 / OQ #12), do
-   NOT open `docs/DETECTION_SPEC.md` or anything under `detection/`. Not to
-   summarize, not to "just check". If the task seems to need them, stop and
-   hand the task to someone else.**
+7. **⛔ HARD STOP — held-out discipline (ADR-027): the held-out scenario
+   files live OUTSIDE the repo (path in the off-repo README; hashes in
+   docs/HELDOUT_COMMITMENT.md). Do NOT open, paste, summarize, or commit
+   them in any session before the one-shot evaluation (planned Aug 9). A
+   session that has them in context while touching `detection/` destroys
+   the temporal-separation claim's spirit even though the hashes hold.**
 
 Read the rest of this file first in every session. The docs under `docs/`
 are the design; this file is the standing context and rules.
@@ -29,15 +30,16 @@ Fraud-intelligence graph over cross-border medical tourism: synthetic
 economy → Neo4j graph → four shipping detection typologies (1, 2, 3, 5;
 typologies 4 and 6 descoped per ADR-024, kept specified as next-build) →
 investigator console.
-Built by a 5-person team for the Hazzino Technologies State-Level Mega
-Hackathon (Theni, Tamil Nadu):
+Built **solo by J Don Gabriel** (ADR-027; originally planned as a 5-person
+team) for the Hazzino Technologies State-Level Mega Hackathon (Theni,
+Tamil Nadu):
 
 - **Day 1 — Aug 12, 2026:** 10-minute pitch of a pre-built prototype to a
   technical jury and hiring recruiters; top 3–5 teams advance.
 - **Day 2 — Aug 13, 2026:** live coding sprint with a surprise constraint.
 - Venue network is assumed absent; the demo must run fully offline.
-- This is a hiring drive: the repo, the commits, and each member's ability
-  to explain any module aloud are the actual deliverables.
+- This is a hiring drive: the repo, the commits, and the implementer's
+  ability to explain any module aloud are the actual deliverables.
 - Repo is private until the evening of Aug 11, then public.
 
 ## Stack (pinned — rationale in docs/DECISIONS.md)
@@ -77,13 +79,14 @@ Hackathon (Theni, Tamil Nadu):
    everything else fictional (ADR-015). Nothing secret is committed: no
    passwords, no API keys — `.env` only, `.env.example` documents.
 8. **Flag bad ideas, including the team's.** Push back before building.
-9. **Red-team isolation (ADR-016):** from 2026-07-29 the designated red-team
-   member (Pavithra R, pending the OQ #12 attestation) does not read
-   docs/DETECTION_SPEC.md or `detection/` rule code until the held-out
-   evaluation results are committed. After the **detection freeze (Aug 6)**:
-   no detection-query changes, and the red-team member does no detection
-   work at all until the evaluation (ADR-012). After the **integration
-   freeze (Aug 8)**: bug fixes and docs only.
+9. **Held-out temporal separation (ADR-027, replaces ADR-016's red-team
+   isolation):** the held-out scenarios were authored and hash-committed
+   2026-07-30, before any detection query existed. They stay outside the
+   repo, unopened, until the one-shot evaluation (planned Aug 9). After the
+   **detection freeze (Aug 6)**: no detection-query changes. After the
+   **integration freeze (Aug 8)**: bug fixes and docs only. The claim this
+   protocol supports is ordering, not independence — pitch wording in
+   DATA_GENERATION §5; never state it stronger.
 10. **No `Co-authored-by:` trailer may name a tool, bot, or third party** —
    human teammates only (CONTRIBUTING.md). This applies to every commit made
    with AI assistance in this repository, no exceptions.

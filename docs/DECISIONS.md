@@ -183,7 +183,10 @@ defence area doesn't need the spec; cost: she exits all detection work until
 Aug 9); nobody can attest → we keep the weaker claim and say so in the
 pitch. **Record the attestation outcome as a dated note under this ADR.**
 
-> *Attestation outcome (append at the Jul 29 sync):* ______
+> *Attestation outcome (append at the Jul 29 sync):* **mooted 2026-07-30
+> (ADR-027)** — the team collapsed to a single implementer before any
+> attestation was recorded; the red-team role no longer exists. The
+> held-out protocol is now temporal separation (DATA_GENERATION §5).
 
 ## ADR-017 — Schedule re-planned to 14 days; scope is the shock absorber (2026-07-29)
 
@@ -439,6 +442,205 @@ GDS by construction. INTERFACES §9 and DEMO_RUNBOOK updated to the three
   the floor profile, no OOM ⇒ **OQ #11 resolved: default profiles
   suffice; no explicit projection sizing needed at this scale.**
 
----
+## ADR-027 — Team collapse to ONE person; held-out protocol becomes temporal separation (2026-07-30)
 
-*Append new ADRs below. Number sequentially. Date every entry.*
+**Context (owner-reported):** no other member is contributing at all — no
+Pavithra, no Vijayalakshmi, no Mary, no Poonkundran. ADR-024's "one laptop,
+one implementer, four supporting contributors" model is dead: J Don Gabriel
+writes all code and docs, gives the pitch alone, and does Day 2 alone.
+Capacity is one person's 13 days (~95–110 h realistically — see MILESTONES),
+and ~25–30 h of non-code deliverables previously assigned to others (pitch,
+glossary, runbook execution, screenshots, fresh-clone verification, Day-2
+rehearsal) return to the implementer as scheduled hours.
+
+**Decisions:**
+
+1. **Held-out protocol: person-separation → temporal separation.** A
+   red-team author who never read the detection spec is impossible with one
+   person. Replacement, executed same day: five held-out scenarios authored
+   2026-07-30 **before any detection query existed in the repo** (the
+   `detection/` tree contains only scaffolding at the hash commit),
+   consulting only PROJECT_BRIEF / DATA_MODEL / INTERFACES / GLOSSARY in
+   the authoring session; stored outside the repository; SHA-256 hashes
+   committed alone (HELDOUT_COMMITMENT.md); files stay closed until the
+   one-shot evaluation. **The claim this supports is ordering, not
+   independence** — the same person conceived both sides. Pitch wording
+   fixed in DATA_GENERATION §5; PITCH.md carries it verbatim. ADR-012's
+   evaluation mechanics (frozen rules, run once, report misses) are
+   unchanged; ADR-016's attestation branches are mooted (OQ #12 closed).
+2. **Overlay schema extended first** (`contract:` commit, same day, before
+   the hashes): doctor/credential/patients-pool actor kinds, country pins,
+   journey doctor pin, `pool:<ref>`, `transfers.count` — the schema could
+   not previously express typology-2 or typology-5 scenarios, and it had
+   to be expressive *before* the freeze for the protocol to work.
+3. **Team scaffolding stripped:** DEFENCE_AREAS becomes a solo jury-prep
+   question bank (every area is mine now); CONTRIBUTING drops
+   identity-switching and multi-contributor process (Conventional Commits
+   and the INTERFACES change protocol stay); MILESTONES rewritten for one
+   person with the returned non-code hours scheduled explicitly;
+   DAY2_PLAYBOOK rewritten for a solo sprint (rehearse, don't parallelize).
+4. **Anchored dates hold:** detection freeze Aug 6, integration freeze
+   Aug 8, dress rehearsal Aug 10, Day 1 Aug 12. Scope remains the shock
+   absorber (cut ladder in MILESTONES).
+
+**Alternatives considered:** keeping the ADR-024 docs and quietly working
+alone (rejected — the docs would then lie about who does what, and the
+jury reads the repo); dropping the held-out evaluation entirely (rejected —
+temporal separation is weaker than person-separation but still kills the
+"tuned after the fact" accusation, and it is cheap).
+
+## ADR-028 — Typology 3 drops betweenness: measured out, not assumed away (2026-07-30)
+
+*(Number reserved while its benchmark ran; landed the same day as ADR-029,
+which references it. Full measurements:
+`detection/benchmarks/typology3_centrality.md`.)*
+
+**Context:** DETECTION_SPEC §3 planned "PageRank + betweenness to rank hub
+brokers." Exact betweenness measured **122.5–131.6 s** on the 34k-node
+claim-participation projection (ADR-026 + re-run today) — it is O(n·m), so
+10× data ≈ 100× work: **hours**, breaking the boot budget (ADR-029), the
+Day-2 stress-test shape, and the 10M-node story. Before optimizing it, we
+asked whether typology 3 needs it at all.
+
+**Benchmark (seed 42, GDS 2.13.11, 2G/1G floor; K = 13 emergent steering
+brokers out of 250):**
+
+| broker ranking signal | hits@13 | precision@13 | median rank of true steerers |
+|---|---:|---:|---:|
+| betweenness on referral projection (exact, 73 ms) | 1 | 0.077 | 131 |
+| PageRank, unweighted (85–106 ms) | 1 | 0.077 | 129 |
+| PageRank, referral-weighted | 2 | 0.154 | 86 |
+| weighted degree ≡ raw referral count (2 ms) | 2 | 0.154 | 117 |
+| **top-clinic concentration share, ≥ 20 referrals (one Cypher line)** | **5** | **0.385** | **66** |
+
+Weighted degree and naive claim count agreed on all 250 brokers — the GDS
+call adds overhead to a feature one Cypher aggregation already computes.
+Sampled betweenness (Brandes `samplingSize`, verified against the live
+2.13 install): 512 → 1.79 s, Spearman ρ 0.894, top-50 overlap 80%;
+2048 → 7.09 s, ρ 0.946, overlap 94% — vs 131.6 s exact.
+
+**Decision:** the shipped typology 3 uses **no global centrality ranking**:
+mutual concentration (both directions, incl. top-clinic share) + shared
+infrastructure (stakes, common accounts, transfers, addresses) + Louvain
+community context. PageRank/betweenness leave the rule; sampled
+betweenness (samplingSize 2048) is the documented fallback if a future
+rule genuinely needs bridging structure.
+
+**Why (the finding, not just the timing):** steering is a *concentration*
+pattern, not a *bridging* pattern. 8 of 13 emergent steering brokers sit at
+or below the economy's median referral volume (≤ 10 referrals) — invisible
+to every volume- or topology-based score by construction; the five visible
+ones were ranked 1, 2, 3, 4 and 7 by the concentration feature alone.
+
+**The 10-million-node jury answer (say it like this):** "We measured
+instead of assuming. Exact betweenness took 132 seconds on 51 thousand
+nodes; it is O(n·m), so at ten million nodes that's hours — and our
+benchmark showed it was also the *worst* discriminator for kickback
+brokers, because steering is a concentration pattern, not a bridging
+pattern. So the shipped rule uses index-backed one-to-two-hop concentration
+and shared-infrastructure queries that scale linearly, and community
+detection for context. If a pattern ever truly needs betweenness, GDS's
+Brandes sampling reproduced 94% of the exact top-50 at 5% of the cost — in
+a batch window, never at boot."
+
+## ADR-029 — Alerts are committed data; compose-up never runs detection (2026-07-30)
+
+**Context:** the compose `seed` service ran `loader && detection.run`,
+meaning every fresh clone (every judge) would pay full detection cost at
+boot — and a detection re-run at boot re-assigns alert IDs, which is
+exactly the regeneration the ADR-018 one-way chain forbids once the
+narration cache exists. Centrality-based rules make boot-time detection
+strictly worse as data grows (ADR-028).
+
+**Decision:** detection runs **once**, at demo-build time, on the build
+machine. `python -m detection.export` then writes the resulting `Alert`
+nodes and `IMPLICATES` edges to `data/csv/alerts.csv` and
+`data/csv/rel_implicates.csv` (sorted by id — byte-stable re-export) and
+adds their counts to `data/manifest.json`. The loader treats them as
+**optional stems**: loaded and count-validated when the manifest lists
+them, skipped when it doesn't (a freshly regenerated dataset has no alert
+entries until the chain reaches the detect+export step). `IMPLICATES`
+targets any entity label, so the loader routes rows to indexed per-label
+MATCHes by ID prefix (generalizing the OWNED_BY two-pass trick).
+`docker compose up` therefore loads a graph that already contains alerts;
+detection stays runnable on demand (`python -m detection.run`) for
+development and Day 2.
+
+**Consequences:** (a) judge clones boot in load time (~15 s seed) at any
+detection cost; (b) `down -v` re-seeds graph *and* alerts
+deterministically; (c) the ADR-018 chain gains an explicit export step:
+freeze → load → detect → **export** → narrate → commit as one unit;
+(d) `Alert.created_at` is pinned by the build-phase run (runner flag), so
+re-exporting an unchanged graph is byte-identical.
+
+**Alternative rejected:** keeping detection in the seed path ("alerts are
+always fresh") — freshness is precisely the failure mode: the demo needs
+*frozen* alerts matching the frozen narration cache, and recomputing what
+is already committed spends every judge's first three minutes proving
+nothing.
+
+## ADR-030 — Detection layer built and calibrated on the honest economy; measured determinism boundary (2026-07-30)
+
+**Context:** M3 pulled forward. The four shipping rules (ADR-024 scope) are
+implemented as registry entries (ADR-008) with a real runner replacing the
+no-op: idempotent per rule+version, `--dry-run`, `--rules` filter,
+`--created-at` pinning (ADR-029), deterministic alert numbering by
+(rule key, score desc, anchor id), 200-entity implicated cap (claims
+dropped first), and both `python` and `cypher` implementation kinds
+(cypher path live-smoke-tested; all four shipping rules are Python for
+explainability). All GDS calls were verified against the live 2.13.11
+install via `CALL gds.list(...)` before use.
+
+**Calibration (DATA_GENERATION §6, executed):** thresholds tuned solely on
+a seed-42 generation with every `fraud:` gate at 0.0, to zero medium+
+honest alerts per rule. Final honest counts (= documented FP rates):
+ghost_clinic 5 low · credential_laundering 62 low · kickback_ring 0 ·
+impossible_travel 6 low. Full measured record in detection/README.md.
+
+**Decisions forced by measurement, not taste:**
+
+1. **Post-revocation billing severity is volume-tiered**, not flat-high.
+   The honest economy keeps revoked doctors on rosters (27 honest
+   post-revocation billers, 1–29 claims, gaps from 18 days), so
+   DETECTION_SPEC's "starts at high" is implemented as: always emitted,
+   `high` only beyond the honest volume ceiling (ramp 30→60 claims).
+   Generator-side fix parked as OQ #14.
+2. **Travel table (OQ #5):** `travel_time_days` in generator/config.yaml,
+   mirrored in the rule YAML, unit-test-enforced sync. All corridor pairs
+   1 whole day (longest flight TR–SG ≈ 11 h ⇒ next-day treatment is
+   possible everywhere; only same-day cross-country is clearly
+   impossible — the spec's own conservative-whole-days guard).
+3. **Typology 3 per ADR-028:** concentration gate (top-clinic share ≥ 0.30
+   at ≥ 5 pair claims) + shared-infrastructure evidence (stake softened by
+   accreditation as the declared-ness proxy the spec suggests — the graph
+   carries no declared/hidden flag; clinic→broker transfers beyond the
+   commission_pct-computable expectation; shell-hop paths; shared
+   addresses; co-owned accounts) + small same-community bonus. No
+   centrality. Dev-set result: 6 alerts, all on true steering brokers
+   (precision 1.0, broker recall 6/13 — the infrastructure terms recovered
+   two sub-10-referral steerers the benchmark's concentration feature
+   alone could not see).
+4. **Louvain determinism boundary (measured):** single-threaded projection
+   + Louvain with canonical community labels is byte-stable within one
+   loaded store; across wipe-and-reloads Neo4j's id freelist reorders the
+   store and Louvain tie-breaks drift on a few borderline nodes — scores,
+   severities, IDs, edges and alert sets stayed byte-identical across two
+   independent load→detect→export cycles; only the two community *context*
+   fields moved. Acceptable because the demo artifacts come from exactly
+   one detection run (ADR-018); boundary documented in detection/README.md.
+5. **Alerts-as-data round trip proven (ADR-029):** detect → export → wipe →
+   load (alert CSVs included, 33/33 manifest counts) → re-export was
+   byte-identical (alerts.csv, rel_implicates.csv, manifest.json); seed
+   with alerts ≈ 7–9 s on the throwaway container. Dev-set evaluation
+   (new `evaluation/` — the only code allowed to read ground truth):
+   kickback precision 1.0 / recall 6/13; impossible_travel 0/5 recycled
+   groups — their tightest cross-country gaps are 6–76 days, so the dev
+   set contains NO temporally impossible recycled case and typology 5 is
+   not statistically evaluable until the held-out scenarios; typologies
+   1/2 not evaluable until planted cells land (Jul 31).
+
+**Alternatives rejected:** flat-high post-revocation severity (27 honest
+highs — calibration mandate wins); per-pair travel-day guesses above 1 day
+(nothing in the corridor set justifies them); forcing cross-reload Louvain
+stability via legacy Cypher projections (undocumented ordering guarantee,
+opaque — violates hard rule 1).
