@@ -69,6 +69,15 @@ vs the detection tree). The Aug 9 date only ever guarded against tuning
 after seeing results; this pre-registration guards that directly and
 verifiably, and the calendar date is retired.
 
+## Evaluation record (2026-07-30)
+
+Executed the same evening as the pre-registration above, in order:
+hashes re-verified (all five match the table) → injected into a separate
+data dir → frozen rules run once → results committed verbatim (ADR-034:
+leg recall 5/8, two structural misses explained in PITCH.md) → scenario
+files committed to `data/scenarios/heldout/`, where `Get-FileHash
+-Algorithm SHA256` reproduces the rows above.
+
 ## What this does and does not prove
 
 **Proves ordering:** the scenarios existed before any detection query was

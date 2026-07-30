@@ -24,16 +24,60 @@ for (fewer clicks, more pointing).
 
 > "I built this alone, so I can't offer you author independence — the same
 > person wrote the fraud scenarios and the detection rules. What I can
-> offer is provable ordering. On July 30th, before a single detection query
-> existed in this repository, I wrote five held-out fraud scenarios, stored
-> them outside the repo, and committed their SHA-256 hashes — you can read
-> that commit in the history. The rules were written afterwards, calibrated
-> only on the honest economy, frozen on August 6th, and run against those
-> scenarios exactly once, on August 9th. So the history proves the test set
-> wasn't written to match the rules and the rules weren't tuned against the
-> test set. What it cannot prove is that one brain didn't unconsciously
-> author detectable scenarios — it's a discipline claim, not an
-> independence claim. Here are the results, including what we missed."
+> offer is provable ordering, in git. On July 30th, before a single
+> detection query existed in this repository, I wrote five held-out fraud
+> scenarios, stored them outside the repo, and committed their SHA-256
+> hashes — that commit is in the history. The rules were written
+> afterwards and calibrated only on the honest economy. Then I committed a
+> pre-registration — no rule, threshold, or generator setting changes based
+> on the results, misses get reported as they land — pushed it, and only
+> then injected the sealed scenarios and ran the rules exactly once. So
+> the history proves the test set wasn't written to match the rules, and
+> the pre-registration proves the rules weren't tuned to pass the test.
+> What it cannot prove is that one brain didn't unconsciously author
+> detectable scenarios — it's a discipline claim, not an independence
+> claim. Here are the results, including the two misses, which I'll
+> explain rather than excuse."
+
+## Held-out results (2026-07-30 one-shot — real numbers, show the slide)
+
+**8 expected typology legs across 5 scenarios: 5 detected, 2 missed, 1
+detected-at-reduced-severity.** Every scenario produced at least one alert
+on its entities; the dev-world's 81 alerts re-fired byte-stably (97 total −
+16 scenario-touching = exactly 81), proving injection perturbed nothing.
+
+| scenario (what it tests) | expected | result |
+|---|---|---|
+| S1 ghost with institutional veneer (accredited, 25 beds, two feeders) | ghost_clinic | **caught, low 42.7** — the veneer suppressed the footprint feature exactly as probed; plus kickback + credential cross-hits on its brokers |
+| S2 cross-jurisdiction licence share + revoked biller holding a second valid credential | credential_laundering | **MISSED** (prepared answer #1 below) |
+| S3 low-and-slow kickback (12% stake, honest-band commissions, small regular shell transfers) | kickback_ring | **caught, medium 54.6** on the primary pair, low on the second; its clinics also drew ghost mediums |
+| S4 same-window identity reuse across two countries, device-clean, different brokers | impossible_travel | **caught, low 42.0** — the date collision fired; severity stayed low because the scenario deliberately removed every escalation signal |
+| S5 composite, every leg sub-threshold by design | all four | **ghost medium + kickback low caught; credential and travel legs missed as engineered** (prepared answers #1, #2) |
+
+## The two misses — prepared answers (deliver with confidence, not apology)
+
+**Miss #1 — credential laundering across jurisdictions (S2, S5).** "The
+rule carries two false-positive guards, each individually justified by the
+honest data: shared licence numbers only count within one issuing body or
+country, because honest number collisions never span them; and
+post-revocation billing is suppressed when the doctor holds another valid
+credential, because 27 honest rostered doctors would otherwise fire daily.
+My held-out author abused exactly that: a licence cloned *across*
+jurisdictions, held by a doctor who kept one valid credential. Each guard
+is right; their composition is a blind spot. The fix is a scored
+OR-composition instead of hard guards — it's specified as next-build, and
+per my pre-registration I did not patch it after seeing the result. I'd
+rather show you a blind spot I can explain than a benchmark I tuned."
+
+**Miss #2 — feasible-window identity reuse (S5's travel leg).** "The
+travel rule flags only what is physically impossible under a whole-day
+matrix — same-day treatment in two countries. S5's identities moved on
+two-to-three-week gaps: suspicious, but possible, and the rule refuses to
+call possible things impossible. That conservatism is why it produced zero
+medium-or-high false positives on ten thousand honest patients. Catching
+feasible-but-suspicious reuse belongs to a frequency signal — reuse count
+across insurers — which is the typology's second axis, listed as
+next-build."
 
 ## Demo click path (draft — finalize against the real dataset Aug 7)
 
