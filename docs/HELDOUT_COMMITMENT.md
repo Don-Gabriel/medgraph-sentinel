@@ -39,7 +39,11 @@ against the committed hash and the commit dates.
 
 | date committed | scenario name | SHA-256 (file bytes) |
 |---|---|---|
-| _(hash rows are added in their own dedicated commit)_ | | |
+| 2026-07-30 | heldout_S1_ghost_satellite.yaml | `24fb689de10b7e9bb1ea27d7907693c52c52860074e3ebc275816b0e1ce1dc07` |
+| 2026-07-30 | heldout_S2_license_shadow.yaml | `3db0333afbc878a4191706c54763986a843ce0b0c00b0cf14e1f21dcadf00bde` |
+| 2026-07-30 | heldout_S3_quiet_kickback.yaml | `fe9df9dfb33f6aabd8dd90cc623afd673e4e12a69fcc8dd38205c7ac78a28850` |
+| 2026-07-30 | heldout_S4_split_ledger.yaml | `eab10c37d0be1b43b3ecc59433302055502242efdc88c0fb199a93d2469af339` |
+| 2026-07-30 | heldout_S5_confluence.yaml | `828e5d64c56d6274db5b0840249045ca8c9f551bb4797a8772cf41ec698b3d0c` |
 
 ## What this does and does not prove
 
