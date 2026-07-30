@@ -42,14 +42,15 @@ cache (Aug 3) is chain stage 2 — nothing regenerates between.
   steerers); low-severity FP tail is the documented honest-noise floor.
   Full table + honest findings: ADR-031.
 - Honest economy still yields **zero medium+ alerts on every rule**.
-- Console (queue + Cytoscape hero view + evidence panel + PATCH
-  controls) in build at session end — design-first per the
-  frontend-design skill.
+- **Console COMPLETE (M2 exit passed):** queue (filters = counts,
+  heat-ramp severity), Cytoscape hero view (ember-haloed implicated
+  nodes, tuned cose — OQ #6 closed, type legend, hover/click inspect,
+  async 2-hop expand), evidence panel (formatted summary_params, roles,
+  narration with honest source tag), PATCH disposition with optimistic
+  update. Visually verified at 1440/768; 0 console errors; fonts
+  bundled offline (@fontsource); build 614 kB.
 
 ## NEXT (priority order)
-
-1. Console lands → visual verification (1440/768) → merge → rebuild
-   frontend container → M2 exit test on the frozen dataset.
 2. Narration builder + cache (Aug 3) — **needs ANTHROPIC_API_KEY from
    the owner**; fallback templates are the shipping mode until then.
 3. Early cold-start rehearsal (Aug 4–5) per DEMO_RUNBOOK two-run

@@ -1,3 +1,52 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tokens live in tailwind.config.js; this file only sets document-level
+   defaults that utility classes can't reach. */
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-ink-950 text-paper antialiased;
+  font-size: 14px;
+}
+
+::selection {
+  background: rgba(87, 196, 184, 0.25);
+}
+
+/* Quiet scrollbars that match the ink chrome. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #232b3a transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #232b3a;
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Visible keyboard focus everywhere, in the interaction hue. */
+:focus-visible {
+  outline: 2px solid #57c4b8;
+  outline-offset: 1px;
+}
+
+/* The few transitions we use are decorative; drop them for users who ask. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
