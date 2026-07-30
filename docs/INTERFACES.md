@@ -136,28 +136,53 @@ description: string
 actors:                     # new actors to create (IDs auto-assigned with
   - kind: clinic            #   a scenario-reserved ID range)
     ref: c1                 # local reference within this file
-    props: {bed_count: 0, accreditation_status: none}
+    props: {bed_count: 0, accreditation_status: none,
+            country: TH}    # optional country pin (ISO code): generator
+                            #   materializes address + IN_COUNTRY/OPERATES_FROM
   - kind: broker
     ref: b1
     params: {steering_greed: 0.9}     # may set emergent incentive params
-edges:                      # explicit relationships between refs/existing IDs
-  - type: OWNS_STAKE_IN
+  - kind: doctor            # doctor/credential kinds: needed to express
+    ref: d1                 #   credential-typology scenarios (2026-07-30)
+    props: {specialty: dental}
+  - kind: credential
+    ref: cr1
+    props: {license_no: "MC-TR-88231", issuing_body: "Medical Council of X",
+            issue_date: 2016-03-12, status: revoked,
+            revocation_date: 2025-12-15}
+  - kind: patients          # a named pool of `count` patient identities,
+    ref: pool1              #   reusable across journeys (identity-collision
+    count: 8                #   scenarios) — same Patient nodes each use
+edges:                      # any DATA_MODEL relationship type between refs
+  - type: OWNS_STAKE_IN     #   and/or existing IDs (country codes are IDs)
     from: b1
     to: c1
     props: {pct: 40}
+  - type: HOLDS
+    from: d1
+    to: cr1
 journeys:                   # claims routed through the journey model
   - count: 120
     clinic: c1
-    broker: b1
-    patients: invented      # invented | recycled:<n> (identity reuse)
+    broker: b1              # optional
+    doctor: d1              # optional pin: route these claims through this
+                            #   doctor (else journey model assigns one)
+    patients: invented      # invented | recycled:<n> | pool:<ref>
     category: dental
     date_range: [2026-01-01, 2026-06-30]
 transfers:                  # explicit money movements (shells auto-created)
   - path: [c1.account, shell, shell, b1.account]
     amount_usd: 40000
-    attrition_pct: 8
+    count: 1                # optional: number of transfers spread over
+    attrition_pct: 8        #   date_range (default 1)
     date_range: [2026-02-01, 2026-04-30]
 ```
+
+*Schema extended 2026-07-30 (ADR-027, before any detection query existed):
+added `doctor`/`credential`/`patients`-pool actor kinds, `country` pin,
+journey `doctor` pin, `pool:<ref>` patient source, and `transfers.count` —
+the original schema could not express credential-typology or
+identity-collision scenarios at all.*
 
 Ground truth for a scenario (which entities it created/affected) is emitted to
 `data/ground_truth/scenario_<name>.csv` with the same shape as `planted.csv`.
