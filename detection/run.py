@@ -33,7 +33,8 @@ RULES_DIR = Path(__file__).parent / "rules"
 REQUIRED_KEYS = {"key", "name", "typology", "version", "kind", "impl",
                  "params", "severity_bands"}
 KINDS = {"cypher", "python"}
-IMPLICATED_CAP = 200  # per alert — mirrors the API subgraph cap (ADR-009)
+IMPLICATED_CAP = 300  # per alert — mirrors the API subgraph cap (raised
+                      # 200 -> 300 by owner decision 2026-07-30, INTERFACES §6)
 
 # Draft contract (what every implementation returns, one dict per alert):
 #   anchor_id      str   stable entity/pair key the alert is "about"

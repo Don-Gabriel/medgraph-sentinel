@@ -110,16 +110,17 @@ def test_assign_ids_orders_by_rule_key_then_score_then_anchor():
 def test_cap_implicated_drops_claims_first_and_records_truncation():
     core = [{"id": "CLI_000001", "role": "ghost_clinic"},
             {"id": "BRK_000001", "role": "feeder_broker"}]
-    claims = [{"id": f"CLM_{i:07d}", "role": "suspect_claim"} for i in range(1, 300)]
+    # exceed the cap (300 since the 2026-07-30 contract change) by 101
+    claims = [{"id": f"CLM_{i:07d}", "role": "suspect_claim"} for i in range(1, 400)]
     draft = {"anchor_id": "CLI_000001", "score": 90.0, "summary_params": {},
              "implicated": core + claims}
     capped = cap_implicated(draft)
     kept = capped["implicated"]
-    assert len(kept) == 200
+    assert len(kept) == 300
     assert kept[0]["id"] == "CLI_000001" and kept[1]["id"] == "BRK_000001"
     kept_claims = [e["id"] for e in kept if e["id"].startswith("CLM_")]
     assert kept_claims == sorted(kept_claims)  # deterministic cut
-    assert capped["summary_params"]["implicated_count"] == 301
+    assert capped["summary_params"]["implicated_count"] == 401
     assert capped["summary_params"]["truncated_implicates"] == 101
 
 

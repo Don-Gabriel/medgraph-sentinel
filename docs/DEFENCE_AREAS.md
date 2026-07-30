@@ -188,9 +188,9 @@ ends." → PROJECT_BRIEF.
 ## Area 6 — Console & demo
 
 **Q: Why don't you show the whole graph?**
-50k nodes is noise; investigators triage a queue, then drill into a ≤ 200
-node evidence subgraph (server-capped, trimmed by relevance). → ADR-009,
-INTERFACES §6.
+50k nodes is noise; investigators triage a queue, then drill into a ≤ 300
+node evidence subgraph (server-capped, trimmed by relevance; raised from
+200 by owner decision 2026-07-30). → ADR-009, INTERFACES §6.
 
 **Q: Why Cytoscape.js?**
 Small interactive evidence subgraphs are its sweet spot; D3 is

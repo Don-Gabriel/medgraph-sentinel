@@ -312,9 +312,10 @@ Alert fields (as above) plus:
 
 ### `GET /api/v1/alerts/{id}/subgraph?hops=1`
 The evidence subgraph: implicated nodes expanded `hops` (1 default, 2 max)
-outward, **hard-capped at 200 nodes** (cap applied by trimming
-lowest-relevance leaf nodes; response says if trimmed). Shape is
-Cytoscape.js elements format, consumed verbatim by the frontend:
+outward, **hard-capped at 300 nodes** (raised from 200 by owner decision
+2026-07-30; cap applied by trimming lowest-relevance leaf nodes; response
+says if trimmed). Shape is Cytoscape.js elements format, consumed verbatim
+by the frontend:
 ```json
 {"truncated": false,
  "elements": {
