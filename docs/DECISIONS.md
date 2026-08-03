@@ -850,8 +850,9 @@ Dockerfile). Action majors verified against live releases 2026-08-03
 (checkout v7 / setup-python v7 / setup-node v7 — memory said v4/v5; hard
 rule 2 earns its keep). Every step was run locally before the workflow
 shipped: ruff clean, 70/70 tests in 14 s, `npm ci` 12 s + build 2 s — the
-component sum is far under the 5-minute bar; the first Actions run is the
-wall-clock confirmation.
+component sum is far under the 5-minute bar. **First Actions run,
+measured:** python job 36 s, frontend job 20 s — both green, total
+wall-clock under one minute.
 
 **Rule-set pinning (the explainable part):** ruff 0.16's default select is
 far broader than the set this codebase was written against; unpinned, the
