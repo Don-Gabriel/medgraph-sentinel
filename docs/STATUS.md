@@ -72,7 +72,18 @@ after Aug 8 it is a demo-blocker emergency only.
 
 ## Actions awaiting a human
 
-- **Merge PR #16** (consistency sweep + CI; the assistant's merge action is
-  permission-blocked). Then **restage the USB bundle from final main** —
-  the staged `medgraph.bundle` is docs-only stale; COLD_START's freshness
-  check has the commands.
+- (none)
+
+## End-to-end verification, 2026-08-03 (software half of the cold-start drill)
+
+PR #16 merged; CI green on main (34 s). Then from merged main: all three
+images rebuilt → `docker compose down -v` (volume wiped) → `up -d` →
+**seed exit 0, 52,071 nodes / 199,349 rels, all 33 manifest counts match,
+17.9 s** → `/health` ok with narration 81/81 by id-set → console verified
+in a real browser: 81-alert queue, typology filters (61/9/6/5),
+impossible-travel evidence view (19 nodes/36 edges, halos), narration
+panel labeled "pre-generated AI narration", disposition PATCH round-trip
+(reset to `new` afterwards — queue is clean), **zero console errors**.
+USB bundle restaged from final main same day. Still owner-physical: the
+USB-stick walk on a cold machine and the network-adapter-off run
+(COLD_START phases 1–6).
