@@ -16,7 +16,6 @@ dependencies = [
     "neo4j",
     "fastapi",
     "uvicorn[standard]",
-    "anthropic",
 ]
 
 [project.optional-dependencies]
@@ -29,10 +28,28 @@ include = ["generator*", "loader*", "detection*", "api*"]
 line-length = 100
 target-version = "py311"
 
+[tool.ruff.lint]
+# Pinned to ruff's classic error-catching set (ADR-036). The CI gate exists
+# to catch real breakage in post-freeze commits; ruff 0.16's broader default
+# select would demand restyling code frozen on 2026-07-30 (ADR-031/STATUS),
+# which the freeze forbids for zero behaviour gain.
+select = ["E4", "E7", "E9", "F"]
+
 [tool.ruff.lint.per-file-ignores]
 # api/main.py catches broad exceptions on purpose: the demo API degrades,
 # it never 500s (INTERFACES section 6, DEMO_RUNBOOK).
 "api/main.py" = ["BLE001"]
+# Findings that predate the CI gate, in files frozen 2026-07-30 —
+# acknowledged, not fixed (ADR-036): compact one-line statements (E702),
+# one lambda assignment (E731), two unused imports (F401), two
+# named-for-readability test locals (F841).
+"generator/economy.py" = ["E702"]
+"generator/fraud.py" = ["E702", "F401"]
+"generator/plant.py" = ["E702"]
+"generator/narrative.py" = ["E731"]
+"detection/run.py" = ["F401"]
+"tests/test_planted_cells.py" = ["F841"]
+"tests/test_scenario_overlay.py" = ["F841"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

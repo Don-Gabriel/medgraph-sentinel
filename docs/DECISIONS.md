@@ -834,4 +834,36 @@ interaction, drama reserved for implicated nodes) is unchanged.
 
 ---
 
-*Append new ADRs below. Number sequentially. Date every entry.*
+## ADR-036 — CI adopted: ruff + pytest + frontend build; ANTHROPIC dependency retired from pyproject (2026-08-03, closes OQ #7)
+
+**Context:** OQ #7 (open since planning, resolve-by Aug 2) asked whether a
+minimal GitHub Actions workflow was worth it, leaning yes with a hard bar:
+runtime < 5 min, setup < 1 h. The deadline passed undecided; the owner
+directed adoption on 2026-08-03 ("finish the remaining code work"). The
+repo goes public Aug 11 — a green check on main is a work-sample signal,
+and the gate guards post-freeze commits when tired.
+
+**Decision:** `.github/workflows/ci.yml`, two jobs on push-to-main and PRs:
+python (`pip install -e ".[dev]"` → `python -m ruff check .` → `python -m
+pytest -q`) and frontend (`npm ci` → `npm run build`, Node 20 to match the
+Dockerfile). Action majors verified against live releases 2026-08-03
+(checkout v7 / setup-python v7 / setup-node v7 — memory said v4/v5; hard
+rule 2 earns its keep). Every step was run locally before the workflow
+shipped: ruff clean, 70/70 tests in 14 s, `npm ci` 12 s + build 2 s — the
+component sum is far under the 5-minute bar; the first Actions run is the
+wall-clock confirmation.
+
+**Rule-set pinning (the explainable part):** ruff 0.16's default select is
+far broader than the set this codebase was written against; unpinned, the
+gate would demand restyling frozen code (41 findings, all style-tier).
+`[tool.ruff.lint] select = ["E4","E7","E9","F"]` pins the classic
+error-catching set, and the 18 residual findings in files frozen 2026-07-30
+(compact one-liners in generator/, two unused imports, two test locals) are
+acknowledged with per-file ignores in pyproject — commented, enumerated,
+not fixed. Restyling frozen files for a linter would violate the freeze for
+zero behaviour gain; the gate's job is new commits.
+
+**Also in this change:** `anthropic` removed from `[project]
+dependencies` — imported nowhere since ADR-032 made narration committed
+data; the dependency was the last live remnant of the retired ADR-010
+mechanism.

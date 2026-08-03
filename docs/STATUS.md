@@ -1,6 +1,6 @@
 # STATUS — snapshot, not a log
 
-**Updated:** 2026-08-03, consistency sweep · **Days to Day 1 (Aug 12): 9**
+**Updated:** 2026-08-03, consistency sweep + CI adoption · **Days to Day 1 (Aug 12): 9**
 
 ---
 
@@ -38,8 +38,9 @@ after Aug 8 it is a demo-blocker emergency only.
 | API | Full INTERFACES §6 surface, 300-node subgraph cap. |
 | Console | Queue + Cytoscape evidence view + case file + disposition; projector-legibility pass done (ADR-035). |
 | Demo backup | `screenshot-deck/` (7 beats, 1920×1080) + `demo-recording.webm` (53.7 s, 5.9 MB), both committed. |
-| Offline bundle | Staged at `C:\WorkSpace\Private\medgraph-demo-usb\`; drill script `docs/COLD_START.md`. |
+| Offline bundle | Staged at `C:\WorkSpace\Private\medgraph-demo-usb\`; drill script `docs/COLD_START.md`. **Restage from final main after PR #16 merges** (freshness check in COLD_START). |
 | Tests | **70 passing.** |
+| CI | GitHub Actions (ADR-036): ruff + pytest + frontend build on push-to-main and PRs; rule set pinned so the gate never touches frozen code. |
 
 ## Evaluation results (final — do not restate from memory, read them)
 
@@ -67,7 +68,11 @@ after Aug 8 it is a demo-blocker emergency only.
 
 ## Decisions awaiting a human
 
-- **OQ #7 — CI (ruff + pytest + frontend build):** resolve-by Aug 2 has
-  passed with no workflow adopted and no decision recorded. Owner yes/no
-  needed before the repo goes public Aug 11; the OQ's own bar was
-  "runtime < 5 min and setup < 1 h".
+- (none — OQ #7 resolved by owner direction 2026-08-03, ADR-036)
+
+## Actions awaiting a human
+
+- **Merge PR #16** (consistency sweep + CI; the assistant's merge action is
+  permission-blocked). Then **restage the USB bundle from final main** —
+  the staged `medgraph.bundle` is docs-only stale; COLD_START's freshness
+  check has the commands.

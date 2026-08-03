@@ -48,9 +48,10 @@ Tamil Nadu):
 - Python **3.11**, FastAPI, Pydantic (ADR-003) for generator, loader,
   detection, API.
 - React + Vite + Tailwind + Cytoscape.js (ADR-007).
-- One Claude API call per alert for narration (`claude-opus-5`, official
-  `anthropic` SDK), disk-cached and committed, deterministic fallback
-  (ADR-010).
+- Narration: pre-generated committed data — all 81 texts written by a
+  Claude assistant session and committed to `api/narration_cache/`, zero
+  API calls anywhere, deterministic template fallback (ADR-032, supersedes
+  ADR-010's live-call mechanism).
 - Docker Compose: neo4j + one-shot seed (load, then detect) + api +
   frontend. Never generate data at boot (ADR-005).
 - Out of scope, on purpose: Kubernetes, microservices, queues, cloud
