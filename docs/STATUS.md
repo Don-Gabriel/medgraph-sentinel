@@ -1,6 +1,6 @@
 # STATUS — snapshot, not a log
 
-**Updated:** 2026-07-30, end of build · **Days to Day 1 (Aug 12): 13**
+**Updated:** 2026-08-03, consistency sweep · **Days to Day 1 (Aug 12): 9**
 
 ---
 
@@ -67,4 +67,7 @@ after Aug 8 it is a demo-blocker emergency only.
 
 ## Decisions awaiting a human
 
-- (none)
+- **OQ #7 — CI (ruff + pytest + frontend build):** resolve-by Aug 2 has
+  passed with no workflow adopted and no decision recorded. Owner yes/no
+  needed before the repo goes public Aug 11; the OQ's own bar was
+  "runtime < 5 min and setup < 1 h".
