@@ -6,11 +6,19 @@ at the venue. Written for a tired person on any Docker-capable machine.
 Every command is copy-pasteable into PowerShell. **Nothing in this
 sequence needs the internet after step 2.**
 
-The bundle lives at `C:\WorkSpace\Private\medgraph-demo-usb\`, rebuilt
-from final `main` on 2026-07-31 (measured): `medgraph-images.tar`
-**475 MB**, `medgraph.bundle` **9.7 MB**, the 7 deck PNGs and
-`demo-recording.webm` loose (**8.4 MB**), `RESTORE.txt` — **493 MB
-total.** Any USB stick of 1 GB+ works.
+The bundle lives at `C:\WorkSpace\Private\medgraph-demo-usb\`, staged
+2026-07-31 (measured): `medgraph-images.tar` **475 MB**,
+`medgraph.bundle` **9.7 MB**, the 7 deck PNGs and `demo-recording.webm`
+loose (**8.4 MB**), `RESTORE.txt` — **493 MB total.** Any USB stick of
+1 GB+ works.
+
+**Freshness check, before Phase 1:** run
+`git bundle list-heads C:\WorkSpace\Private\medgraph-demo-usb\medgraph.bundle`
+and confirm its `refs/heads/main` equals `git rev-parse main` in the repo.
+If main has moved (docs-only merges have landed since the staging), rebuild
+with the commands in DEMO_RUNBOOK's **Export** block (`docker compose
+build` → `docker save` → `git bundle create --all`) before copying to
+the stick.
 
 **The screenshot deck and the demo recording are committed to the repo**, so
 they are already inside `medgraph.bundle` — nothing extra to remember at
