@@ -8,10 +8,10 @@ sequence needs the internet after step 2.**
 
 The bundle lives at `C:\WorkSpace\Private\medgraph-demo-usb\`, restaged
 2026-08-03 from final `main` (images rebuilt + cold-boot verified the
-same day — see STATUS): `medgraph-images.tar` ~**475 MB**,
-`medgraph.bundle` ~**10 MB**, the 7 deck PNGs and `demo-recording.webm`
-loose (**8.4 MB**), `RESTORE.txt` — ~**493 MB total.** Any USB stick of
-1 GB+ works.
+same day — see STATUS): `medgraph-images.tar` **496 MB**,
+`medgraph.bundle` **10.1 MB**, the 7 deck PNGs and `demo-recording.webm`
+loose (**8.4 MB**), `RESTORE.txt` — **~510 MB total** (measured
+2026-08-03). Any USB stick of 1 GB+ works.
 
 **Freshness check, before Phase 1:** run
 `git bundle list-heads C:\WorkSpace\Private\medgraph-demo-usb\medgraph.bundle`
