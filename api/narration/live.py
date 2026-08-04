@@ -23,7 +23,11 @@ log = logging.getLogger("medgraph.api")
 
 API_URL = ("https://generativelanguage.googleapis.com"
            "/v1beta/models/{model}:generateContent")
-DEFAULT_MODEL = "gemini-3.5-flash"  # override with GEMINI_MODEL if renamed
+# Measured live 2026-08-05 (free tier, this stack): flash-lite 0.9 s,
+# flash 2.3 s on a short prompt — flash overran the 5 s ceiling on the
+# full narration prompt; the 2.5 family 404s (retired). Override with
+# GEMINI_MODEL if this name rotates.
+DEFAULT_MODEL = "gemini-3.5-flash-lite"
 TIMEOUT_S = 5  # contract ceiling — INTERFACES §6
 
 # Read env per-call, not at import: tests monkeypatch, and a .env change

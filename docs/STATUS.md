@@ -13,8 +13,10 @@ and must NOT merge into `main` before Aug 14:
 - **Live narration tier (opt-in):** `NARRATION_LIVE=true` + `GEMINI_API_KEY`
   in `.env` → live Gemini call first (5 s ceiling), cache then template as
   fallback; `source: gemini-live`. Flag unset = frozen behaviour exactly.
-  ⚠️ Not yet exercised against the real Gemini API — needs the owner's key
-  (free tier) in `.env`; every failure path is tested and falls back.
+  **Verified live 2026-08-05 with the owner's free-tier key:** real
+  generation served with honest labeling; model measured and pinned to
+  `gemini-3.5-flash-lite` (0.9 s; plain flash overran the 5 s ceiling on
+  the full prompt; 2.5-family names 404).
 - **Typology 4 shipped:** claim-mill overlay (`data/scenarios/
   claim_mill_demo.yaml`, `clone_pack` journeys) + `template_cloning` rule.
   **82 alerts** now (81 untouched + ALT_000082, 94.3 high). Calibration on
