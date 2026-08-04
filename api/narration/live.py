@@ -40,9 +40,11 @@ def enabled() -> bool:
             and bool(os.environ.get("GEMINI_API_KEY", "").strip()))
 
 
-def generate(prompt: str) -> str | None:
+def generate(prompt: str, timeout_s: float | None = None) -> str | None:
     """One generateContent call; None on ANY failure so the caller falls
-    back. Never raises."""
+    back. Never raises. Narration uses the 5 s contract default; the
+    click-initiated assist endpoints (report/chat, ADR-038) pass a longer
+    timeout because the user asked and is watching a spinner."""
     try:
         model = os.environ.get("GEMINI_MODEL", "").strip() or DEFAULT_MODEL
         req = urllib.request.Request(
@@ -53,11 +55,11 @@ def generate(prompt: str) -> str | None:
                      "x-goog-api-key": os.environ["GEMINI_API_KEY"].strip()},
             method="POST",
         )
-        with urllib.request.urlopen(req, timeout=TIMEOUT_S) as resp:
+        with urllib.request.urlopen(req, timeout=timeout_s or TIMEOUT_S) as resp:
             body = json.load(resp)
         text = body["candidates"][0]["content"]["parts"][0]["text"].strip()
         return text or None
     except Exception as exc:  # noqa: BLE001 — degrade, never break the demo
-        log.warning("live narration failed (%s: %s) — falling back to cache",
+        log.warning("live call failed (%s: %s) — falling back",
                     type(exc).__name__, exc)
         return None

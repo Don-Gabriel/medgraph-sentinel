@@ -36,6 +36,13 @@ export const api = {
     request(`/alerts/${encodeURIComponent(id)}/subgraph?hops=${hops}`),
   narration: (id) => request(`/alerts/${encodeURIComponent(id)}/narration`),
   forecast: () => request("/forecast"),
+  report: (id) => request(`/alerts/${encodeURIComponent(id)}/report`),
+  chat: (id, messages) =>
+    request(`/alerts/${encodeURIComponent(id)}/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages }),
+    }),
   entity: (id) => request(`/entities/${encodeURIComponent(id)}`),
   patchAlert: (id, body) =>
     request(`/alerts/${encodeURIComponent(id)}`, {

@@ -15,7 +15,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api import alerts, entities, forecast, narration
+from api import alerts, assist, entities, forecast, narration
 from api.graph import close_driver, get_driver
 
 log = logging.getLogger("medgraph.api")
@@ -96,6 +96,7 @@ app.add_middleware(
 app.include_router(alerts.router)
 app.include_router(entities.router)
 app.include_router(forecast.router)
+app.include_router(assist.router)
 
 
 @app.exception_handler(RequestValidationError)

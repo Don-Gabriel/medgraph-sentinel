@@ -3,6 +3,7 @@ import { api } from "../api";
 import { formatDate, formatScore, formatValue, labelize } from "../lib/format";
 import SubgraphCanvas, { focusNode } from "./SubgraphCanvas";
 import { EvidenceValues, NarrationBlock, ImplicatedList } from "./CaseFile";
+import { CaseChat, CaseReport } from "./Assist";
 import Disposition from "./Disposition";
 import { StatusPill } from "./AlertQueue";
 
@@ -255,6 +256,8 @@ export default function AlertView({ id, onBack, onPatched }) {
         <aside className="w-full shrink-0 border-t border-ink-700 bg-ink-900 lg:w-[26rem] lg:overflow-y-auto lg:border-r lg:border-t-0">
           <EvidenceValues detail={detail} />
           <NarrationBlock narration={narration} />
+          <CaseReport alertId={id} />
+          <CaseChat alertId={id} />
           <ImplicatedList implicated={detail.implicated} onFocus={handleFocusEntity} />
           <Disposition
             detail={detail}

@@ -932,3 +932,47 @@ the new rule: 1.5 s honest / 0.9 s with the mill. On the lead machine the
 frozen `:demo` images and running demo stack are protected by an
 uncommitted `docker-compose.override.yml` retagging branch builds to
 `:next` on shifted ports — the branch never touches the venue artifacts.
+
+## ADR-038 — Branch batch 2: typology 6 (circular payment), SIU case-file report, case chat; full-chain re-run to 86 alerts (2026-08-05, branch-only)
+
+**Context:** Coimbatore next-round upgrade continues on
+`next/prediction-gemini` (ADR-037). Owner constraint: zero spend —
+everything free, within the Gemini free tier (no billing attached to the
+key, so overuse can only produce 429s, which every caller absorbs as a
+fallback; free-tier prompts may be used by Google to improve products,
+acceptable because all data is synthetic — ADR-015).
+
+**Decisions and measurements:**
+
+1. **Typology 6 shipped** per DETECTION_SPEC §6: bounded TRANSFERRED
+   cycle enumeration (pattern comprehension for OWNED_BY, verified live
+   on 5.26), Python date/window/attrition filtering, refund/netting
+   2-cycle guard. Substrate probed in-graph first: ~7 real emergent
+   cycle structures existed; a planted carousel (mill account → 2 shells
+   → back, $38k, 8%/hop) was added through the EXISTING transfers
+   overlay — zero generator code change. All six designed typologies now
+   ship on this branch.
+2. **Full ADR-018 chain re-run from the top** — triggered by two facts
+   discovered honestly: (a) my 0.5→0.3 clone-mutation edit had landed
+   AFTER the dataset was generated (code↔data determinism break), and
+   (b) the mill cell legitimately trips kickback_ring (captive-broker
+   pair, 30.1 low), so incremental numbering could not hold. Result: 86
+   alerts (3/61/6/5/10/1), base economy verified byte-identical to
+   frozen main, `python -m detection.run` on this dataset reproduces the
+   committed file exactly. The mill now corroborates across THREE
+   typologies (cloning 94.3 high · carousel 83.3 high · kickback 30.1
+   low) — the demo's strongest graph story. 72 narrations remapped by
+   content; 14 written fresh where evidence numbers changed (Louvain
+   context + data-window edge moved); /health 86/86 green.
+3. **Assist endpoints** (`api/assist.py`): `GET .../report` — SIU
+   case-file draft (uppercase plain-text sections), live-first with a
+   COMPLETE deterministic template fallback so the feature works fully
+   offline; `POST .../chat` — investigator Q&A strictly bounded to the
+   server-composed alert facts (the model never gets database access;
+   guardrail instruction + bounded transcript; honest offline reply).
+   Both click-initiated only (free-tier frugality), 15 s timeout vs
+   narration's 5 s contract ceiling. Verified live: both served
+   `source: gemini-live` with grounded content.
+
+Tests 89 → **104**; ruff clean; frontend builds. The `:demo` images and
+frozen main remain untouched throughout.

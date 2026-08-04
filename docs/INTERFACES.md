@@ -368,6 +368,21 @@ nodes (hard rule 5 holds).
               "amount_usd_total": 11900.0, "next_month": {"...": "..."}}]}
 ```
 
+### `GET /api/v1/alerts/{id}/report` *(ADR-038, branch)*
+SIU case-file draft as plain text with uppercase section headings (CASE
+SUMMARY / KEY EVIDENCE / ASSESSMENT / RECOMMENDED ACTIONS / LIMITATIONS).
+Live-first when the live tier is enabled (15 s timeout — click-initiated),
+falling back to a COMPLETE deterministic template from the same facts, so
+the feature works fully offline. `{"alert_id", "report", "source":
+"gemini-live"|"fallback"}`. 404 on unknown alert.
+
+### `POST /api/v1/alerts/{id}/chat` *(ADR-038, branch)*
+Body `{"messages": [{"role": "user"|"assistant", "text": "..."}]}` (1–16
+messages, each ≤ 2000 chars, last must be `user`; 422 otherwise). The
+model answers ONLY from the server-composed alert facts + the transcript —
+it has no database access. Reply `{"alert_id", "reply", "source"}`;
+offline/rate-limited → an honest static `fallback` reply, never an error.
+
 ### `PATCH /api/v1/alerts/{id}`
 Body: `{"status": "reviewed"}` and/or `{"note": "checked registry, no
 footprint"}`. Status must be `new|reviewed|dismissed`; note ≤ 2000 chars.

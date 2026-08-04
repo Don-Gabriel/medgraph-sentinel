@@ -17,22 +17,30 @@ and must NOT merge into `main` before Aug 14:
   generation served with honest labeling; model measured and pinned to
   `gemini-3.5-flash-lite` (0.9 s; plain flash overran the 5 s ceiling on
   the full prompt; 2.5-family names 404).
-- **Typology 4 shipped:** claim-mill overlay (`data/scenarios/
-  claim_mill_demo.yaml`, `clone_pack` journeys) + `template_cloning` rule.
-  **82 alerts** now (81 untouched + ALT_000082, 94.3 high). Calibration on
-  the honest economy: 0 alerts. Old cache entries byte-identical.
+- **Typologies 4 AND 6 shipped (ADR-038) — all six designed typologies.**
+  Claim-mill overlay + `template_cloning`; carousel transfers +
+  `circular_payment`. Full ADR-018 chain re-run: **86 alerts**, base
+  economy byte-identical to main, a from-scratch detection run
+  reproduces the committed CSVs exactly. The mill cell corroborates
+  across three typologies (94.3 / 83.3 / 30.1). Narrations 86/86.
+- **Assist endpoints live (ADR-038):** `GET /alerts/{id}/report` (SIU
+  case file; offline template fallback) and `POST /alerts/{id}/chat`
+  (context-bound Q&A; honest offline reply) — both verified live
+  against Gemini, click-initiated only, zero-spend posture (free-tier
+  key without billing can only 429 into fallbacks).
 - **Forecast:** `GET /api/v1/forecast` + console strip (least-squares
   projection, honestly labeled).
-- Tests **89**, ruff clean, frontend builds. Drill-container calibration
+- Tests **104**, ruff clean, frontend builds. Drill-container calibration
   records in ADR-037.
 - On the lead machine: branch stack runs as compose project
   `medgraph-next`, images `:next`, neo4j 17474/17687, api 8001, frontend
   5174 (uncommitted `docker-compose.override.yml` + local `.env`) — the
   frozen `:demo` images, volumes, and the running demo stack are untouched.
-- Remaining on this branch: real-key live-narration smoke test (owner),
-  E2E boot verification of the `:next` stack, pitch-line updates for the
-  Coimbatore rounds ("4 of 6 designed typologies shipped; here is the
-  fifth's spec" no longer applies — it is now 5 of 6).
+- Remaining on this branch: pitch-line updates for the Coimbatore rounds
+  (the story is now "all SIX designed typologies shipped", live AI
+  narration/report/chat, and the mill cell corroborated by three rules).
+  Everything technical is verified: live smoke tests done with the real
+  key, `:next` stack boots green end-to-end.
 
 ---
 
