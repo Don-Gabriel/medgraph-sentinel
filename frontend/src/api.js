@@ -34,6 +34,7 @@ export const api = {
   subgraph: (id, hops = 1) =>
     request(`/alerts/${encodeURIComponent(id)}/subgraph?hops=${hops}`),
   narration: (id) => request(`/alerts/${encodeURIComponent(id)}/narration`),
+  forecast: () => request("/forecast"),
   entity: (id) => request(`/entities/${encodeURIComponent(id)}`),
   patchAlert: (id, body) =>
     request(`/alerts/${encodeURIComponent(id)}`, {

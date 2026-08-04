@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "./api";
 import AlertQueue from "./components/AlertQueue";
 import AlertView from "./components/AlertView";
+import Forecast from "./components/Forecast";
 
 /**
  * Investigator console (INTERFACES §7): alert queue -> alert drill-down.
@@ -86,6 +87,7 @@ export default function App() {
                 shown={filtered.length}
               />
             )}
+            <Forecast />
             {alerts ? (
               <AlertQueue
                 items={filtered}
