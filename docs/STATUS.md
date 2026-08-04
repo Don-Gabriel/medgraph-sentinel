@@ -27,7 +27,11 @@ and must NOT merge into `main` before Aug 14:
   case file; offline template fallback) and `POST /alerts/{id}/chat`
   (context-bound Q&A; honest offline reply) — both verified live
   against Gemini, click-initiated only, zero-spend posture (free-tier
-  key without billing can only 429 into fallbacks).
+  key without billing can only 429 into fallbacks). UI rework same day:
+  the report downloads as a typeset PDF (client-side jsPDF, offline-
+  capable), and the chat is a floating bottom-right bubble with
+  suggested-question chips, sender-right/analyst-left bubbles and a
+  typing indicator — round-trip verified in the real console.
 - **Forecast:** `GET /api/v1/forecast` + console strip (least-squares
   projection, honestly labeled).
 - Tests **104**, ruff clean, frontend builds. Drill-container calibration
