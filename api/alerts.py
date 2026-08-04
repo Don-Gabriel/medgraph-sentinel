@@ -3,9 +3,12 @@
 Contract: docs/INTERFACES.md §6 (list/detail/subgraph/narration/PATCH).
 Alerts were written by the detection run and shipped as committed data
 (ADR-008/029); this module only reads them and updates status/note.
-Narration is cache-first with a deterministic template fallback and NO
-live-call path — ADR-010 makes the live call optional-and-off, and the
-venue is assumed offline.
+Narration tiers (ADR-037 amends ADR-032): an OPTIONAL live Gemini call
+first — only when NARRATION_LIVE + GEMINI_API_KEY are set, hard 5 s
+timeout — then the committed cache, then the deterministic template.
+With the flag unset (the default, and the Theni offline posture) the
+behaviour is identical to the frozen main branch: cache-first, no
+network call ever.
 """
 import json
 import logging
@@ -16,6 +19,8 @@ from pydantic import BaseModel, Field
 
 from api import narration
 from api.graph import display_label, get_session, run_query, to_jsonable, iso_datetime
+from api.narration import live
+from api.narration.build import compose_prompt
 from api.narration.fallback import fallback_text
 from api.subgraph import NODE_CAP, to_elements, trim_to_cap
 from api.titles import compose_title, parse_summary_params
@@ -242,10 +247,28 @@ def alert_narration(alert_id: str, session=Depends(get_session)) -> dict:
     rows = run_query(session, Q_ALERT_ONE, id=alert_id)
     if not rows:
         raise HTTPException(status_code=404, detail=f"unknown alert {alert_id}")
-    # Cache-first (ADR-010/018): a committed JSON per alert. Any read/parse
+    # Live tier (ADR-037, opt-in): one Gemini call on the same canonical
+    # prompt the cache texts were written from — same facts, no ground
+    # truth. Any failure falls through; ≤ 5 s worst case (live.TIMEOUT_S).
+    if live.enabled():
+        implicated = [
+            {"id": r["id"], "type": r["type"],
+             "label": display_label(r["props"], r["id"]), "role": r["role"]}
+            for r in run_query(session, Q_ALERT_IMPLICATED, id=alert_id)
+        ]
+        prompt = compose_prompt({
+            "id": alert_id, "typology": rows[0]["typology"],
+            "score": rows[0]["score"], "severity": rows[0]["severity"],
+            "summary_params": parse_summary_params(rows[0]["summary_params"]),
+            "implicated": implicated,
+        })
+        text = live.generate(prompt)
+        if text:
+            return {"alert_id": alert_id, "text": text,
+                    "source": "gemini-live"}
+    # Cache tier (ADR-032/018): a committed JSON per alert. Any read/parse
     # problem falls through to the deterministic template — an existing
-    # alert never 404s here and nothing ever waits on a network call
-    # (the optional live path is deliberately not implemented).
+    # alert never 404s here.
     cache_file = narration.CACHE_DIR / f"{alert_id}.json"
     try:
         entry = json.loads(cache_file.read_text(encoding="utf-8"))

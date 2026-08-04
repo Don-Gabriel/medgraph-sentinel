@@ -54,8 +54,11 @@ export function EvidenceValues({ detail }) {
 const NARRATION_SOURCES = {
   // ADR-032: cached narrations are written by a Claude session at BUILD
   // time and committed — the label must never imply live generation.
+  // ADR-037: gemini-live is the opt-in live tier; the label must be just
+  // as honest in the other direction (it IS generated on the spot).
   "claude-cached": { label: "pre-generated AI narration", cls: "border-tracer/60 text-tracer" },
   "claude-live": { label: "live AI narration", cls: "border-tracer/60 text-tracer" },
+  "gemini-live": { label: "live AI narration (Gemini)", cls: "border-heat-high/60 text-heat-high" },
   fallback: { label: "deterministic fallback", cls: "border-paper-dim/50 text-paper-mut" },
 };
 
