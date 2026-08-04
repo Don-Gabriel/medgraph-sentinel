@@ -33,6 +33,9 @@ Single source of truth: `.env` (never committed) documented by `.env.example`.
 | `NEO4J_PAGECACHE_SIZE` | neo4j container | `1G` / `2G` per profile |
 | `GENERATOR_SEED` | generator | default `42`; committed dataset is generated with 42 |
 | ~~`ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL`~~ | — | **retired (ADR-032):** narration is pre-generated committed data; no API calls exist anywhere |
+| `NARRATION_LIVE` | api | **ADR-037 (branch):** default unset/false = frozen behaviour (zero network). `true` + a key = opt-in live Gemini tier ahead of the cache |
+| `GEMINI_API_KEY` | api | **ADR-037 (branch):** Google AI Studio key for the live tier; only ever in `.env` |
+| `GEMINI_MODEL` | api | **ADR-037 (branch):** optional override of the default model in `api/narration/live.py` |
 | `API_PORT`, `FRONTEND_PORT` | compose | defaults 8000 / 5173 |
 | `VITE_API_BASE_URL` | frontend build | default `http://localhost:8000` |
 
@@ -191,6 +194,13 @@ journey `doctor` pin, `pool:<ref>` patient source, and `transfers.count` —
 the original schema could not express credential-typology or
 identity-collision scenarios at all.*
 
+*Extended again 2026-08-05 (ADR-037, branch): journeys accept
+`clone_pack: true` — the spec's claims become a claim mill (typology-4
+substrate): one claim per journey, one procedure/narrative/price/line-item
+template per spec with per-claim jitter (±2% amount, 30% closing-sentence
+edits), two shared submission devices. Default false = the untouched
+journey model; the base economy is byte-identical either way (verified).*
+
 Ground truth for a scenario (which entities it created/affected) is emitted to
 `data/ground_truth/scenario_<name>.csv` with the same shape as `planted.csv`.
 
@@ -331,10 +341,32 @@ by the frontend:
 {"alert_id": "ALT_000007", "text": "This clinic pattern is suspicious because…",
  "source": "claude-cached"}
 ```
-`source` ∈ `claude-cached` (from committed disk cache) | `claude-live`
-(opportunistic live call succeeded) | `fallback` (deterministic template).
-**Never 404s and never blocks on network**: cache-first, template if missing;
-live call only if explicitly enabled and it must time out ≤ 5 s.
+`source` ∈ `claude-cached` (from committed disk cache) | `gemini-live`
+(**ADR-037, branch:** opt-in live tier succeeded) | `fallback`
+(deterministic template). *(`claude-live` remains a reserved value from
+the retired ADR-010 mechanism; no code path produces it.)*
+**Never 404s and never blocks on network**: with `NARRATION_LIVE` unset
+(the default and the Theni posture) behaviour is cache-first with template
+fallback and zero network. With the flag set, ONE live call runs first
+(hard 5 s timeout) and any failure falls through to cache, then template.
+
+### `GET /api/v1/forecast` *(ADR-037, branch)*
+Observed monthly claim series plus per-typology flagged exposure with a
+next-month least-squares projection. `method` states the mechanism in the
+payload; the console repeats it on screen — a projection from observed
+trend, never presented as a trained model. Reads only Claim and Alert
+nodes (hard rule 5 holds).
+```json
+{"window": {"start": "2026-01", "end": "2026-06"},
+ "method": "least-squares linear projection of observed monthly amounts",
+ "overall": {"series": [{"month": "2026-01", "claims": 3100,
+                          "amount_usd": 4100000.0}],
+             "next_month": {"amount_usd": 4300000.0,
+                             "slope_usd_per_month": 200000.0,
+                             "direction": "rising"}},
+ "flagged": [{"typology": "template_cloning", "series": ["..."],
+              "amount_usd_total": 11900.0, "next_month": {"...": "..."}}]}
+```
 
 ### `PATCH /api/v1/alerts/{id}`
 Body: `{"status": "reviewed"}` and/or `{"note": "checked registry, no

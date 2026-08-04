@@ -869,7 +869,7 @@ dependencies` — imported nowhere since ADR-032 made narration committed
 data; the dependency was the last live remnant of the retired ADR-010
 mechanism.
 
-## ADR-037 — Upgrade branch `next/prediction-gemini` for the Coimbatore event: live-hybrid Gemini narration, typology 4 revival, forecast endpoint (2026-08-05, STUB — branch-only)
+## ADR-037 — Upgrade branch `next/prediction-gemini` for the Coimbatore event: live-hybrid Gemini narration, typology 4 revival, forecast endpoint (2026-08-05, branch-only)
 
 **Context:** The project is being presented at a second event (Coimbatore
 Innovation Hackathon 26, Rathinam/AIC Raise, Round 1 idea evaluation
@@ -905,3 +905,30 @@ USB bundle, and freeze commitments are untouched. Scope, in build order:
 
 **Why not on main:** the Theni demo is measured, rehearsed, and frozen;
 this branch is a different risk budget for a different audience.
+
+**Built and measured (same day):**
+
+1. *Live tier:* `api/narration/live.py` (stdlib urllib, one POST, 5 s
+   ceiling, never raises), live-first in the narration endpoint when
+   `NARRATION_LIVE` + `GEMINI_API_KEY` are set; `source: gemini-live`;
+   Gemini REST shape verified against ai.google.dev the same day. Flag
+   unset = frozen-main behaviour, byte-identical.
+2. *Typology 4:* `clone_pack` overlay journeys (INTERFACES §3 extension);
+   base economy verified **byte-identical**, scenario rows append-only.
+   OQ #3 reopened and closed by measurement: honest same-block SimHash
+   floor = Hamming **10** (21,252 pairs, seed 42); `max_hamming: 6`.
+   Calibration run on the committed dataset: **0 alerts** (rule 6 held).
+   Mill run: **ALT_000082, 94.3 high** — 9/13 clones caught; the 4
+   hand-edited resubmissions escape by design (30% mutation rate) and
+   that miss is part of the pitch, not hidden. Old 81 alert rows and all
+   81 cache entries byte-identical after re-export/re-import (verified);
+   ALT_000082's narration added via the unchanged ADR-032 mechanism.
+3. *Forecast:* `GET /api/v1/forecast` — least-squares monthly projection,
+   pure stdlib, method stated in payload and on screen; console strip
+   with per-typology exposure + sparkline, silent-fail against old APIs.
+
+Tests 70 → **89**, ruff clean, frontend builds. Detection runtime for
+the new rule: 1.5 s honest / 0.9 s with the mill. On the lead machine the
+frozen `:demo` images and running demo stack are protected by an
+uncommitted `docker-compose.override.yml` retagging branch builds to
+`:next` on shifted ports — the branch never touches the venue artifacts.

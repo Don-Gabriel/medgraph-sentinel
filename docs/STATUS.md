@@ -4,6 +4,38 @@
 
 ---
 
+# 🔀 BRANCH `next/prediction-gemini` (2026-08-05 — read this block only on this branch)
+
+**Everything below the branch block describes frozen `main` and stays
+true there.** This branch (ADR-037) carries the Coimbatore-event upgrade
+and must NOT merge into `main` before Aug 14:
+
+- **Live narration tier (opt-in):** `NARRATION_LIVE=true` + `GEMINI_API_KEY`
+  in `.env` → live Gemini call first (5 s ceiling), cache then template as
+  fallback; `source: gemini-live`. Flag unset = frozen behaviour exactly.
+  ⚠️ Not yet exercised against the real Gemini API — needs the owner's key
+  (free tier) in `.env`; every failure path is tested and falls back.
+- **Typology 4 shipped:** claim-mill overlay (`data/scenarios/
+  claim_mill_demo.yaml`, `clone_pack` journeys) + `template_cloning` rule.
+  **82 alerts** now (81 untouched + ALT_000082, 94.3 high). Calibration on
+  the honest economy: 0 alerts. Old cache entries byte-identical.
+- **Forecast:** `GET /api/v1/forecast` + console strip (least-squares
+  projection, honestly labeled).
+- Tests **89**, ruff clean, frontend builds. Drill-container calibration
+  records in ADR-037.
+- On the lead machine: branch stack runs as compose project
+  `medgraph-next`, images `:next`, neo4j 17474/17687, api 8001, frontend
+  5174 (uncommitted `docker-compose.override.yml` + local `.env`) — the
+  frozen `:demo` images, volumes, and the running demo stack are untouched.
+- Remaining on this branch: real-key live-narration smoke test (owner),
+  E2E boot verification of the `:next` stack, pitch-line updates for the
+  Coimbatore rounds ("4 of 6 designed typologies shipped; here is the
+  fifth's spec" no longer applies — it is now 5 of 6).
+
+---
+
+---
+
 # ⛔ CODE IS FROZEN (2026-07-30)
 
 **The build is done. From this moment, changes are permitted for exactly
