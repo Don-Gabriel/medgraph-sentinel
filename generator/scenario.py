@@ -50,7 +50,9 @@ import yaml
 from pydantic import BaseModel, Field, model_validator
 
 from .economy import (CARE_DAYS, CLINIC_SUFFIXES, JourneyContext, World,
-                      date_in, device_hash, emit_journey_claims, money, pick)
+                      _price, _track_device, date_in, device_hash,
+                      emit_journey_claims, money, pick)
+from .narrative import _CLOSINGS, build_narrative, simhash64
 from . import fraud as fraud_mod
 
 # DATA_MODEL relationship type -> rel_*.csv stem + extra columns (order!)
@@ -118,6 +120,11 @@ class ScnJourneys(BaseModel):
     patients: str = "invented"  # invented | recycled:<n> | pool:<ref>
     category: str
     date_range: tuple[date, date]
+    # ADR-037 (typology-4 substrate): emit this spec's claims as a claim
+    # mill — ONE claim per journey, one procedure/narrative/price template
+    # for the whole pack with tiny per-claim mutations, and 1-2 shared
+    # submission devices. False = the normal journey model, untouched.
+    clone_pack: bool = False
 
     @model_validator(mode="after")
     def _check(self):
@@ -506,6 +513,10 @@ def _run_journeys(ctx: _Ctx, spec: ScnJourneys) -> None:
             steer = float(greed)
             _ensure_steering_entry(ctx, broker, clinic)
 
+    # clone packs share one claim template + submission devices (ADR-037);
+    # drawn ONCE per spec so every claim in the pack is near-identical
+    pack = _clone_pack_template(ctx, spec, clinic) if spec.clone_pack else None
+
     for i in range(spec.count):
         if mode == "invented":
             patient = _new_patient(ctx)
@@ -527,6 +538,13 @@ def _run_journeys(ctx: _Ctx, spec: ScnJourneys) -> None:
         if doctor is None:
             doctor = _scn_doctor_for(ctx, clinic, spec.category)
         _ensure_practises(ctx, doctor, clinic)
+
+        if pack is not None:
+            claim = _emit_clone_claim(ctx, spec, pack, i, patient=patient,
+                                      clinic=clinic, doctor=doctor, broker=broker)
+            ctx.claims.append(claim)
+            ctx.created.append(claim["id"])
+            continue
         insurer = pick(rng, w.insurers, ctx.ins_p)
         commission = (money(rng.uniform(cfg.brokers.commission_min_pct,
                                         cfg.brokers.commission_max_pct))
@@ -545,6 +563,87 @@ def _run_journeys(ctx: _Ctx, spec: ScnJourneys) -> None:
             over=None, steered=steered, claim_seq=w.scn_seq["CLM"])
         ctx.claims.extend(claims)
         ctx.created.extend(c["id"] for c in claims)
+
+
+def _clone_pack_template(ctx: _Ctx, spec: ScnJourneys, clinic: dict) -> dict:
+    """One template per journeys-spec: the mill's perfected claim package
+    (DETECTION_SPEC §4). Same procedure, narrative, price base and
+    line-item count for every claim; 2 shared submission devices."""
+    rng, w = ctx.rng, ctx.w
+    procedure = pick(rng, ctx.jctx.procs_by_cat[spec.category])
+    care_lo, care_hi = CARE_DAYS[spec.category]
+    days = int(rng.integers(care_lo, care_hi + 1))
+    devices = []
+    for _ in range(2):
+        dev_id = w.scn_seq["DEV"].take()
+        w.devices.append({"id": dev_id, "device_hash": device_hash(dev_id),
+                          "device_type": "desktop"})  # the mill's office PCs
+        ctx.created.append(dev_id)
+        devices.append(dev_id)
+    return {
+        "procedure": procedure,
+        "narrative": build_narrative(rng, procedure["name"], clinic["name"], days),
+        "base_amount": _price(rng, ctx.cfg, procedure["base_cost_usd"],
+                              ctx.jctx.cmult[clinic["country_code"]]),
+        "line_items": int(rng.integers(3, 13)),
+        "devices": devices,
+    }
+
+
+def _emit_clone_claim(ctx: _Ctx, spec: ScnJourneys, pack: dict, i: int, *,
+                      patient: dict, clinic: dict, doctor: dict,
+                      broker: dict | None) -> dict:
+    """One near-identical clone of the pack template: names swapped, amount
+    jittered ±2%, and roughly half the claims swap the closing sentence —
+    small SimHash Hamming distance, never statistical glow."""
+    cfg, rng, w = ctx.cfg, ctx.rng, ctx.w
+    narrative = pack["narrative"]
+    # 30%: hand-edited closing (measured Hamming 10-33 from the template —
+    # at the honest floor, so these escape the rule and honestly so);
+    # 70%: the lazy bulk, byte-identical → Hamming 0 (honest floor is 10)
+    if rng.random() < 0.3:
+        sentences = narrative.rsplit(". ", 1)
+        narrative = sentences[0] + ". " + pick(rng, _CLOSINGS)
+    amount = money(pack["base_amount"] * float(rng.uniform(0.98, 1.02)))
+    claim_date = date_in(rng, spec.date_range[0], spec.date_range[1])
+    submission = claim_date + timedelta(
+        days=int(rng.integers(cfg.claims.submission_lag_min_days,
+                              cfg.claims.submission_lag_max_days + 1)))
+    insurer = pick(rng, w.insurers, ctx.ins_p)
+    commission = (money(rng.uniform(cfg.brokers.commission_min_pct,
+                                    cfg.brokers.commission_max_pct))
+                  if broker else None)
+    device_id = pack["devices"][i % len(pack["devices"])]
+    account_id = pick(rng, clinic["account_ids"])
+    claim = {
+        "id": w.scn_seq["CLM"].take(),
+        "amount_usd": amount,
+        "procedure_date": claim_date.isoformat(),
+        "submission_date": submission.isoformat(),
+        "status": pick(rng, ctx.jctx.status_names, ctx.jctx.status_p),
+        "line_item_count": pack["line_items"],
+        "narrative_fingerprint": simhash64(narrative),
+        "patient_id": patient["id"],
+        "clinic_id": clinic["id"],
+        "doctor_id": doctor["id"],
+        "procedure_id": pack["procedure"]["id"],
+        "insurer_id": insurer["id"],
+        "broker_id": broker["id"] if broker else "",
+        "commission_pct": commission if broker else "",
+        "account_id": account_id,
+        "steered_by": "",
+    }
+    w.claims.append(claim)
+    _track_device(w, patient["id"], device_id, claim_date)
+    if broker:
+        w.transfers.append({
+            "src": account_id,
+            "dst": pick(rng, broker["account_ids"]),
+            "amount_usd": money(amount * commission / 100.0),
+            "date": (submission + timedelta(days=cfg.transfers.commission_lag_days)
+                     ).isoformat(),
+        })
+    return claim
 
 
 def _scn_doctor_for(ctx: _Ctx, clinic: dict, category: str) -> dict:

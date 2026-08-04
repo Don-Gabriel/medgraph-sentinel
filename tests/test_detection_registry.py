@@ -20,12 +20,15 @@ BANDS = {"high": 80, "medium": 50}
 
 # ---- registry ----
 
-def test_registry_loads_all_four_shipping_rules():
+def test_registry_loads_all_five_shipping_rules():
     rules = load_registry()
     assert [r["key"] for r in rules] == sorted(r["key"] for r in rules)
     assert {r["key"] for r in rules} == {"ghost_clinic", "credential_laundering",
-                                         "kickback_ring", "impossible_travel"}
-    assert {r["typology"] for r in rules} == {1, 2, 3, 5}  # ADR-024 descopes 4/6
+                                         "kickback_ring", "impossible_travel",
+                                         "template_cloning"}
+    # ADR-024 descoped 4 and 6; ADR-037 revived 4 on this branch — 6 remains
+    # the specified next-build.
+    assert {r["typology"] for r in rules} == {1, 2, 3, 4, 5}
     for r in rules:
         assert r["kind"] in ("cypher", "python")
         assert isinstance(r["version"], str)

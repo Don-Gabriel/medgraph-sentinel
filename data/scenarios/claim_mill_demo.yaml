@@ -1,0 +1,35 @@
+# Typology-4 demo cell (ADR-037, branch next/prediction-gemini).
+# PLANTED and said so (DATA_GENERATION §4 honesty rule): a dental claim
+# mill perfects one implant package and resubmits it across unrelated
+# invented patients — cross-insurer by construction of the insurer draw —
+# through a feeder broker, from two shared office devices. A smaller
+# honest-looking journey stream through the same clinic keeps the front
+# from glowing statistically.
+scenario: claim_mill_demo
+description: Dental claim mill for the template-cloning typology demo
+typology: template_cloning
+actors:
+  - kind: clinic
+    ref: mill
+    props: {name: "Meridian Dental Institute", bed_count: 14, country: TR}
+  - kind: broker
+    ref: feeder
+    props: {agency_name: "Bosphorus Care Travel", country: TR}
+  - kind: doctor
+    ref: doc
+    props: {specialty: dental}
+journeys:
+  - count: 13
+    clinic: mill
+    broker: feeder
+    doctor: doc
+    patients: invented
+    category: dental
+    date_range: [2026-02-01, 2026-05-31]
+    clone_pack: true
+  - count: 6 # cover traffic: normal journey model, no broker, no cloning
+    clinic: mill
+    doctor: doc
+    patients: invented
+    category: dental
+    date_range: [2026-01-10, 2026-05-31]

@@ -139,11 +139,36 @@ def _impossible_travel(p: dict) -> str:
     )
 
 
+def _template_cloning(p: dict) -> str:
+    devices = p.get("shared_devices", 0)
+    device_clause = (
+        f"and {devices} submission device(s) are shared across those "
+        f"patients — unrelated medical tourists do not file from the same "
+        f"computer " if devices else ""
+    )
+    return (
+        f"{p.get('cluster_size', 'Several')} claims for "
+        f"{p.get('procedure_name', 'the same procedure')} are near-identical "
+        f"copies of one claim package: the same {p.get('line_item_count', '?')} "
+        f"line items, narratives within {p.get('max_hamming', '?')} bits of "
+        f"each other, and amounts inside a {p.get('amount_band_pct', '?')}% "
+        f"band. They were filed for {p.get('distinct_patients', '?')} "
+        f"different patients across {p.get('distinct_insurers', '?')} "
+        f"insurer(s) {device_clause}— a template resubmitted with names "
+        f"swapped, the claim-mill pattern. Genuinely standardized packages "
+        f"do produce similar claims within one clinic and one insurer, "
+        f"which is why cross-insurer spread and shared devices drive this "
+        f"score. Next step: request the underlying treatment records for "
+        f"two claims in the cluster and compare them line by line."
+    )
+
+
 _TEMPLATES = {
     "ghost_clinic": _ghost_clinic,
     "credential_laundering": _credential_laundering,
     "kickback_ring": _kickback_ring,
     "impossible_travel": _impossible_travel,
+    "template_cloning": _template_cloning,
 }
 
 

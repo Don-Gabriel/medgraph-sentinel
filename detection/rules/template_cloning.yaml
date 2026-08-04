@@ -1,0 +1,24 @@
+# Typology 4 — Template cloning (DETECTION_SPEC §4; revived per ADR-037
+# from the ADR-024 next-build shelf). Cypher candidate blocking (same
+# procedure + line_item_count) then SimHash Hamming clustering in Python.
+key: template_cloning
+name: Template cloning
+typology: 4
+version: "1.0"
+kind: python
+impl: detection.rules.impl.template_cloning
+params:
+  # clustering (OQ #3 reopened and closed by measurement, seed 42:
+  # honest same-block pair floor = Hamming 10 over 21k sampled pairs;
+  # identical mill resubmissions = 0; 6 leaves margin on both sides)
+  min_cluster: 3          # spec §4: >= 3 mutually-similar claims
+  max_hamming: 6
+  amount_band_max: 0.15   # cluster max/min - 1: a repriced package stays tight
+  min_distinct_patients: 2  # same-patient resubmission is not this typology
+  # scoring references (scale() ramps — ADR-030 vocabulary)
+  weights: {cluster: 0.40, insurers: 0.25, devices: 0.20, patients: 0.15}
+  cluster_ref: 10         # cluster size that saturates the volume feature
+  insurers_ref: 3         # >= 3 insurers = fully cross-insurer
+  patients_ref: 8
+  emit_min_score: 25.0
+severity_bands: {high: 80, medium: 50}

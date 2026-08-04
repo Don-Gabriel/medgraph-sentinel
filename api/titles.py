@@ -46,11 +46,17 @@ def _impossible_travel(p: dict) -> str:
     return "Impossible travel: same-day claims in two countries"
 
 
+def _template_cloning(p: dict) -> str:
+    return (f"Template cloning: {p.get('cluster_size', '?')} near-identical "
+            f"{p.get('procedure_name', 'procedure')} claims")
+
+
 _TEMPLATES = {
     "ghost_clinic": _ghost_clinic,
     "credential_laundering": _credential_laundering,
     "kickback_ring": _kickback_ring,
     "impossible_travel": _impossible_travel,
+    "template_cloning": _template_cloning,
 }
 
 
