@@ -1,6 +1,10 @@
 # Detection Specification
 
 > **Scope status (2026-07-30, ADR-024):** typologies **1, 2, 3 and 5 ship**.
+> *(Branch `next/prediction-gemini`, 2026-08-05, ADR-037: typology **4 is
+> built and shipping on this branch** — §4's spec was implemented as
+> written, thresholds set by measurement. Typology 6 remains next-build.
+> On `main` the 2026-07-30 statement below stays true.)*
 > Typologies **4 and 6 are descoped** — the ADR-017 cut ladder was executed
 > when capacity collapsed to one shared machine (~110–130 h). Their sections
 > below are kept in full, deliberately: they are the specified,
