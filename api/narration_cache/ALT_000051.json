@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000051",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "106de8820e5b2a7f86b9482c04a503d9b2df9af7b5c6e540c94f810a95f6a614",
-  "text": "Dr. Margaret Moore has 12 claims dated after credential CRD_001208 was revoked on 2023-10-20, beginning 715 days later. The two-year gap and moderate volume sit inside the honest stale-roster range. No corroborating anomaly. Next step: registry check, low priority."
+  "prompt_sha256": "38f6b1031371c90a45838e304240839b21c8cb2222b9d1f715f9d288551d7c02",
+  "text": "Dr. Kenneth Vargas billed 10 claims after credential CRD_000672 was revoked on 2009-07-31 \u2014 nearly sixteen years earlier. At this distance the likeliest explanation is that the credential record is simply obsolete and a later authorisation exists outside the graph. The rule surfaces it because absence of evidence is not evidence of authorisation. Next step: one registry lookup would close it permanently."
 }

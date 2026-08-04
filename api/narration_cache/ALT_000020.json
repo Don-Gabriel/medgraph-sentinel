@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000020",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "bddaf92b8b378c15837f8e78bb38e96c79ae6df2cc484ec5b7b3f85cbada517f",
-  "text": "Credential CRD_000057 for Dr. Rebecca Hanson was issued in the UAE, while her 12 claims sit entirely in India and Turkey. Cross-jurisdiction practice on its own is legal and common here, so the alert is low severity. Two treatment countries is within the honest range; three or more never occurs honestly in this data and would escalate. Ordinary corridor practice is the likely explanation. Next step: only if corroborated elsewhere \u2014 check whether the UAE issuance is recognised where the claims occurred."
+  "prompt_sha256": "53341ce06fe533d613fba8dbe94de0a7db74b5a8c5f938b71df134c10f36acfd",
+  "text": "Licence MC-TR42303 is held on credentials by Dr. Andrea Franco and Dr. Jillian Woods, both recorded with the Medical Council of Turkey, both actively billing. The two-holder pattern is inside honest-collision territory and there are no corroborating anomalies on either identity. Scored low so an investigator can clear it quickly. Registry duplication fits the facts. Next step: registry lookup; escalate only if a genuine single issuance is confirmed with two active users."
 }

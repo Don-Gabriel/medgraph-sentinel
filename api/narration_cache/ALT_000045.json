@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000045",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "ce925bcf6a8949703d051c258d69cc6b999c8f73794edfd62cebbf0697f36ffc",
-  "text": "Dr. Nicole Glass has 14 claims after credential CRD_000317 was revoked on 2018-06-20, the first 2,570 days later. Old revocation, moderate volume, no co-signals \u2014 the stale-roster shape. Low severity is correct. Next step: registry status check when convenient."
+  "prompt_sha256": "5b036ff1f6a281b36bb123b72bd06406597062daa8bf9f5427ba739f89b19776",
+  "text": "Dr. Christina Jones billed 7 claims after credential CRD_000025 was revoked on 2021-09-08, the first of them 1,429 days later. A four-year gap between revocation and renewed billing rules out paperwork lag, but seven claims is small and the revocation is old, so the alert stays low. The honest reading is a stale roster entry at a clinic that never re-verified. Nothing else attaches to this identity. Next step: registry status check; escalate only if billing is ongoing this quarter."
 }

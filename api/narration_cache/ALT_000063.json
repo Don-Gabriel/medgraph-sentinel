@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000063",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "2e89b38d6a59a426a5ee39866d22fdad789d9bb174ed16e3873188c06f833e93",
-  "text": "Shelton Medical Centre shows 56 claims against zero beds, a single affiliated doctor, and 100 percent of its patient inflow arranged by one broker, David Smith, who operates from the same registered address. Its payouts are 98.2 percent concentrated in one account, and every patient it has ever billed visited once and vanished from the graph. Individually these are honest patterns; jointly \u2014 one-doctor roster, one feeder, one account, no returning or cross-referenced patients, a 1.1-year-old registration \u2014 they form the paper-clinic signature this rule was built for. An alternative is a legitimate startup clinic wholly dependent on its founding facilitator, but that would still leave some patient overlap with the wider economy, which is absent. Next step: independent verification that the premises at the shared address can deliver 56 procedures, and a freeze on account ACC_001605 disbursements meanwhile."
+  "prompt_sha256": "c72316e5211a173d7be5cc673d6328f54e26f4d3690643c1152972489b9f7a62",
+  "text": "Dr. Eileen Williamson billed 5 claims after credential CRD_002140 was revoked on 2021-02-27, starting 1,717 days later. Small volume, old revocation, no corroboration. Next step: none standalone."
 }

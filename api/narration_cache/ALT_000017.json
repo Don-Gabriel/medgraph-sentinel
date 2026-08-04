@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000017",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "83bc96d18616dd8d438c7524e666893e25acf48724e4c9157dfec51da7bda9b3",
-  "text": "Licence MC-TR42303 is held on credentials by Dr. Andrea Franco and Dr. Jillian Woods, both recorded with the Medical Council of Turkey, both actively billing. The two-holder pattern is inside honest-collision territory and there are no corroborating anomalies on either identity. Scored low so an investigator can clear it quickly. Registry duplication fits the facts. Next step: registry lookup; escalate only if a genuine single issuance is confirmed with two active users."
+  "prompt_sha256": "96098e048c4dd032ba5996798fbf6e6dd6c87d4a8eeaa79fe70eef16bd667a51",
+  "text": "Licence MC-TR19562 is shared across credentials of Dr. Deanna Armstrong and Dr. Luke Stephens, both with the Medical Council of Turkey, both billing. Two holders sits inside the honest collision pattern, so this is a low-severity triage item. Neither identity shows revocations, unusual routing or volume anomalies. Registry duplication remains the default explanation. Next step: a single registry lookup; escalate only if the council recognises neither or one of the two records."
 }

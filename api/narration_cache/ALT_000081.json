@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000081",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "488b18edf57d5e9eba54c22f91af1fc9f763c20ed0d2fde79973bbc1ce913c3c",
-  "text": "Broker Lisa Lopez MD holds a 21.9 percent stake in Carlson Medical Centre and has moved 19,672 dollars in transfers against 10,118 dollars of expected commission \u2014 an 8.2 percent excess on 117,085 dollars of billing \u2014 while supplying only 4 percent of the clinic's claims and sending it under half her referrals. The concentration gate barely fires; the interest here is purely the money margin over the declared relationship at an accredited clinic with a declared-style stake. That margin has honest explanations (bonus schedules, batched settlements) at this severity. Next step: include in the same commission-reconciliation batch as the other accredited-clinic pairings."
+  "prompt_sha256": "04eb653d074c19f6fa978e1c7011a376b0e867aeada5a4891ae9a82287ce7d05",
+  "text": "Broker Amy Adams sends 84.3% of all referrals to Carlson Medical Centre - 107 claims worth $278,376 - and the clinic's transfers to this broker total $42,764 against an expected commission of about $24,613, an excess of roughly 6.5% of pair volume. Referral concentration alone can be an honest exclusive partnership, and Carlson takes only 8.4% of its claims from this broker, which softens the picture. What keeps the item alive is the money: transfers meaningfully above contractual commission need a reason. No shared ownership or shell routing was found for this pair, so the alert stays low. Next step: reconcile the transfer ledger against the commission agreement and ask what the surplus payments purchased."
 }

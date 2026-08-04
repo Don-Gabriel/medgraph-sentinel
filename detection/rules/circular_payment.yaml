@@ -1,0 +1,28 @@
+# Typology 6 — Circular payment (DETECTION_SPEC §6; revived per ADR-038
+# from the ADR-024 next-build shelf — the last of the six designed
+# typologies). Bounded variable-length Cypher over TRANSFERRED, then
+# date/attrition filtering and scoring in Python.
+key: circular_payment
+name: Circular payment
+typology: 6
+version: "1.0"
+kind: python
+impl: detection.rules.impl.circular_payment
+params:
+  # cycle candidates (spec: length 2-5, ~90-day window, 5-20%/hop attrition;
+  # drop tolerance is wider than the spec band so fees/rounding don't hide
+  # a real cycle, gain tolerance is tiny — money doesn't grow in a cycle)
+  max_cycle_len: 5
+  window_days: 90
+  max_hop_drop_pct: 35
+  max_hop_gain_pct: 2
+  # FP guard (spec §6): a refund/netting 2-cycle is legitimate — 2-cycles
+  # score above low ONLY with amount similarity AND a short window
+  two_cycle_amount_tol_pct: 15
+  two_cycle_window_days: 30
+  # scoring references (scale() ramps — ADR-030 vocabulary)
+  weights: {value: 0.40, shells: 0.35, length: 0.25}
+  value_ref_usd: 20000
+  shells_ref: 2
+  emit_min_score: 25.0
+severity_bands: {high: 80, medium: 50}

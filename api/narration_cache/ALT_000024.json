@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000024",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "5bf6c62116f3bfa12f952c4c5dfda105be8f82d04745cbfed6535f048d4d2408",
-  "text": "Credential CRD_000498 for Dr. Tony Rhodes was issued in Singapore; his 11 claims are in the UAE and Turkey exclusively. Two-country spread with a silent home jurisdiction is inside the honest pattern, hence low severity. No other signal attaches to the doctor or credential. Regional practice under recognition agreements is the default explanation. Next step: none unless corroborated."
+  "prompt_sha256": "7785557b09af00e0712069c5ade74154ff795267a2800131c7bebfc118e1f7a1",
+  "text": "Credential CRD_000105 for Dr. Zachary Bautista was issued in Singapore; his 16 claims are all in Thailand and Turkey. This is the jurisdiction-shopping shape at its weakest: two claim countries, no claims at home, nothing else attached. The honest cross-border roster explains it, and the score reflects that. It is surfaced so that a wider spread or a revocation later cannot hide behind familiarity. Next step: passive \u2014 revisit only if this credential appears in a future alert."
 }

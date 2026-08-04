@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000074",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "d76f94cade945951398b3b678faceaf65d1cb0c0e5f47cde746b665f31b72d61",
-  "text": "Broker David Smith and Shelton Medical Centre are completely mutually dependent \u2014 100 percent of his referrals, 100 percent of its claims \u2014 they share a registered address, and the pair sits alone in one small payment community. The transfers to the broker match expected commission almost exactly, so this is not a hidden-money case; it is a total-capture case: one broker constitutes this clinic's entire existence, at the same address. Exclusive partnerships are the honest FP mode for this rule, which caps how far the score climbs without excess payments \u2014 but exclusivity this absolute, plus co-location, is a structural red flag worth an investigator's time regardless. Note the same clinic appears separately in the queue as a high-severity ghost-clinic alert; read the two together. Next step: treat the ghost-clinic alert as primary and this pairing as its distribution mechanism."
+  "prompt_sha256": "31b907bf22aa5400e439b57675e832a19aa5d8c8f9db30a94b2129ecbc9da384",
+  "text": "Mary Thompson's own claims put her in Turkey and India on the same day, 2025-09-23 \u2014 a single identity, no shared passport, one insurer. The date collision is real, but with dates-not-times data and no identity multiplexing this is far more likely a booking or discharge-date artifact than fraud, which is why it scores low. The economy genuinely produces a handful of these same-day artifacts among honest return patients. Next step: a look at the two claims' paperwork (CLM_0003477, CLM_0021410) to see which date is administrative; dismiss on confirmation."
 }

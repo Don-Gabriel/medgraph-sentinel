@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000036",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "d7118e9fa36e5bc87446a1387f409daf532659879e67f034a4ef2a3123e196be",
-  "text": "Credential CRD_001701 for Dr. Emily Castro was issued in Thailand, while her 10 claims all occurred in the UAE and Turkey. This matches the honest expatriate-practice pattern at low volume. No corroborating anomaly appears. Next step: passive monitoring only."
+  "prompt_sha256": "8a763f3933a8b3200f0d778d20579ca13aff64cf517fd8238428cc37a214b02a",
+  "text": "Credential CRD_001384 was issued in Singapore; its holder's 72 claims all sit in the UAE and Thailand. The volume is notable but the two-country spread keeps it inside the honest pattern. No revocation or shared-number co-signal exists. A busy regional practice is the plausible explanation. Next step: a recognition check is cheap insurance at this volume, nothing more."
 }

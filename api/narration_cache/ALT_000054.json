@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000054",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "05422fd9965a2c31477e1b54158171ecfd71ba056c24b7ec7c0044a89f69087a",
-  "text": "Dr. Chloe Freeman billed 2 claims after credential CRD_001479 was revoked on 2013-10-28, more than twelve years earlier. The obsolete-record explanation dominates at this distance. Next step: none."
+  "prompt_sha256": "fbcbd22d528476bf63b56e774f55571af0888932663b14fa260a4440fd2df1b4",
+  "text": "Dr. Margaret Moore has 12 claims dated after credential CRD_001208 was revoked on 2023-10-20, beginning 715 days later. The two-year gap and moderate volume sit inside the honest stale-roster range. No corroborating anomaly. Next step: registry check, low priority."
 }

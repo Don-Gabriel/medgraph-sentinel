@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000040",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "8c7f5291ad0bcda7a471fe87136eb20d5cab22379472a7cb2a1f93031a987a83",
-  "text": "Credential CRD_002166 for Dr. Mary Davis was issued in Singapore; her 11 claims are in the UAE and Turkey. Two treatment countries, modest volume, no corroboration \u2014 honest cross-border practice. Next step: none standalone."
+  "prompt_sha256": "7578ed49dd81cee018c2205673729adeb37bda3560e68e5c7c807af14365abf6",
+  "text": "Credential CRD_001974 for Dr. Crystal Love was issued in Singapore; her 14 claims are in the UAE and Turkey. Two-country spread, no home-jurisdiction claims, nothing else attached \u2014 the honest shape this rule deliberately keeps visible at low severity. Next step: none unless the credential recurs."
 }

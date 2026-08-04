@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000014",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "3616406d6227c670ad9f15b02fd7fe3fa8de14c3efd7998c21965d8ecefd4c84",
-  "text": "Licence MC-TR19562 is shared across credentials of Dr. Deanna Armstrong and Dr. Luke Stephens, both with the Medical Council of Turkey, both billing. Two holders sits inside the honest collision pattern, so this is a low-severity triage item. Neither identity shows revocations, unusual routing or volume anomalies. Registry duplication remains the default explanation. Next step: a single registry lookup; escalate only if the council recognises neither or one of the two records."
+  "prompt_sha256": "6728ca6285181a4ee15a76556945212c6f92fefefb2db875c98a966c132a1e07",
+  "text": "Licence MC-SG28838 is held on two credentials by Dr. Curtis Brady and Dr. Angela Allen, both with the Medical Council of Singapore, both actively billing. Two holders is within the honest collision range for this economy, so the alert is informational rather than accusatory. Neither doctor shows corroborating signals \u2014 no post-revocation billing, no unusual claim routing. The honest explanation, a duplicated registry record, fits. Next step: registry verification; close unless a third identity or a billing anomaly appears."
 }

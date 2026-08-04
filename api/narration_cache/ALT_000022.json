@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000022",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "84f42fa555b9ec0730f604f77c689cd9cdde1a4c3c49921a72f977ef7b023fd7",
-  "text": "Credential CRD_000199 for Dr. Donald Alexander was issued in Thailand; all 14 of his claims are in India and Turkey. Two treatment countries with none in the issuing jurisdiction is within the honest range for this economy, so the alert is informational. No revocation, shared number, or routing anomaly attaches. Ordinary regional practice fits. Next step: none standalone; verify licence recognition if the doctor recurs in other alerts."
+  "prompt_sha256": "58fa90c82c37c7951202be65d810e9828eda552dee3b1f1128a82639ac4ea846",
+  "text": "Credential CRD_000027 for Dr. John Holt was issued in India, yet all of the doctor's 5 claims were performed in Thailand and Turkey, with none in the issuing jurisdiction. Practising outside the issuing country is routine in medical tourism, which is why this scores low; the pattern becomes meaningful only when the spread widens or other signals attach. Five claims across two countries is comfortably inside the honest cross-border rosters this economy contains. The likely explanation is ordinary regional practice under mutual-recognition arrangements. Next step: none unless this doctor appears in another alert; then verify recognition of the Indian licence in both treatment countries."
 }

@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000084",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "d9cc473e1229921d234c1f027ef5c4f12aa3d8e8a09207c4c3c8fe16f9aa0d3b",
+  "text": "Every one of Meridian Dental Institute's brokered claims - 13 claims, $17,406 - comes from a single broker, Karen Wolfe, and the pair sits alone in its own small payment community. Transfers to the broker match expected commission exactly and no hidden stake was found, so as a kickback case this is weak and scores low. Its value is corroboration: the same clinic is separately flagged at high severity for template-cloned claims and for a $38,000 shell-account payment cycle, and a fully captive referral channel is exactly what a claim mill needs to control its paperwork. Read alone, this is an exclusive partnership; read with its siblings, it is the mill's distribution arm. Next step: fold this pair into the template-cloning investigation rather than pursuing it separately."
+}

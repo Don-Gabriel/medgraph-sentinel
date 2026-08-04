@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000013",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "7e54d80a7efb53fa5958e9fb48173f9ea7df6df605e6c35298ed071985471a88",
-  "text": "Licence MC-TR34956 appears on credentials held by Dr. Melissa Bates and Dr. Steve Elliott, both recorded with the Medical Council of Turkey and actively billing. A two-holder shared number is common enough in this data to be honest noise, and no other signal attaches to either doctor. The alert exists to make the collision visible, not to assert misconduct. The likely explanation is registry duplication. Next step: verify the number with the issuing council; close if both issuances are genuine."
+  "prompt_sha256": "467d6a5a9a24af114f16a9d86932ba3191a447aab0aba62d846d8e53cfc9763b",
+  "text": "Licence MC-TR70722 appears on credentials held by two doctors, Dr. Heather Hester and Dr. Carrie Lozano, both recorded with the Medical Council of Turkey and both actively billing. Two-holder collisions on one number do occur honestly in this data \u2014 issuing-country number formats collide \u2014 which is exactly why this scores low rather than high. The same-council concentration keeps it from being dismissed outright: a within-registry duplicate is likelier to be one record cloned than two coincidentally identical numbers. There is no billing anomaly on either identity to corroborate laundering. Next step: a registry lookup on MC-TR70722; if both records are genuinely issued, dismiss as a format collision."
 }

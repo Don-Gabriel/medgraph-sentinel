@@ -47,10 +47,12 @@ ALERTS = [
          "pairs": [{"claims": ["CLM_0000001", "CLM_0000002"],
                     "countries": ["TH", "TR"],
                     "dates": ["2026-02-01", "2026-02-01"], "gap_days": 0}]})},
-    {"id": "ALT_000005", "typology": "circular_payment",  # Day-2 shape
+    # circular_payment became a real typology (ADR-038), so the unknown-
+    # typology degradation case uses a genuinely unshipped Day-2 shape
+    {"id": "ALT_000005", "typology": "sanctioned_accreditor",  # Day-2 shape
      "rule_version": "0.1", "score": 33.0, "severity": "low",
      "status": "new", "note": "", "created_at": "2026-07-30T12:47:37Z",
-     "summary_params": json.dumps({"cycle_len": 4})},
+     "summary_params": json.dumps({"accreditor_count": 2})},
 ]
 
 IMPLICATED = {
@@ -190,7 +192,7 @@ def test_titles_per_typology(api):
         "ALT_000002": "Credential laundering: licence MC-TR-88231 held by 3 doctors",
         "ALT_000003": "Kickback ring: broker BRK_000017 and Howell Clinic",
         "ALT_000004": "Impossible travel: one passport, 3 patient identities",
-        "ALT_000005": "Circular payment alert",  # unknown typology degrades
+        "ALT_000005": "Sanctioned accreditor alert",  # unknown typology degrades
     }
 
 
@@ -270,7 +272,7 @@ def test_narration_fallback_per_typology(api, tmp_path, monkeypatch):
                        "81%", "2 money path(s)", "kickback"],
         "ALT_000004": ["3 patient identities", "TH", "TR", "2026-02-01",
                        "passport"],
-        "ALT_000005": ["circular payment", "cycle_len=4"],  # generic template
+        "ALT_000005": ["sanctioned accreditor", "accreditor_count=2"],  # generic template
     }
     for alert_id, needles in cases.items():
         body = api.get(f"/api/v1/alerts/{alert_id}/narration").json()

@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000042",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "c238d49b7ee8600988ed291d6961dcf93b3d9ab0ea33c543c015847bb18d9032",
-  "text": "Dr. Christina Jones billed 7 claims after credential CRD_000025 was revoked on 2021-09-08, the first of them 1,429 days later. A four-year gap between revocation and renewed billing rules out paperwork lag, but seven claims is small and the revocation is old, so the alert stays low. The honest reading is a stale roster entry at a clinic that never re-verified. Nothing else attaches to this identity. Next step: registry status check; escalate only if billing is ongoing this quarter."
+  "prompt_sha256": "8250c878d96327f4f00eb8c4ea7f0a6e4abd4d6fc6469a64fb44b29f9b2afa26",
+  "text": "Credential CRD_002159 was issued in Turkey, while its holder billed 92 claims entirely in the UAE and Singapore. This is one of the highest volumes in the family; the two-country spread itself remains honest-range, which caps the score at low. No revocation or shared number attaches. An established high-throughput practice fits. Next step: verify recognition of the Turkish licence in both countries \u2014 the volume alone justifies the lookup."
 }

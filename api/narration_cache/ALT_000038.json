@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000038",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "c8dd679673b75de4fa419c3d231854c231cbe50c8155951c3e8891783d8dbe54",
-  "text": "Credential CRD_002103 for Dr. Gregory Jones was issued in Singapore; his 17 claims sit in India and Thailand. Honest-range two-country practice with no co-signals. Low severity by design. Next step: none."
+  "prompt_sha256": "0083afc862aeb2d73a8ba1359b86d7fe3d168104f011b33accd4bf958b946542",
+  "text": "Credential CRD_001541 for Dr. Jennifer Robbins was issued in Thailand; her 6 claims sit in the UAE and Turkey. Small volume, two-country spread, no other signals \u2014 honest-range throughout. Surfaced for completeness. Next step: none standalone."
 }

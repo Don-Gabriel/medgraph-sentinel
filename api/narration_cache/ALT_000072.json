@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000072",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "d7d9292e5c8d8887de684455eb07b709d0c72368f6a11ae2769fe6f988c639bd",
-  "text": "Brandon Bonilla's claims place him in the UAE and India on 2025-08-17, the same day, across two insurers \u2014 but on a single identity with no passport sharing. Without multiplexing, the likeliest explanation is a date-entry artifact (submission or discharge recorded as procedure date). The cross-insurer detail keeps it a notch above pure noise. Next step: verify the true procedure dates on CLM_0007670 and CLM_0020653; escalate only if both are confirmed same-day."
+  "prompt_sha256": "f33a4b20eedd0769847836724a31eecb3c54f9860387adffa68572bd48a592c3",
+  "text": "A single passport is shared by six patient identities including Sandra Payne and Kristin James, and two of its claims put the same document in India and Thailand on the same day, 2025-10-14, across two insurers. The same-day cross-country pair is physically impossible; six identities on one passport turns an anomaly into a pattern of deliberate identity reuse. Insurer fragmentation is the tell \u2014 the reuse only pays if no single insurer sees the whole picture, which is exactly what this graph exists to reconstruct. The alternative explanation, a family sharing a mis-entered document number, collapses against six distinct identities with independent claim histories. Next step: pull admission records for CLM_0003527 and CLM_0021623 and open a case on the full six-identity cluster, not just the colliding pair."
 }

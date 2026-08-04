@@ -163,12 +163,30 @@ def _template_cloning(p: dict) -> str:
     )
 
 
+def _circular_payment(p: dict) -> str:
+    return (
+        f"${p.get('amount_out_usd', 0):,.2f} left an account on "
+        f"{p.get('start_date', 'an unknown date')} and returned to the same "
+        f"account as ${p.get('amount_back_usd', 0):,.2f} after "
+        f"{p.get('cycle_len', '?')} hops over {p.get('window_days', '?')} "
+        f"day(s) — {p.get('attrition_pct', '?')}% was lost along the way, and "
+        f"{p.get('shell_count', 0)} of the intermediate account(s) have no "
+        f"registered owner. Money returning to its origin has not paid for "
+        f"anything; through unowned shells it is the recycling signature. "
+        f"Legitimate refunds and netting do occur between frequent "
+        f"counterparties, which is why short two-step round-trips score "
+        f"lower. Next step: identify the shell account holders and request "
+        f"the mandates behind each transfer in the loop."
+    )
+
+
 _TEMPLATES = {
     "ghost_clinic": _ghost_clinic,
     "credential_laundering": _credential_laundering,
     "kickback_ring": _kickback_ring,
     "impossible_travel": _impossible_travel,
     "template_cloning": _template_cloning,
+    "circular_payment": _circular_payment,
 }
 
 

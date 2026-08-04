@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000070",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "88d2e1fa73891c98fa8978e4065c5d2ecbda9fa542517cad88a6eac4f7be48fc",
-  "text": "The identities Gary Mccarthy and Veronica Glover share one passport, which the claims record places in the UAE and Thailand on the same day, 2026-01-31, billed to two insurers. Same-day treatment in two countries fails the minimum-travel test outright \u2014 this is the impossible core, not a tight connection. Two identities on one document with insurer separation is consistent with an identity recycled between cooperating facilities. A clerical passport duplication remains conceivable but would need to co-occur with the exact date collision to produce this alert. Next step: admission-record pulls for CLM_0006296 and CLM_0021625, then identity verification on both patient records."
+  "prompt_sha256": "116cee0e43769558fd9106d7439eed975b3ea55f7ed619f95fe852b432b79c0e",
+  "text": "Serrano Speciality Hospital shows full payout concentration into one account over 76 claims and twenty doctors, with referrals spread thin and a 1.6-year registration. Twenty practising doctors is the opposite of a ghost roster, and no inflow concentration exists, so only the payout signal remains - hence the low band. Centralized payment processing across a large roster is standard practice for hospital groups. The signal is retained because payout hubs occasionally connect otherwise unrelated flagged entities. Next step: confirm the account is the hospital's own treasury account and close the item if so."
 }

@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000021",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "03b6b06cf2b0d981590409c3bd240ed617b1f1997d9d8478313ed7815c1e8e99",
-  "text": "Credential CRD_000105 for Dr. Zachary Bautista was issued in Singapore; his 16 claims are all in Thailand and Turkey. This is the jurisdiction-shopping shape at its weakest: two claim countries, no claims at home, nothing else attached. The honest cross-border roster explains it, and the score reflects that. It is surfaced so that a wider spread or a revocation later cannot hide behind familiarity. Next step: passive \u2014 revisit only if this credential appears in a future alert."
+  "prompt_sha256": "37af4d287fb599d14d1c0d0d0d9cc2798520d9eb0d9fb33bb7b50bf25bd600a5",
+  "text": "Licence MC-TR71277 appears on credentials of Dr. Kelly Gallegos and Dr. Shane Ingram at the Medical Council of Turkey, both billing. As a two-holder collision without any supporting signal, this is honest-noise territory and is scored accordingly. The rule surfaces it because shared numbers are the substrate real laundering hides in \u2014 most instances are innocent. Duplicated registry records are the expected explanation. Next step: verify with the issuing council and close."
 }

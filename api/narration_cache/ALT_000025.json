@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000025",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "b74d93bf08270e3f6a7ec03dcec218773b7b5996fc66156c77414d268b190380",
-  "text": "Credential CRD_000606 was issued in the UAE, yet its holder's 58 claims all occurred in India and Thailand. The claim volume is higher than most in this family, but volume alone is not the shopping signal \u2014 the two-country spread is still honest-range. Nothing else attaches to this credential. A busy corridor practice is the likely story. Next step: worth a registry recognition check when convenient, purely because of the volume."
+  "prompt_sha256": "f83330ac2f6c58872b533e6076b0cc9684b30cbe75033dad24922c244cc36798",
+  "text": "Credential CRD_000199 for Dr. Donald Alexander was issued in Thailand; all 14 of his claims are in India and Turkey. Two treatment countries with none in the issuing jurisdiction is within the honest range for this economy, so the alert is informational. No revocation, shared number, or routing anomaly attaches. Ordinary regional practice fits. Next step: none standalone; verify licence recognition if the doctor recurs in other alerts."
 }

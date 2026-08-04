@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000055",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "2a9719bda1b06486ba1eefb85be2027b24231eba9fb053129557523e94a38395",
-  "text": "Dr. John Smith has 2 claims dated after credential CRD_001644 was revoked on 2020-07-05, five years later. Floor-of-family volume, no co-signals. Next step: none."
+  "prompt_sha256": "840eb8b7716edf8139ab86acb8003e6585b1387b83dc536b406818098041ab1b",
+  "text": "Dr. Danielle Brown billed 4 claims after credential CRD_001321 was revoked on 2023-05-16, starting 888 days later. Small volume, no co-signals \u2014 completeness alert. Next step: none unless recurrence."
 }

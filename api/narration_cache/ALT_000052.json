@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000052",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "27bcd06ce33620f506aff814f66f4f0013ebef1a6a7f6c7281216139a162ee57",
-  "text": "Dr. Danielle Brown billed 4 claims after credential CRD_001321 was revoked on 2023-05-16, starting 888 days later. Small volume, no co-signals \u2014 completeness alert. Next step: none unless recurrence."
+  "prompt_sha256": "7677c53cf052001738f771d72162757275b82d02fdba929c4b0f7db2740f23f2",
+  "text": "Dr. Bridget Hernandez has 13 claims after credential CRD_000747 was revoked on 2021-03-18, first billed 1,568 days later. Stale-roster shape, moderate volume, no co-signals \u2014 low severity fits. Next step: registry status check in batch with the others in this band."
 }

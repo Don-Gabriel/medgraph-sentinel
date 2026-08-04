@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000016",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "a6f1779018bf6c53c926af910d1b945f625d9d2bab59b6667453b5dc8aa864c1",
-  "text": "Licence MC-TH53281 appears on two credentials, held by Dr. Elizabeth Orr and Dr. Christopher Ritter, both with the Medical Council of Thailand and both billing. Two holders is within the honest range for shared numbers in this data, and no other risk indicator attaches to either doctor. The alert is a visibility item, not an accusation. Clerical duplication at the registry is the most probable cause. Next step: confirm with the council; dismiss on a clean answer."
+  "prompt_sha256": "c8e0d7c4264f1f7c74cb2e8483f8c3281620b0c6c862d09576fee0d5d344791a",
+  "text": "Licence MC-TR34956 appears on credentials held by Dr. Melissa Bates and Dr. Steve Elliott, both recorded with the Medical Council of Turkey and actively billing. A two-holder shared number is common enough in this data to be honest noise, and no other signal attaches to either doctor. The alert exists to make the collision visible, not to assert misconduct. The likely explanation is registry duplication. Next step: verify the number with the issuing council; close if both issuances are genuine."
 }

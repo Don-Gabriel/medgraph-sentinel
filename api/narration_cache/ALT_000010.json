@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000010",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "184f0200f4598d44ac70d7658c3cf66717ac9b2b549c7d19ab515b99c7038760",
-  "text": "Licence MC-TR70722 appears on credentials held by two doctors, Dr. Heather Hester and Dr. Carrie Lozano, both recorded with the Medical Council of Turkey and both actively billing. Two-holder collisions on one number do occur honestly in this data \u2014 issuing-country number formats collide \u2014 which is exactly why this scores low rather than high. The same-council concentration keeps it from being dismissed outright: a within-registry duplicate is likelier to be one record cloned than two coincidentally identical numbers. There is no billing anomaly on either identity to corroborate laundering. Next step: a registry lookup on MC-TR70722; if both records are genuinely issued, dismiss as a format collision."
+  "prompt_sha256": "78fcdd8248588ddf45fd1bd198edc1c2deaf6a773f66c4b6b13ea5c1d257c66b",
+  "text": "Dr. Julie Lamb billed 3 claims after credential CRD_000996 was revoked on 2026-01-11, starting 38 days after revocation. Three claims is at the bottom of the post-revocation range and consistent with treatment courses that were already underway when the licence lapsed. The alert exists because the revocation is recent and the billing is current, which is worth a look but not an escalation on its own. An innocent completion-of-care reading fits the numbers at least as well as misconduct. Next step: check whether the three claims belong to patients whose treatment began before 2026-01-11; if so, dismiss."
 }

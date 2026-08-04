@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000007",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "fa04d8ff68e1bc8c0a9f6714d7471991629e809d41a49bdc4f283ea779143d6b",
-  "text": "Dr. Julie Lamb billed 3 claims after credential CRD_000996 was revoked on 2026-01-11, starting 38 days after revocation. Three claims is at the bottom of the post-revocation range and consistent with treatment courses that were already underway when the licence lapsed. The alert exists because the revocation is recent and the billing is current, which is worth a look but not an escalation on its own. An innocent completion-of-care reading fits the numbers at least as well as misconduct. Next step: check whether the three claims belong to patients whose treatment began before 2026-01-11; if so, dismiss."
+  "prompt_sha256": "5c48142241fbf99999cf888def61266eda67e1b42fc471f42a01b3feb2116082",
+  "text": "Licence MC-TR51893 backs three credentials held by three different doctors \u2014 Dr. Diana Huerta, Dr. Eric Rodriguez and Dr. Amber Watson \u2014 all recorded with the Medical Council of Turkey, and all three actively billing. One number serving three practising identities in the same jurisdiction exceeds anything the honest data produces, where duplicate numbers cap out at two holders. The within-country concentration weakens the innocent-collision reading: a registry typo repeated across three separate records at the same council is hard to sustain. It remains possible that two of the records are stale aliases of one physical person, which the console's entity view cannot distinguish from three real people. Next step: request the council's issuance record for MC-TR51893 and reconcile the three identities against it."
 }

@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000050",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "432de1d3a587501f95da8cd12cd8b1f59072c79a32fa8e600d265a6f026ac65b",
-  "text": "Dr. Hector Owens billed 2 claims after credential CRD_001187 was revoked on 2021-08-02, over four years later. Two claims is the floor of this family; the alert exists for completeness. Next step: none."
+  "prompt_sha256": "7f10cbb6a13d2b6e944045f3e58a40452556c39e0b928a44f42a0e6d5b2dc833",
+  "text": "Dr. Anthony Kelly has 11 claims dated after credential CRD_000444 was revoked on 2019-07-08, starting 2,304 days later. The pattern matches the economy's honest stale-roster tail: old revocation, low-to-moderate volume, no corroboration. Next step: registry check; close on a reinstated answer."
 }

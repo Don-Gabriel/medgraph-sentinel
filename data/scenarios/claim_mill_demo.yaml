@@ -33,3 +33,12 @@ journeys:
     patients: invented
     category: dental
     date_range: [2026-01-10, 2026-05-31]
+transfers:
+  # Typology-6 substrate (ADR-038): the mill recycles a payout through two
+  # shell accounts back to its own account — simulated turnover, the
+  # payment carousel. Transfers apply AFTER journeys in scenario order, so
+  # adding this section leaves every claim above byte-identical.
+  - path: [mill.account, shell, shell, mill.account]
+    amount_usd: 38000
+    attrition_pct: 8
+    date_range: [2026-03-01, 2026-03-25]

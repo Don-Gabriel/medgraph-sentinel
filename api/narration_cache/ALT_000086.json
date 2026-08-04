@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000086",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "101f72f19744c338ee27fdaa0938f3914880c937a1f9f9bdedb6eeaf83f08e01",
+  "text": "Nine claims for Zirconia Crown Restoration at Meridian Dental Institute are near-identical copies of one claim package: the same nine line items, narratives matching within six bits on a 64-bit fingerprint - most byte-identical - and amounts confined to a 3.1% band between $1,315.06 and $1,355.75. They were filed for nine different patients billed to six different insurers, and the patients share two submission devices; unrelated medical tourists do not file paperwork from the same office computers. Dental crowns are genuinely standardized, but standardization does not spread one narrative across six insurers from two shared machines with every claim arranged by the same broker. This is the claim-mill signature: one perfected package resubmitted with names swapped. An honest alternative worth ruling out is franchise billing software stamping identical templates onto real, separate treatments. Next step: request underlying treatment records for two claims in the cluster and compare radiographs and lab work orders line by line - a mill cannot produce nine distinct sets."
+}

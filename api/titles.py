@@ -51,12 +51,18 @@ def _template_cloning(p: dict) -> str:
             f"{p.get('procedure_name', 'procedure')} claims")
 
 
+def _circular_payment(p: dict) -> str:
+    return (f"Circular payment: ${p.get('amount_out_usd', 0):,.0f} returns "
+            f"through {p.get('shell_count', '?')} shell account(s)")
+
+
 _TEMPLATES = {
     "ghost_clinic": _ghost_clinic,
     "credential_laundering": _credential_laundering,
     "kickback_ring": _kickback_ring,
     "impossible_travel": _impossible_travel,
     "template_cloning": _template_cloning,
+    "circular_payment": _circular_payment,
 }
 
 

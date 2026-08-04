@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000033",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "c2badebdd8d32fcd5c40fdebe69d70c28142064445877196c1531c8ae82a5f47",
-  "text": "Credential CRD_001384 was issued in Singapore; its holder's 72 claims all sit in the UAE and Thailand. The volume is notable but the two-country spread keeps it inside the honest pattern. No revocation or shared-number co-signal exists. A busy regional practice is the plausible explanation. Next step: a recognition check is cheap insurance at this volume, nothing more."
+  "prompt_sha256": "e948779d2666ee5f42826cd8c9e2b09580ad1a3bb2c4437898298476988f4ade",
+  "text": "Credential CRD_001082 was issued in Turkey, while its holder billed 39 claims entirely in India and Singapore. Two treatment countries is within the honest range even at this volume, so the alert stays low. No other signal is attached to the credential or its holder. Established corridor practice is the plausible explanation. Next step: passive, unless the credential recurs elsewhere in the queue."
 }

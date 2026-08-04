@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000056",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "20405b77b487b86c082149653af3d4d9c4a7adaf63b98846749500561fc279fc",
-  "text": "Dr. Mark Smith billed 18 claims after credential CRD_001706 was revoked on 2014-12-24, beginning 3,867 days later. Volume is mid-range but the decade-old revocation points to an obsolete record rather than active laundering; nothing corroborates escalation. Next step: registry check in the batch sweep."
+  "prompt_sha256": "a5a51d0911b448355dd0d89c24c08e145e1f08836c7519eb9c65a823d48245e3",
+  "text": "Dr. Daniel Edwards has 3 claims after credential CRD_001404 was revoked on 2018-10-27, first billed 2,470 days later. Administrative-artifact territory. Next step: none."
 }

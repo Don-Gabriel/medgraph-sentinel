@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000057",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "e7e85dd72472461f4ae143dc5ce3834c8727c71d0e9e5614f7e6b8f8f4aa730b",
-  "text": "Dr. Fernando Mcconnell has 2 claims after credential CRD_001766 was revoked on 2021-12-31, four years later. Completeness alert at the family floor. Next step: none."
+  "prompt_sha256": "7e680838713e77079dcbb2b36a1f77313b3aaef705bceb89048b21b3b1abafd7",
+  "text": "Dr. Chloe Freeman billed 2 claims after credential CRD_001479 was revoked on 2013-10-28, more than twelve years earlier. The obsolete-record explanation dominates at this distance. Next step: none."
 }

@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000030",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "4d1adcf8724467694a9e77429f3f74ac096f21527ccb37f092e177652f3cd9e8",
-  "text": "Credential CRD_001082 was issued in Turkey, while its holder billed 39 claims entirely in India and Singapore. Two treatment countries is within the honest range even at this volume, so the alert stays low. No other signal is attached to the credential or its holder. Established corridor practice is the plausible explanation. Next step: passive, unless the credential recurs elsewhere in the queue."
+  "prompt_sha256": "20b8cae9ad3034bdcde9efa8b213887a44d6b4b040c83c9c3bac7c720ad7389a",
+  "text": "Credential CRD_000671 for Dr. Lawrence Clark was issued in the UAE; his 8 claims are in Thailand and Turkey only. Two treatment countries, modest volume, no corroboration \u2014 the honest cross-border shape. Scored low by design so the queue keeps its priorities. Next step: none standalone."
 }

@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000080",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "b6a3ed1495fb5aaa7713caea7a52fbda34b354780ee8d736d6bb0bb3c7e74054",
-  "text": "Broker Roy Lopez sends 100 percent of his referrals to Bennett Medical Centre \u2014 all 8 of them \u2014 while holding a 22.9 percent stake; transfers exceed expected commission by 8.3 percent on a small 11,674 dollar book. Every absolute number here is tiny, and the clinic is accredited, so this reads as a small declared-stake facilitation arm; the score reflects that. The 100 percent referral share is a function of the broker's size, not the clinic's dependence (0.3 percent of its claims). Next step: none standalone; revisit if this broker's volume grows."
+  "prompt_sha256": "c3beba19cd2ed288116ab72d812817fa60f3b96e361b2f97319b29ae5e56096a",
+  "text": "Broker Phyllis Johnson holds a 16.4 percent stake in Avila Hospital, supplies 89.3 percent of its claims, and has received 131,790 dollars in transfers against roughly 72,837 dollars of expected commission \u2014 an 8.6 percent excess ratio on 684,701 dollars of pair billing. The raw numbers are large, but the clinic is accredited and the stake pattern matches the declared in-house-facilitation arrangement this economy legitimately contains, which softens the score to low. Only 34 percent of the broker's own referrals go to this clinic, so the mutual-capture shape is absent. The excess transfer margin is the one fact a written agreement needs to explain. Next step: request the commission schedule; if it covers the margin, dismiss."
 }

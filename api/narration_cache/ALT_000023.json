@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000023",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "6816b78a5f3a28dcff09d83fff0e6df424d2c24b089bca39d38afad8bb6727df",
-  "text": "Credential CRD_000415 for Dr. Denise Abbott was issued in Singapore, while her 17 claims all sit in India and Turkey. The rule flags issued-here-practising-only-there because it is the substrate shopping hides in, but two countries is honest-range and the score says so. Nothing corroborating appears on this identity. Mutual-recognition practice is the plausible reading. Next step: passive monitoring via the queue."
+  "prompt_sha256": "dabf08738b1149c296681fbdc5a5a61955e8fb1acab285a6c09db8ba0dc5d086",
+  "text": "Credential CRD_000057 for Dr. Rebecca Hanson was issued in the UAE, while her 12 claims sit entirely in India and Turkey. Cross-jurisdiction practice on its own is legal and common here, so the alert is low severity. Two treatment countries is within the honest range; three or more never occurs honestly in this data and would escalate. Ordinary corridor practice is the likely explanation. Next step: only if corroborated elsewhere \u2014 check whether the UAE issuance is recognised where the claims occurred."
 }

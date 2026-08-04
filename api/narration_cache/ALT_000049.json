@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000049",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "830d4695463eace316fd6f20139d04a5e291bd70d87b46edec555dd4b087504d",
-  "text": "Dr. Bridget Hernandez has 13 claims after credential CRD_000747 was revoked on 2021-03-18, first billed 1,568 days later. Stale-roster shape, moderate volume, no co-signals \u2014 low severity fits. Next step: registry status check in batch with the others in this band."
+  "prompt_sha256": "8d88ef1258279ef3181c5d7f56aeedaca8d5c313298fd654ecba266d7a519368",
+  "text": "Dr. Caleb Brown billed 3 claims after credential CRD_000336 was revoked on 2018-05-16, beginning over seven years later. Three claims at this distance reads as an administrative artifact more than a scheme. Surfaced for completeness. Next step: none unless billing recurs."
 }

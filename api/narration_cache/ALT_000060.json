@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000060",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "11dd0bc4d6af1a0649522b2ecc96a7636358aa372617873d06cdc08d9480ec70",
-  "text": "Dr. Eileen Williamson billed 5 claims after credential CRD_002140 was revoked on 2021-02-27, starting 1,717 days later. Small volume, old revocation, no corroboration. Next step: none standalone."
+  "prompt_sha256": "c22fbe1b6037119e9c67bbe5e3cab5bff26ed196ce71197959854fd1f79578ec",
+  "text": "Dr. Fernando Mcconnell has 2 claims after credential CRD_001766 was revoked on 2021-12-31, four years later. Completeness alert at the family floor. Next step: none."
 }

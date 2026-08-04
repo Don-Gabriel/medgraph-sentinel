@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000075",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "c4ca65094aa9f44fb104836492438155a4043e73daeec293d2f2e5ed83ef0563",
-  "text": "Broker Sarah Newman routes 100 percent of her referrals to Powers Speciality Hospital, which gets 94.6 percent of its claims from her; they share a registered address, occupy the same small payment community, and the clinic is unaccredited. Transfers to the broker align with expected commission, so the signal is concentration and co-location rather than excess money. Absolute mutual dependence at a shared address with an unaccredited clinic exceeds the honest exclusive-partnership pattern even without a hidden payment stream. This clinic also carries its own high-severity ghost-clinic alert \u2014 the pairing here likely describes the ghost's feeder mechanics. Next step: fold this into the ghost-clinic case file; the broker relationship is the operational half of that pattern."
+  "prompt_sha256": "a0a00380ce9ef61c337315783f9eaecd386949bcf72405bfae903cb0f57096d6",
+  "text": "Brandon Bonilla's claims place him in the UAE and India on 2025-08-17, the same day, across two insurers \u2014 but on a single identity with no passport sharing. Without multiplexing, the likeliest explanation is a date-entry artifact (submission or discharge recorded as procedure date). The cross-insurer detail keeps it a notch above pure noise. Next step: verify the true procedure dates on CLM_0007670 and CLM_0020653; escalate only if both are confirmed same-day."
 }

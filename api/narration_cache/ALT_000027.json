@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000027",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "e5ef026a01e653a9914e6f4cc7611e7259319d5be7ad957af70365cf802505c4",
-  "text": "Credential CRD_000671 for Dr. Lawrence Clark was issued in the UAE; his 8 claims are in Thailand and Turkey only. Two treatment countries, modest volume, no corroboration \u2014 the honest cross-border shape. Scored low by design so the queue keeps its priorities. Next step: none standalone."
+  "prompt_sha256": "934d4e347e7a6daed455ed0f532bf6a20ee42bec8aa02a5105de69c3da1dcbb8",
+  "text": "Credential CRD_000498 for Dr. Tony Rhodes was issued in Singapore; his 11 claims are in the UAE and Turkey exclusively. Two-country spread with a silent home jurisdiction is inside the honest pattern, hence low severity. No other signal attaches to the doctor or credential. Regional practice under recognition agreements is the default explanation. Next step: none unless corroborated."
 }

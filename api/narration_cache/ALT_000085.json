@@ -1,0 +1,6 @@
+{
+  "alert_id": "ALT_000085",
+  "model": "claude-fable-5 (assistant session, pre-generated)",
+  "prompt_sha256": "f2b48a6e08e3aaf2eae099ffc1a16594b026c4c09c692a78ddda6931c54e386b",
+  "text": "Carlson Medical Centre appears in a second broker pairing: broker BRK_000054 directs 48.1% of referrals there - 51 claims, $117,085 - holds an undisclosed 21.9% stake in the clinic, and received $19,672 in transfers against roughly $10,118 of expected commission. Concentration is moderate and the clinic's dependence on this broker is minimal (4%), keeping severity low, but undisclosed ownership plus near-double commission is the same money anomaly seen on this clinic's other broker pair. Two independent brokers showing payment surpluses toward one clinic points at the clinic as the organizing party. The honest alternative is poorly-documented marketing fees, which the clinic can evidence if true. Next step: audit Carlson Medical Centre's outbound transfers to all brokers for the full window."
+}

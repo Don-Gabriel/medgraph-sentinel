@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000046",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "55ae81da0834f694234b8c254dafea4733f6adabbff418d2eed3c8bf9a0c16b9",
-  "text": "Dr. Caleb Brown billed 3 claims after credential CRD_000336 was revoked on 2018-05-16, beginning over seven years later. Three claims at this distance reads as an administrative artifact more than a scheme. Surfaced for completeness. Next step: none unless billing recurs."
+  "prompt_sha256": "68aa246e072be02184eee04b6aea07fb2c143f97dcbcd4f99d9435c49d297c51",
+  "text": "Dr. Brian Walter has 17 claims dated after credential CRD_000031 was revoked on 2019-06-18, beginning 2,228 days later. The six-year-old revocation and moderate volume fit the stale-roster pattern this economy genuinely contains, which is why the score is low despite the long horizon. No shared-licence or routing signal corroborates. Next step: confirm current registry status; a still-revoked answer with current billing would justify escalation."
 }

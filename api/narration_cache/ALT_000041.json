@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000041",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "684f1136ecf652d2a9a56645481c76312ba984b48057d5032d8f17d2217bf6bb",
-  "text": "Credential CRD_002227 for Dr. Christine Quinn was issued in India; her 7 claims sit in Thailand and Turkey. Minimal volume and the standard two-country spread keep this firmly in the honest range. Surfaced for completeness at low severity. Next step: none."
+  "prompt_sha256": "53225194246b297478fc156851241f1e36d1c2b67609d9fcb5aaea4f70351a2c",
+  "text": "Credential CRD_002103 for Dr. Gregory Jones was issued in Singapore; his 17 claims sit in India and Thailand. Honest-range two-country practice with no co-signals. Low severity by design. Next step: none."
 }

@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000067",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "e19d3df7c5939c661e271f506f242432b2a782291f048bf9c866332dd8bc0411",
-  "text": "Serrano Speciality Hospital shows 76 claims, twenty distinct doctors, diversified broker inflow (top feeder 23.7 percent), and one payout account taking 100 percent of disbursements. The single strong feature is the account concentration; everything else about the clinic reads as ordinary young-clinic activity. This is the honest single-corporate-account pattern, scored low by design. Next step: none standalone."
+  "prompt_sha256": "10be771bef7b7a988764407605fe7adac63f4802038892531eaf09b64002b31f",
+  "text": "Powers Speciality Hospital has 56 claims through one doctor against zero beds and a 1.3-year registration; 94.6% of claims come from one feeder broker and 100% of payouts drain to a single account, with every patient appearing exactly once. The pattern is volume without physical footprint plus fully concentrated money flow - the ghost-clinic signature, corroborated by a shared registered address with another operation. A legitimate specialist practice can be young and single-doctored, but it does not usually combine a sole referral source with a sole payout drain and zero returning patients. Next step: confirm the facility exists at its registered address and cross-check the implicated broker's other client clinics."
 }

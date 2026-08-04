@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000061",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "3d55169c442179986d3f7c8998f4e7b05711fade12bba328c6fca7defbe3dd2e",
-  "text": "Dr. Shannon Perez has 2 claims after credential CRD_002215 was revoked on 2019-07-15, over six years later. Family-floor volume; completeness alert. Next step: none."
+  "prompt_sha256": "19087a695c904cc1661b2830aecb812308a42b09cf914c365804e930523ec3fb",
+  "text": "Dr. Kyle Wood billed 5 claims after credential CRD_001805 was revoked on 2011-08-27, nearly fourteen years earlier. Obsolete-record territory; surfaced for completeness. Next step: none."
 }

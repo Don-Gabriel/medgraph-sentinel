@@ -1,6 +1,6 @@
 {
   "alert_id": "ALT_000029",
   "model": "claude-fable-5 (assistant session, pre-generated)",
-  "prompt_sha256": "0ab1e1354c1ceff55e3b8fd25eb8c9ff9f72cd276055e8ed3f4836458eaa1f54",
-  "text": "Credential CRD_000984 for Dr. Lynn Bond was issued in Singapore; her 6 claims sit in India and Turkey. Minimal volume, two countries, no corroborating signals \u2014 the weakest honest shape this rule surfaces. Low severity is the correct reading. Next step: none."
+  "prompt_sha256": "e97bab9363267b31d1efd3630be0d5fe14093e63bfbc5caee29cb08f47433982",
+  "text": "Credential CRD_000656 for Dr. Sarah Castro was issued in Singapore; all 16 claims sit in Thailand and Turkey. This matches the honest expatriate-practice pattern, and the alert is low severity accordingly. No revocation or shared-number signal co-occurs. Recognition-based practice explains it. Next step: passive."
 }
