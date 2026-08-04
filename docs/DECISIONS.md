@@ -868,3 +868,40 @@ zero behaviour gain; the gate's job is new commits.
 dependencies` — imported nowhere since ADR-032 made narration committed
 data; the dependency was the last live remnant of the retired ADR-010
 mechanism.
+
+## ADR-037 — Upgrade branch `next/prediction-gemini` for the Coimbatore event: live-hybrid Gemini narration, typology 4 revival, forecast endpoint (2026-08-05, STUB — branch-only)
+
+**Context:** The project is being presented at a second event (Coimbatore
+Innovation Hackathon 26, Rathinam/AIC Raise, Round 1 idea evaluation
+2026-08-04) whose next round rewards visible capability growth. The
+repo's `main` is frozen and staged for the Theni event (Aug 12–13); the
+freeze (2026-07-30) and the ADR-018 one-way chain must not be disturbed.
+
+**Decision (stub — full text when the build lands):** All upgrade work
+lives on branch `next/prediction-gemini`, cut from `main` at ca65625. It
+does not merge into `main` before Aug 14, and `main`'s demo artifacts,
+USB bundle, and freeze commitments are untouched. Scope, in build order:
+
+1. **Hybrid live narration (Gemini):** the narration endpoint gains a
+   live-first path when explicitly enabled (`NARRATION_LIVE=true` +
+   `GEMINI_API_KEY` in `.env`), timeout ≤ 5 s per the INTERFACES §6
+   contract, falling back to the committed cache, then the deterministic
+   template. `source` tag extended honestly: `gemini-live`. Offline
+   behaviour with the flag unset is byte-identical to `main`.
+2. **Typology 4 (template cloning) revived** per DETECTION_SPEC §4 and
+   the ADR-024 next-build promise: claim-mill cell injected via the §3
+   scenario overlay mechanism (small generator extension for
+   near-identical narrative packs), detection rule
+   `template_cloning` (Cypher blocking + Python SimHash Hamming
+   clustering, OQ #3 reopened as designed), run additively so the 81
+   existing alerts and their narration cache stay valid; new alerts get
+   pre-generated narrations the same ADR-032 way, keeping /health green.
+   Regenerated dataset + alerts + cache re-committed as one unit on this
+   branch only (ADR-018 chain respected in its branch-local form).
+3. **Forecast endpoint + console panel:** trend projection (claim
+   volume/exposure per typology community, simple explainable
+   extrapolation), presented in the UI as projection-from-trend, not ML
+   prophecy. No ground-truth reads anywhere (hard rule 5 holds).
+
+**Why not on main:** the Theni demo is measured, rehearsed, and frozen;
+this branch is a different risk budget for a different audience.
