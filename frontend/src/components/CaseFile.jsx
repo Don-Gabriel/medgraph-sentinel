@@ -55,7 +55,11 @@ const NARRATION_SOURCES = {
   // ADR-032: cached narrations are written by a Claude session at BUILD
   // time and committed — the label must never imply live generation.
   "claude-cached": { label: "pre-generated AI narration", cls: "border-tracer/60 text-tracer" },
-  "claude-live": { label: "live AI narration", cls: "border-tracer/60 text-tracer" },
+  // Only reachable on a cache miss with both live switches set
+  // (api/narration/live.py). Distinct label so the console never claims
+  // "pre-generated" for text a network call produced. Replaces the
+  // "claude-live" tag, which nothing could emit after ADR-032.
+  "gemini-live": { label: "live AI narration (Gemini)", cls: "border-tracer/60 text-tracer" },
   fallback: { label: "deterministic fallback", cls: "border-paper-dim/50 text-paper-mut" },
 };
 
