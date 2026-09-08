@@ -32,8 +32,14 @@ _CONV = {
     "float": "toFloat(row.{c})",
     "date": "CASE row.{c} WHEN '' THEN null ELSE date(row.{c}) END",
     "datetime": "CASE row.{c} WHEN '' THEN null ELSE datetime(row.{c}) END",
-    # rawstr: keep empty strings as-is (Alert.note/summary_params default "")
-    "rawstr": "row.{c}",
+    # rawstr: Alert.note/summary_params are documented as defaulting to ""
+    # (DATA_MODEL, INTERFACES §6 types both as string). LOAD CSV hands an
+    # empty field over as null, NOT "", so a bare `row.note` stores no
+    # property at all — Neo4j then answers every alert query with a
+    # "property key does not exist" notification, and `note` reads null on a
+    # fresh load but "" after the first PATCH. coalesce restores the
+    # documented default. Non-empty values are untouched.
+    "rawstr": "coalesce(row.{c}, '')",
 }
 
 # file stem -> (label, key column, {column: type})  — DATA_MODEL.md node tables
