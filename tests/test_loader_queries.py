@@ -54,11 +54,15 @@ def test_rel_query_shapes():
 
 
 def test_alert_stem_queries():
-    # Alert nodes: datetime conversion + rawstr keeps "" (note default "")
+    # Alert nodes: datetime conversion + rawstr coalesces to "" (note
+    # default ""). LOAD CSV yields null for an empty field, so the bare
+    # `row.note` this once used stored no property and Neo4j warned
+    # "property key does not exist" on every alert query.
     q = node_query("alerts")
     assert "CREATE (:Alert" in q
     assert "created_at: CASE row.created_at WHEN '' THEN null ELSE datetime(row.created_at) END" in q
-    assert "note: row.note" in q  # rawstr — no null coercion
+    assert "note: coalesce(row.note, '')" in q
+    assert "summary_params: coalesce(row.summary_params, '')" in q
     # IMPLICATES fans out to one indexed MATCH per entity label by ID prefix
     qs = rel_queries("rel_implicates")
     assert len(qs) == len(PREFIX_LABEL)

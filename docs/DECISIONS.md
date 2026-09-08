@@ -976,3 +976,36 @@ serves the app rather than nginx's 404). Cost is a few KB of buffer.
 - `frontend/src/api.js`: comment said "68 alerts in the committed dataset".
   It is 81 (ADR-029/031). No behaviour change — the page limit is 200 —
   but it contradicted README, STATUS and the running system.
+
+---
+
+## ADR-039 — `Alert.note` loads as "" rather than null; Neo4j notification silenced (2026-09-09)
+
+**Context:** every alert query logged a Neo4j `WARNING` notification —
+`property key does not exist. The property 'note' does not exist` — several
+per queue load. Found while scanning container logs during the ADR-037/038
+verification sweep, not by a failure: nothing was broken.
+
+**Cause:** `LOAD CSV` hands an empty field over as **null**, not `""`. The
+`rawstr` conversion was a bare `row.note`, so `CREATE (:Alert {note: null})`
+stored no property at all. The loader's own comment claimed rawstr keeps
+empty strings "as-is (Alert.note/summary_params default '')" — an
+assumption that never held for empty fields. DATA_MODEL and INTERFACES §6
+both type `note` as a string, so the graph disagreed with the contract.
+
+**Symptoms, all cosmetic:** log noise proportional to queue loads, and
+`note` reading null on a fresh load but `""` after the first PATCH — the
+same field, two types, depending on history. Nothing user-visible: the API
+returned null, the console rendered it, PATCH worked.
+
+**Decision:** `rawstr` becomes `coalesce(row.{c}, '')`. Non-empty values are
+untouched; `summary_params` is never empty so it is unaffected in practice,
+but gets the same guarantee. Verified: `note` now loads as `""`, and the
+notification count over repeated alert queries is **0**, down from several
+per load.
+
+**Freeze position:** loader-only. The dataset was not regenerated, detection
+was not re-run, and alert IDs are unchanged, so the ADR-018 chain and the
+narration cache are untouched (`/health` still reports 81/81, `match:true`
+after a `down -v` reseed). This is a factual correction — reason 3 on the
+STATUS list — not a feature.

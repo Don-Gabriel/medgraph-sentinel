@@ -1,6 +1,6 @@
 # STATUS — snapshot, not a log
 
-**Updated:** 2026-09-08, optional live narration (ADR-037) + console cookie-buffer fix (ADR-038)
+**Updated:** 2026-09-09, optional live narration (ADR-037), console cookie-buffer fix (ADR-038), `Alert.note` loads as "" (ADR-039)
 
 ---
 
@@ -43,7 +43,7 @@ stale-comment/build corrections.
 | Generator | Frozen seed-42 economy + overlays + planted cells (ADR-031). Byte-identical on re-run. |
 | Graph | Neo4j 5.26 + GDS 2.13.11, our own image with GDS baked in (ADR-026). Seeds in ~21 s. |
 | Detection | 4 typologies, config-driven registry, calibrated on the honest economy only (ADR-030); centrality benchmarked out (ADR-028). |
-| Alerts | **81**, precomputed and committed as CSV data — no clone ever runs detection (ADR-029). |
+| Alerts | **81**, precomputed and committed as CSV data — no clone ever runs detection (ADR-029). `note` loads as `""`, matching the INTERFACES §6 string type (ADR-039). |
 | Narration | **81/81 pre-generated and committed** (ADR-032). `/health` guards completeness by alert-id set. Demo path makes zero API calls; an optional Gemini cache-miss path exists and is **off** unless `NARRATION_LIVE` **and** `GEMINI_API_KEY` are both set (ADR-037). |
 | API | Full INTERFACES §6 surface, 300-node subgraph cap. |
 | Console | Queue + Cytoscape evidence view + case file + disposition; projector-legibility pass done (ADR-035). Image now ships `frontend/nginx.conf` so a polluted `localhost` cookie jar cannot 400 the page (ADR-038). |
