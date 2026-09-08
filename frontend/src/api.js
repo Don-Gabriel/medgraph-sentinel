@@ -27,8 +27,8 @@ export const api = {
   base: BASE,
   health: () => request("/health"),
   stats: () => request("/stats"),
-  // 68 alerts in the committed dataset; one page at the contract's max
-  // limit (200) keeps filtering client-side and instant.
+  // 81 alerts in the committed dataset (ADR-029/031); one page at the
+  // contract's max limit (200) keeps filtering client-side and instant.
   alerts: () => request("/alerts?limit=200"),
   alert: (id) => request(`/alerts/${encodeURIComponent(id)}`),
   subgraph: (id, hops = 1) =>

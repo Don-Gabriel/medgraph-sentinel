@@ -3,9 +3,11 @@
 Contract: docs/INTERFACES.md §6 (list/detail/subgraph/narration/PATCH).
 Alerts were written by the detection run and shipped as committed data
 (ADR-008/029); this module only reads them and updates status/note.
-Narration is cache-first with a deterministic template fallback and NO
-live-call path — ADR-010 makes the live call optional-and-off, and the
-venue is assumed offline.
+Narration is cache-first, then an optional Gemini live call that is OFF
+unless BOTH NARRATION_LIVE and GEMINI_API_KEY are set (api/narration/live.py),
+then a deterministic template. The venue is assumed offline, so the demo
+path is cache-only: with the committed cache complete the live branch is
+unreachable, and it degrades to the template on any failure.
 """
 import json
 import logging
@@ -16,6 +18,7 @@ from pydantic import BaseModel, Field
 
 from api import narration
 from api.graph import display_label, get_session, run_query, to_jsonable, iso_datetime
+from api.narration import live
 from api.narration.fallback import fallback_text
 from api.subgraph import NODE_CAP, to_elements, trim_to_cap
 from api.titles import compose_title, parse_summary_params
@@ -259,6 +262,22 @@ def alert_narration(alert_id: str, session=Depends(get_session)) -> dict:
     except (OSError, ValueError) as exc:
         log.warning("narration cache read failed for %s: %s", alert_id, exc)
     params = parse_summary_params(rows[0]["summary_params"])
+    # Cache missed. Only now — and only if BOTH live switches are set — try
+    # Gemini. With the committed cache complete this is unreachable, so the
+    # offline demo never depends on it; live.generate() returns None on any
+    # failure and we drop to the template below.
+    if live.is_enabled():
+        implicated = [
+            {"role": r["role"], "type": r["type"], "id": r["id"],
+             "label": display_label(r["props"], r["id"])}
+            for r in run_query(session, Q_ALERT_IMPLICATED, id=alert_id)
+        ]
+        text = live.narrate_alert(alert_id, rows[0]["typology"],
+                                  rows[0]["score"], rows[0]["severity"],
+                                  params, implicated)
+        if text:
+            return {"alert_id": alert_id, "text": text,
+                    "source": "gemini-live"}
     return {"alert_id": alert_id,
             "text": fallback_text(rows[0]["typology"], params),
             "source": "fallback"}

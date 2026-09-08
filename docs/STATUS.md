@@ -1,6 +1,6 @@
 # STATUS — snapshot, not a log
 
-**Updated:** 2026-08-03, consistency sweep + CI adoption · **Days to Day 1 (Aug 12): 9**
+**Updated:** 2026-09-08, optional live narration (ADR-037) + console cookie-buffer fix (ADR-038)
 
 ---
 
@@ -24,6 +24,16 @@ Unfreezing the dataset is a separate, harder rule (ADR-031/032): any
 regeneration re-runs the whole ADR-018 chain including re-narration, and
 after Aug 8 it is a demo-blocker emergency only.
 
+**Recorded exception, 2026-09-08 (ADR-037):** optional Gemini live
+narration was added on owner direction. It is not one of the three reasons
+above and is logged as a deliberate exception, not an oversight. The demo
+path is unchanged and asserted so by test: the cache answers 81/81, so the
+live branch is unreachable, and it stays off unless two switches are set.
+The dataset was **not** touched — no regeneration, no re-narration, so the
+ADR-018 chain is intact. Shipped alongside it, and freeze-legal on their
+own: the console cookie-buffer fix (ADR-038, a cold-start finding) and two
+stale-comment/build corrections.
+
 ---
 
 ## What exists (all merged to main, all verified running)
@@ -34,12 +44,12 @@ after Aug 8 it is a demo-blocker emergency only.
 | Graph | Neo4j 5.26 + GDS 2.13.11, our own image with GDS baked in (ADR-026). Seeds in ~21 s. |
 | Detection | 4 typologies, config-driven registry, calibrated on the honest economy only (ADR-030); centrality benchmarked out (ADR-028). |
 | Alerts | **81**, precomputed and committed as CSV data — no clone ever runs detection (ADR-029). |
-| Narration | **81/81 pre-generated and committed**, zero API calls ever (ADR-032). `/health` guards completeness by alert-id set. |
+| Narration | **81/81 pre-generated and committed** (ADR-032). `/health` guards completeness by alert-id set. Demo path makes zero API calls; an optional Gemini cache-miss path exists and is **off** unless `NARRATION_LIVE` **and** `GEMINI_API_KEY` are both set (ADR-037). |
 | API | Full INTERFACES §6 surface, 300-node subgraph cap. |
-| Console | Queue + Cytoscape evidence view + case file + disposition; projector-legibility pass done (ADR-035). |
+| Console | Queue + Cytoscape evidence view + case file + disposition; projector-legibility pass done (ADR-035). Image now ships `frontend/nginx.conf` so a polluted `localhost` cookie jar cannot 400 the page (ADR-038). |
 | Demo backup | `screenshot-deck/` (7 beats, 1920×1080) + `demo-recording.webm` (53.7 s, 5.9 MB), both committed. |
 | Offline bundle | Staged at `C:\WorkSpace\Private\medgraph-demo-usb\`; drill script `docs/COLD_START.md`. **Restage from final main after PR #16 merges** (freshness check in COLD_START). |
-| Tests | **70 passing.** |
+| Tests | **99 passing** (70 + 29 for the ADR-037 live path, none touching the network). |
 | CI | GitHub Actions (ADR-036): ruff + pytest + frontend build on push-to-main and PRs; rule set pinned so the gate never touches frozen code. |
 
 ## Evaluation results (final — do not restate from memory, read them)
