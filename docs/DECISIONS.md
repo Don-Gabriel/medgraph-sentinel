@@ -868,3 +868,111 @@ zero behaviour gain; the gate's job is new commits.
 dependencies` — imported nowhere since ADR-032 made narration committed
 data; the dependency was the last live remnant of the retired ADR-010
 mechanism.
+
+---
+
+## ADR-037 — Optional live narration via Gemini, cache-miss only, off by default (2026-09-08, owner-directed post-freeze)
+
+**Context:** the owner asked to "set up" a Gemini API key for narration,
+recalling the ADR-010 live-call design. That design was superseded by
+ADR-032: narration is committed data, zero API calls, no key anywhere. The
+recollection was raised and the conflict stated — offline venue (ADR-019),
+hard rule 7 (no committed secrets), and the freeze (STATUS) — and the owner
+reaffirmed the request. Recorded here rather than argued twice.
+
+**This breaks the freeze, and that is a decision, not an oversight.** STATUS
+permits exactly three post-freeze reasons (cold-start findings, rehearsal
+breakage, factual corrections); a new integration is none of them. It
+proceeds on owner direction. The mitigation is that the demo path is
+provably unchanged, below.
+
+**Decision:** `api/narration/live.py`, reached ONLY on a cache miss and ONLY
+when two independent switches are both set:
+
+    NARRATION_LIVE=1        explicit opt-in; absent/0/false/no/off = never
+    GEMINI_API_KEY=<key>    via .env (gitignored); blank counts as unset
+
+Resolution order is cache → Gemini → template. With the committed cache at
+81/81 the live branch is unreachable, so `docker compose up` behaves exactly
+as it did before this change; `test_cache_hit_never_calls_gemini` asserts it
+rather than trusting the reading. Two switches, not one, so a key may live
+permanently in `.env` while the demo profile stays offline-safe by leaving
+`NARRATION_LIVE` empty — the offline bundle ships with it unset.
+
+**Why it degrades rather than fails:** `generate()` returns `None` on every
+failure path — disabled, DNS, TLS, timeout, HTTP error, blocked content,
+reshaped reply — and the caller drops to the deterministic template. The
+API still cannot 500 (INTERFACES §6). Timeout defaults to 8 s
+(`NARRATION_LIVE_TIMEOUT_S`).
+
+**Prompt reuse:** the live path calls `build.compose_prompt` — the same
+canonical template the committed cache was written from — so a live
+narration reads like a cached one instead of drifting in tone, and neither
+path can read `data/ground_truth/` (INTERFACES §8).
+
+**stdlib only:** `urllib.request`, no SDK. `pyproject.toml` is untouched, so
+the offline image gains no dependency and ADR-036's removal of `anthropic`
+is not quietly undone by adding a different vendor client.
+
+**Honesty in the UI:** the console tags live text `live AI narration
+(Gemini)`, distinct from `pre-generated AI narration`. The dead
+`claude-live` label — unreachable since ADR-032 — is deleted in the same
+change. The pitch claim must now be stated as: the demo runs air-gapped and
+every shipped narration is pre-generated; a live path exists, is off, and
+covers cache misses only.
+
+**Verified:** REST contract (endpoint, `x-goog-api-key`, request/response
+shape) checked against ai.google.dev/gemini-api on 2026-09-08 via context7,
+not from memory (hard rule 2). 29 new tests, none touching the network,
+plus one live end-to-end run against a real key.
+
+**Model default is an alias, and that is deliberate** — the one place in
+this repo where pinning is wrong. The live run found that
+`gemini-2.5-flash-lite`, the name in Google's own current documentation,
+returns HTTP 404 "no longer available to new users" (so does
+`gemini-2.5-flash`); `ListModels` still lists both, so the failure is only
+visible by calling. A pinned model here is a time bomb whose detonation is
+a *silent* fallback to template text months later. Default is therefore
+`gemini-flash-lite-latest`, a rolling alias, overridable with
+`GEMINI_MODEL`. Confirmed working 2026-09-08: `gemini-flash-lite-latest`,
+`gemini-flash-latest`, `gemini-3.8-flash`.
+
+**Alternatives rejected:** (a) a single `GEMINI_API_KEY` switch — one stray
+`.env` line would arm live calls at the venue; (b) live-first with cache as
+fallback — inverts ADR-032 and makes the demo network-dependent; (c) the
+`google-genai` SDK — a dependency and an image rebuild for one POST.
+
+---
+
+## ADR-038 — Console hardened against a polluted localhost cookie jar; two build/comment corrections (2026-09-08)
+
+**Context:** on the demo laptop, `http://localhost:5173` returned a
+full-page `400 Bad Request — Request Header Or Cookie Too Large` from
+nginx. The stack was healthy throughout — `/health` ok, 81/81 narration,
+all three containers up — and the same URL loaded correctly in an incognito
+window. Cause: cookies are scoped to host, not port, so every service the
+machine has run on `localhost` (other projects, the `medgraph-next` stack,
+anything on :8080) shares one jar, and it had grown past nginx's default
+`large_client_header_buffers 4 8k`. The request was rejected before
+reaching the app.
+
+**Why it matters more than it looks:** it is invisible until it happens,
+does not reproduce in a clean profile (so no drill would have caught it),
+and presents as a blank red error page rather than anything diagnosable —
+in front of a jury, with the console as the whole demo. This is a
+cold-start finding in substance, which is reason 1 on the STATUS list.
+
+**Decision:** ship `frontend/nginx.conf` in the image
+(`large_client_header_buffers 8 16k`, plus `try_files` so a mistyped path
+serves the app rather than nginx's 404). Cost is a few KB of buffer.
+
+**Also in this change (both freeze-legal corrections):**
+
+- `frontend/Dockerfile`: `npm install` → `npm ci`, and the lockfile is now
+  copied in. The comment saying the lockfile "doesn't exist until the first
+  npm install" was stale — it is committed, and CI has used `npm ci` since
+  ADR-036. The image could therefore resolve a different tree than the one
+  CI verified; now it cannot.
+- `frontend/src/api.js`: comment said "68 alerts in the committed dataset".
+  It is 81 (ADR-029/031). No behaviour change — the page limit is 200 —
+  but it contradicted README, STATUS and the running system.
